@@ -8,5 +8,3 @@ To download the necessary client libraries, download the following packages from
 `!pip install google.cloud`  
 `!pip install google-cloud-dataplex`  
 `!pip install google-cloud-storage`  
-
-# dataplex-samples
