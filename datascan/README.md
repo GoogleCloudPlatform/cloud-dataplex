@@ -1,7 +1,10 @@
 # Google Cloud Dataplex - DataScans
 
 ## Samples in this directory
- * `data-quality-rules` provides a list of sample rules to use as part of a DataScan DataQualitySpec.
+ * `dataplex-sample-scripts` folder provides examples in python to:
+    * create, run, and update a Data Quality Scan
+    * get job results of a Data Quality Scan
+    * create a Profile Scan
 
 ## Additional DataScan Resources
 
