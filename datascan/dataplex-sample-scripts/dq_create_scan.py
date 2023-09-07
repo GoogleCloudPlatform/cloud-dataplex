@@ -1,4 +1,4 @@
-# !pip install google.cloud
+# !pip install google-cloud
 # !pip install google-cloud-dataplex
 # !pip install google-cloud-storage
 
