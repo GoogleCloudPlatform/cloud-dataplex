@@ -12,16 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [Optional] The resource name for the datascan. If not provided, the file path will be used as the datascan name.
-# The name of the datascan is created as the relative file path including directory names from the `datascan_spec_folder` input variable, substituting forward slashes for hyphens.  
-# name: "datascan"
-
-# The data source for DataScan. The source can be either a Dataplex `entity` or a BigQuery `resource`. If present, this variable will override the variable provided in datascan_defaults.
-# If present, this variable will override the variable provided in datascan_defaults.
-data:
-  resource: "//bigquery.googleapis.com/projects/bigquery-public-data/datasets/austin_bikeshare/tables/bikeshare_stations"
-
 # DataQualityScan related setting. Variable descriptions are provided in https://cloud.google.com/dataplex/docs/reference/rest/v1/DataQualitySpec.
+# A datascan can specify only one of data_profile_spec or data_quality_spec, but not both.
 data_quality_spec:
   # [Optional] The percentage of the records to be selected from the dataset for DataScan.
   # If present, this variable will override the variable provided in datascan_defaults.
@@ -32,9 +24,9 @@ data_quality_spec:
   row_filter: "station_id > 1000"
 
   # [Optional]  The configuration of BigQuery export post scan action upon job completion.
-  post_scan_actions:
-    bigquery_export:
-      results_table: "//bigquery.googleapis.com/projects/bigquery-public-data/datasets/austin_bikeshare/tables/export_table"
+  # post_scan_actions:
+  #   bigquery_export:
+  #     results_table: "//bigquery.googleapis.com/projects/{project_id}/datasets/{dataset_id}/tables/{export_table}"
 
   # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.example.com/dataplex/docs/reference/rest/v1/DataQualityRule.
   # Can optionally reference templated rules provided in the variable datascan_rules_library_file_path. Any variables provided here will override the default values provided in the rules library file.
@@ -89,37 +81,3 @@ data_quality_spec:
     - dimension: VALIDITY
       table_condition_expectation:
         sql_expression: COUNT(*) > 0
-
-# [Optional] Prefix for DataScan name. 
-# If present, this variable will override the variable provided in datascan_defaults.
-# prefix: "test"
-
-# [Optional] Custom description for DataScan.
-# If present, this variable will override the variable provided in datascan_defaults.
-# description: "Custom datascan descriptions."
-
-# [Optional] Resource labels for DataScan.
-# If present, this variable will override the variable provided in datascan_defaults.
-# labels:
-#   team_id: "a"
-
-# [Optional] Schedule DataScan to run periodically based on a cron schedule expression. If not specified or null, the DataScan is created with `on_demand` schedule, which means it will not run until the user calls `dataScans.run` API.
-# If present, this variable will override the variable provided in datascan_defaults.
-# execution_schedule: "TZ=America/New_York 0 1 * * *"
-
-# [Optional] The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time. If not specified, a data scan will run for all data in the table.
-# If present, this variable will override the variable provided in datascan_defaults.
-# incremental_field: "modified_date"
-
-# [Optional] IAM bindings for the datascan.
-# If present, this variable will override the variable provided in datascan_defaults.
-# iam_bindings:
-#  "roles/dataplex.dataScanAdmin":
-#    members:
-#      - "serviceAccount:svc-1@project-id.iam.gserviceaccount.com"
-#  "roles/dataplex.dataScanEditor":
-#    members:
-#      - "user:admin-user@example.com"
-#  "roles/dataplex.dataScanViewer":
-#    members:
-#      - "group:user-group@example.com"
