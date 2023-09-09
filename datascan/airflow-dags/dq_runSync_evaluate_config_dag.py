@@ -11,7 +11,7 @@ from airflow.providers.google.cloud.operators.dataplex import DataplexRunDataQua
 from datetime import timedelta, datetime
 from google.cloud import dataplex_v1
 
-"""Following are the default parameeters for the project id, refion and data scan id respectively, and used as default values 
+"""Following are the default parameeters for the project id, region and data scan id respectively, and used as default values 
    if no config valuess are provided.
 """
 DEFAULT_PROJECT_ID = "test-project"
