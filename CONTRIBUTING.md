@@ -33,3 +33,7 @@ accept your pull requests.
    recommended coding standards for this organization.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request.
+
+## Style
+
+All code should follow the [Sample Format Guidelines](https://googlecloudplatform.github.io/samples-style-guide/)
