@@ -1,0 +1,43 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [Optional] DataProfileScan related setting. Variable descriptions are provided in https://cloud.google.com/dataplex/docs/reference/rest/v1/DataProfileSpec.
+# A datascan can specify only one of data_profile_spec or data_quality_spec, but not both.
+data_profile_spec:
+  # [Optional] The percentage of the records to be selected from the dataset for DataScan.
+  # If present, this variable will override the variable provided in datascan_defaults.
+  sampling_percent: 100
+
+  # [Optional]  A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in BigQuery standard SQL syntax. Example: col1 >= 0 AND col2 < 10
+  # If present, this variable will override the variable provided in datascan_defaults.
+  row_filter: "station_id > 1000"
+
+  # [Optional]  The fields to include in data profile. If not specified, all fields at the time of profile scan job execution are included, except for ones listed in excludeFields.
+  include_fields:
+    field_names:
+    - station_id
+    - council_district
+    - power_type
+
+  # [Optional]  The fields to exclude from data profile. If specified, the fields will be excluded from data profile, regardless of includeFields value.
+  exclude_fields:
+    field_names:
+    - number_of_docks
+    - footprint_length
+    - property_type
+
+  # [Optional]  The configuration of BigQuery export post scan action upon job completion.
+  # post_scan_actions:
+  #   bigquery_export:
+  #     results_table: "//bigquery.googleapis.com/projects/{project_id}/datasets/{dataset_id}/tables/{export_table}"
