@@ -19,4 +19,6 @@
 
 ### Terraform 
 * [DataScan Resource](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataplex_datascan)
+   *  Google Provider backed Terraform resource for the DataScan API
 * [DataScan Module](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/tree/master/modules/dataplex-datascan)
+   * Cloud Foundation Fabric backed module which provides additional features such as YAML support for dataplex_datascan resources.
