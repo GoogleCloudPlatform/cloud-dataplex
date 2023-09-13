@@ -16,11 +16,9 @@
 # A datascan can specify only one of data_profile_spec or data_quality_spec, but not both.
 data_quality_spec:
   # [Optional] The percentage of the records to be selected from the dataset for DataScan.
-  # If present, this variable will override the variable provided in datascan_defaults.
   sampling_percent: 100
 
   # [Optional]  A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in BigQuery standard SQL syntax. Example: col1 >= 0 AND col2 < 10
-  # If present, this variable will override the variable provided in datascan_defaults.
   row_filter: "station_id > 1000"
 
   # [Optional]  The configuration of BigQuery export post scan action upon job completion.
@@ -29,7 +27,6 @@ data_quality_spec:
   #     results_table: "//bigquery.googleapis.com/projects/{project_id}/datasets/{dataset_id}/tables/{export_table}"
 
   # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.example.com/dataplex/docs/reference/rest/v1/DataQualityRule.
-  # Can optionally reference templated rules provided in the variable datascan_rules_library_file_path. Any variables provided here will override the default values provided in the rules library file.
   rules:
     - non_null_expectation: {}
       column: address
