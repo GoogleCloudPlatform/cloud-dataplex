@@ -31,53 +31,51 @@ data_quality_spec:
   # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.example.com/dataplex/docs/reference/rest/v1/DataQualityRule.
   # Can optionally reference templated rules provided in the variable datascan_rules_library_file_path. Any variables provided here will override the default values provided in the rules library file.
   rules:
-    - column: address
-      dimension: VALIDITY
-      ignore_null: null
-      non_null_expectation: {}
+    - non_null_expectation: {}
+      column: address
       threshold: 0.99
-    - column: council_district
       dimension: VALIDITY
-      ignore_null: true
-      threshold: 0.9
-      range_expectation:
+    - range_expectation:
         max_value: '10'
         min_value: '1'
         strict_max_enabled: false
         strict_min_enabled: true
-    - column: council_district
+      column: council_district
+      ignore_null: true
+      threshold: 0.9
       dimension: VALIDITY
-      range_expectation:
+    - range_expectation:
         max_value: '9'
         min_value: '3'
-      threshold: 0.8
-    - column: power_type
+      column: council_district
       dimension: VALIDITY
-      ignore_null: false
-      regex_expectation:
+    - regex_expectation:
         regex: .*solar.*
-    - column: property_type
-      dimension: VALIDITY
+      column: power_type
       ignore_null: false
-      set_expectation:
+      dimension: VALIDITY
+    - set_expectation:
         values:
         - sidewalk
         - parkland
-    - column: address
-      dimension: UNIQUENESS
-      uniqueness_expectation: {}
-    - column: number_of_docks
+      column: property_type
+      ignore_null: false
       dimension: VALIDITY
-      statistic_range_expectation:
+    - uniqueness_expectation: {}
+      column: address
+      dimension: UNIQUENESS
+    - statistic_range_expectation:
         max_value: '15'
         min_value: '5'
         statistic: MEAN
         strict_max_enabled: true
         strict_min_enabled: true
-    - column: footprint_length
+      column: number_of_docks
       dimension: VALIDITY
-      row_condition_expectation:
+    - row_condition_expectation:
         sql_expression: footprint_length > 0 AND footprint_length <= 10
-    - dimension: VALIDITY
-      table_condition_expectation:
+      column: footprint_length
+      dimension: VALIDITY
+    - table_condition_expectation:
         sql_expression: COUNT(*) > 0
+      dimension: VALIDITY
