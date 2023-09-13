@@ -26,7 +26,7 @@ data_quality_spec:
   #   bigquery_export:
   #     results_table: "//bigquery.googleapis.com/projects/{project_id}/datasets/{dataset_id}/tables/{export_table}"
 
-  # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.example.com/dataplex/docs/reference/rest/v1/DataQualityRule.
+  # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.google.com/dataplex/docs/reference/rest/v1/DataQualityRule.
   rules:
     - non_null_expectation: {}
       column: address
