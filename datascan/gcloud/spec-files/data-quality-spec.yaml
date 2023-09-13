@@ -28,6 +28,13 @@ data_quality_spec:
 
   # DataQualityScan rule configurations. Documentation for the supported rule types and rule specifications can be found in https://cloud.google.com/dataplex/docs/reference/rest/v1/DataQualityRule.
   rules:
+  # - one of [non_null_expectation, range_expectation, regex_expectation, regex_expectation, set_expectation, uniqueness_expectation, statistic_range_expectation, row_condition_expectation, table_condition_expectation]
+  #   column -      [string] Required, except for row_condition_expectation and table_condition_expectation. The unnested column which this rule is evaluated against.
+  #   name -        [string] Optional. A mutable name for the rule. The name must contain only letters (a-z, A-Z), numbers (0-9), or hyphens (-). The maximum length is 63 characters. Must start with a letter. Must end with a number or a letter.
+  #   description - [string] Optional. Description of the rule. The maximum length is 1,024 characters.
+  #   threshold  -  [number] Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of [0.0, 1.0]. 0 indicates default value (i.e. 1.0). This field is only valid for row-level type rules.
+  #   ignoreNull -  [boolean] Optional. Rows with null values will automatically fail a rule, unless ignoreNull is true. In that case, such null rows are trivially considered passing. This field is only valid for row-level type rules.
+  #   dimension  -  [string] Required. The dimension a rule belongs to. Results are also aggregated at the dimension level. Supported dimensions are ["COMPLETENESS", "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "INTEGRITY"]
     - non_null_expectation: {}
       column: address
       threshold: 0.99
@@ -40,11 +47,6 @@ data_quality_spec:
       column: council_district
       ignore_null: true
       threshold: 0.9
-      dimension: VALIDITY
-    - range_expectation:
-        max_value: '9'
-        min_value: '3'
-      column: council_district
       dimension: VALIDITY
     - regex_expectation:
         regex: .*solar.*
