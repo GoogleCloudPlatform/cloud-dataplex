@@ -42,3 +42,10 @@ For instance, in your case, you know that the ingestion_timestamp column is a re
 Here, we will exclude the column ingestion_timestamp since we already know its values and are filtering on this column. 
 
 ![Filter columns](./images/profile_scan_column_filter.png "Filter columns")
+
+###### _Sampling size_
+Another way to filter the data to be scanned is to specify a sampling size. If specified, the profile scan result will be based on the sampled data. Sampling is applied after the above two filters are applied.
+
+Sampling is particularly useful if you expect a large amount of data to be seen for each scan. Specifying a smaller sampling size for such data would provide cost benefits. Choosing the sampling size appropriate for the overall data size to be seen per scan would cause more accurate profile insights. 
+
+Since you only expect ~200 rows to be scanned everyday, you can skip configuring sampling size for this scan.
