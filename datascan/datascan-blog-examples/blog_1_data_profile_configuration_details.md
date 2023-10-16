@@ -42,3 +42,27 @@ For instance, in your case, you know that the ingestion_timestamp column is a re
 Here, we will exclude the column ingestion_timestamp since we already know its values and are filtering on this column. 
 
 ![Filter columns](./images/profile_scan_column_filter.png "Filter columns")
+
+###### _Sampling size_
+Another way to filter the data to be scanned is to specify a sampling size. If specified, the profile scan result will be based on the sampled data. Sampling is applied after the above two filters are applied.
+
+Sampling is particularly useful if you expect a large amount of data to be seen for each scan. Specifying a smaller sampling size for such data would provide cost benefits. Choosing the sampling size appropriate for the overall data size to be seen per scan would cause more accurate profile insights. 
+
+Since you only expect ~200 rows to be scanned everyday, you can skip configuring sampling size for this scan.
+
+![Sampling Size](./images/profile_scan_sampling_size.png "Sampling Size")
+
+###### _Schedule_
+You can either create an `On-demand` scan which only runs when you explicitly run it  or you can specify a `Schedule` to run this scan regularly at a particular time. 
+
+Creating a `Repeat` scheduled scan allows you to automatically trigger a scan around a specific event such as data ingestion time. Since you expect our data to be ingested daily at 8 AM PDT, you can schedule the profile scan to run everyday at 5 PM PDT. This would enable us to gather insights from the data daily.
+
+![Schedule](./images/profile_scan_schedule.png "Schedule")
+
+###### _Export scan results to Bigquery table_
+
+In `Additional Settings`, you can specify the path to a BigQuery table to keep exporting your profile results for each scan for further analysis. This is particularly useful for building more advanced dashboards using Looker Studio or building upstream detection or forecasting systems leveraging BQML models on profile scan results. 
+
+For this example, let's assume you want to store results `datascan-test-project1.datascan_blog_examples.datascan_inventory_profile_results` table, but this table doesn't exist yet. So, you can specify the path to the dataset `datascan-test-project1.datascan_blog_examples` and give the table name as `datascan_inventory_profile_results`. If this table doesn't exist, it will be created. 
+
+![Export scan results to Bigquery Table](./images/profile_export_results.png "Export scan results to Bigquery Table")
