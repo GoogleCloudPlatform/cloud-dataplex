@@ -65,4 +65,4 @@ In `Additional Settings`, you can specify the path to a BigQuery table to keep e
 
 For this example, let's assume you want to store results `datascan-test-project1.datascan_blog_examples.datascan_inventory_profile_results` table, but this table doesn't exist yet. So, you can specify the path to the dataset `datascan-test-project1.datascan_blog_examples` and give the table name as `datascan_inventory_profile_results`. If this table doesn't exist, it will be created. 
 
-![Export scan results to Bigquery Table](./images/profile_export_results.png "Export scan results to Bigquery Table")
+![Export scan results to Bigquery Table](./images/profile_scan_export_results.png "Export scan results to Bigquery Table")
