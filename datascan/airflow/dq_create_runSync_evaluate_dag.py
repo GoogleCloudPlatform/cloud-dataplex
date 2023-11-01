@@ -37,6 +37,7 @@ EXAMPLE_DATA_SCAN.data.resource = (
 EXAMPLE_DATA_SCAN.data_quality_spec = {
     "sampling_percent": 100,
     "row_filter": "station_id > 1000",
+    "post_scan_actions": {"bigquery_export": {"results_table": "//bigquery.googleapis.com/projects/test-project/datasets/test_dataset/tables/results_table" } },
     "rules": [
         {
             "non_null_expectation": {},
