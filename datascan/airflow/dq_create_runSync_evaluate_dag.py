@@ -29,6 +29,10 @@ PROJECT_ID = "test-project"
 REGION = "us-central1"
 DATA_SCAN_ID = "airflow-data-quality-scan"
 
+"""replace EXPORT_TABLE for your setup"""
+# Table where datascan job results should be exported to.
+EXPORT_TABLE = "//bigquery.googleapis.com/projects/test-project/datasets/test_dataset/tables/results_table"
+
 EXAMPLE_DATA_SCAN = dataplex_v1.DataScan()
 
 EXAMPLE_DATA_SCAN.data.resource = (
@@ -37,6 +41,7 @@ EXAMPLE_DATA_SCAN.data.resource = (
 EXAMPLE_DATA_SCAN.data_quality_spec = {
     "sampling_percent": 100,
     "row_filter": "station_id > 1000",
+    "post_scan_actions": {"bigquery_export": {"results_table": EXPORT_TABLE } },
     "rules": [
         {
             "non_null_expectation": {},
