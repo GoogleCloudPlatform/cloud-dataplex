@@ -13,15 +13,12 @@
 # limitations under the License.
 
 
-"""Airflow dag to create and run data profile scan"""
+"""Airflow dag to create, run and evaluate data profile scan"""
 import pendulum
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.operators.python import BranchPythonOperator
 from google.cloud import dataplex_v1
-from airflow.providers.google.cloud.operators.dataplex import DataplexCreateOrUpdateDataProfileScanOperator
-from airflow.providers.google.cloud.operators.dataplex import DataplexGetDataProfileScanResultOperator
-from airflow.providers.google.cloud.operators.dataplex import DataplexRunDataProfileScanOperator
+from airflow.providers.google.cloud.operators.dataplex import DataplexGetDataProfileScanOperator
+from airflow.providers.google.cloud.operators.dataplex import DataplexDeleteDataProfileScanOperator
 from datetime import timedelta, datetime
 
 """replace project id and region with user project and the region respectively"""
@@ -29,16 +26,16 @@ PROJECT_ID = "test-project"
 REGION = "us-central1"
 DATA_SCAN_ID = "airflow-data-profile-scan"
 
+"""replace EXPORT_TABLE for your setup"""
+# Table where datascan job results should be exported to.
+EXPORT_TABLE = "//bigquery.googleapis.com/projects/test-project/datasets/test_dataset/tables/results_table"
+
 EXAMPLE_DATA_SCAN = dataplex_v1.DataScan()
 
 EXAMPLE_DATA_SCAN.data.resource = (
     f"//bigquery.googleapis.com/projects/bigquery-public-data/datasets/austin_bikeshare/tables/bikeshare_stations"
 )
-
-EXAMPLE_DATA_SCAN.data_profile_spec = {
-    "sampling_percent": 100,
-    "row_filter": "station_id > 1000",
-}
+EXAMPLE_DATA_SCAN.data_profile_spec = {}
 
 default_args = {
     'start_date': pendulum.today('UTC').add(days=0),
@@ -47,37 +44,29 @@ default_args = {
 }
 
 dag = DAG(
-    'create_runSync',
+    'delete_runSync',
     default_args=default_args,
-    description='Test custom dataplex data profile scan create->run_sync->evaluateflow  ',
+    description='Test custom dataplex data profile scan get_data_scan-> delete flow',
     schedule='10 10 * * *',
     start_date=datetime.now(),
     max_active_runs=2,
     catchup=False,
     dagrun_timeout=timedelta(minutes=20)
-)
-
-create_data_scan = DataplexCreateOrUpdateDataProfileScanOperator(
-        task_id="create_data_scan",
-        project_id=PROJECT_ID,
-        region=REGION,
-        body=EXAMPLE_DATA_SCAN,
-        data_scan_id=DATA_SCAN_ID,
     )
 
-run_data_scan = DataplexRunDataProfileScanOperator(
-    task_id="run_data_scan",
+get_data_scan = DataplexGetDataProfileScanOperator(
+            task_id="get_data_scan",
+            project_id=PROJECT_ID,
+            region=REGION,
+            dag=dag,
+            data_scan_id=DATA_SCAN_ID)
+
+delete_data_scan = DataplexDeleteDataProfileScanOperator(
+    task_id="delete_data_scan",
     project_id=PROJECT_ID,
     region=REGION,
     dag=dag,
     data_scan_id=DATA_SCAN_ID
 )
 
-get_job_result = DataplexGetDataProfileScanResultOperator(
-            task_id="get_data_scan_job_result",
-            project_id=PROJECT_ID,
-            region=REGION,
-            dag=dag,
-            data_scan_id=DATA_SCAN_ID)
-
-create_data_scan >> run_data_scan >> get_job_result
+get_data_scan >> delete_data_scan
