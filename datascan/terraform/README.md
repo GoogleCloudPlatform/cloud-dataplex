@@ -61,9 +61,6 @@ This project provides a system to define, execute, and monitor data quality (DQ)
     * Apply the changes: `terraform apply`
 
 
-
-
-
 ### Monitoring
 Once the infrastructure is deployed, the configured Dataplex DataScan will initiate based on its schedule (default: on-demand). Data quality results can be monitored and reviewed within the Dataplex console. Additionally, logs are sent to Cloud Logging for further analysis.
 

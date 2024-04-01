@@ -42,12 +42,12 @@ variable "bq_datasets_tables" {
   }))
   default = {
     dataset1 = {
-        dataset_id = "sw_thelook_ecommerce"
+        dataset_id = "thelook_ecommerce"
         tables     = ["products", "orders", "order_items"]
       },
     dataset2 = {
         dataset_id = "superstore"
-        tables     = ["orders", "orders-copy"]
+        tables     = ["orders", "users"]
       }
   }
 }

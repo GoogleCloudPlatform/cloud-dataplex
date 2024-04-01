@@ -29,11 +29,9 @@ def parse_yaml_files(template_file, binding_file):
     # Load YAML files
     with open(template_file, 'r') as template_file:
         templates = yaml.safe_load(template_file)
-        # templates = yaml.safe_load(template_file).get("templates")
 
     with open(binding_file, 'r') as binding_file:
         bindings = yaml.safe_load(binding_file)
-        # bindings = yaml.safe_load(binding_file).get("bindings")
     
     return templates, bindings
 
@@ -44,7 +42,6 @@ def generate_rules(templates, bindings):
     # Iterate through bindings and create rules
     for binding in bindings.get("bindings"):
       template_name = binding.get('template_ref')
-      # print("template_name = " + template_name)
       template = next(
         template for template in templates.get("templates") if template.get("template") == template_name
       )
@@ -57,7 +54,7 @@ def generate_rules(templates, bindings):
             "description": template.get("rule").get("description"),
             "threshold": template.get("rule").get("threshold"),
             }
-        rule.update(template.get("rule"))  # Add specific expectation fields
+        rule.update(template.get("rule"))
         rules.append(rule)
     
     return rules
@@ -82,8 +79,6 @@ if __name__ == "__main__":
   templates, bindings = parse_yaml_files(template_file, binding_file)
   rules = generate_rules(templates, bindings)
   write_output_yaml(output_file, rules)
-
-  # print(rules)
 
   print(f"Rules parsed and written to {output_file}")
   print(output_file)

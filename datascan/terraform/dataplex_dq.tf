@@ -18,7 +18,7 @@ resource "google_dataplex_datascan" "dq_scan" {
   labels = {}
 
   data {
-    resource = "//bigquery.googleapis.com/projects/swergeles-sandbox/datasets/sw_thelook_ecommerce/tables/orders"
+    resource = "//bigquery.googleapis.com/projects/${var.project_id}/datasets/{DATASET-ID}/tables/{TABLE}"
   }
 
   execution_spec {
@@ -109,5 +109,4 @@ resource "google_dataplex_datascan" "dq_scan" {
 
   project = module.project-services.project_id
 
-  # depends_on = [google_bigquery_job.job]
 }

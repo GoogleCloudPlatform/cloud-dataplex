@@ -1,6 +1,6 @@
-#########
-# RULE_BINDING_SPEC:
-#########
+#####################
+# RULE_BINDING_SPEC #
+#####################
 bindings:
   - template_ref: nullness_check
     columns: ["order_id", "user_id", "created_at"]

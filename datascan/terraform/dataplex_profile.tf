@@ -28,11 +28,11 @@ resource "google_dataplex_datascan" "profile-dynamic-datasets" {
   description  = null
   display_name = "profile-datasets-${each.value.dataset_id}-${each.value.tables}"
   labels       = null
-  location     = "us-central1"
-  project      = "swergeles-sandbox"
+  location     = var.region
+  project      = var.project_id
   data {
     entity   = null
-    resource = "//bigquery.googleapis.com/projects/swergeles-sandbox/datasets/${each.value.dataset_id}/tables/${each.value.tables}"
+    resource = "//bigquery.googleapis.com/projects/${var.project_id}/datasets/${each.value.dataset_id}/tables/${each.value.tables}"
   }
   data_profile_spec {
     row_filter       = null

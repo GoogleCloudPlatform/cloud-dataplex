@@ -15,7 +15,7 @@
  */
 
 locals {
-  _file_data_quality_spec_raw = yamldecode(file("/usr/local/google/home/stevewergeles/projects/dataplex_terraform_sandbox/dq_rules_files_terraform/rules/parsed_rules_combined.yaml"))
+  _file_data_quality_spec_raw = yamldecode(file("/rules/parsed_rules_combined.yaml"))
   _parsed_rules = [
     for rule in try(local._file_data_quality_spec_raw.rules, []) : {
       column               = try(rule.column, null)
