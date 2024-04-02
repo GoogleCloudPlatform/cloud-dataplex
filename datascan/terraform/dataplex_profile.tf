@@ -22,7 +22,7 @@ locals {
                     } ]...)                     
 }
 
-resource "google_dataplex_datascan" "profile-dynamic-datasets" {
+resource "google_dataplex_datascan" "data-profile-scan" {
   for_each = local.datasets
 
   data_scan_id = "profile-${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}"
