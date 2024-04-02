@@ -23,10 +23,11 @@ locals {
 }
 
 resource "google_dataplex_datascan" "profile-dynamic-datasets" {
-  data_scan_id = "profile-datasets-${each.value.dataset_id}-${each.value.tables}"
+  for_each = local.datasets
 
+  data_scan_id = "profile-${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}"
   description  = null
-  display_name = "profile-datasets-${each.value.dataset_id}-${each.value.tables}"
+  display_name = "profile-${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}"
   labels       = null
   location     = var.region
   project      = var.project_id

@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-resource "google_dataplex_datascan" "dq_scan" {
+resource "google_dataplex_datascan" "data_quality_scan" {
   location     = var.region
+  project      = var.project_id
   data_scan_id = "template-dq-scan"
   labels = {}
 
@@ -106,7 +107,4 @@ resource "google_dataplex_datascan" "dq_scan" {
       }
     }
   }
-
-  project = module.project-services.project_id
-
 }
