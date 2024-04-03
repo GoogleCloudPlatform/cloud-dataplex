@@ -13,21 +13,25 @@
 # limitations under the License.
 
 locals {
-  datasets = merge([ for dataset in var.bq_datasets_tables : {
-                    for table in dataset.tables :  
-                          table => { 
-                                tables = table 
-                                dataset_id =  dataset.dataset_id
-                                }
-                    } ]...)                     
+  datasets = flatten([
+    for dataset in var.bq_datasets_tables : [
+      for table in dataset.tables : {
+       dataset_id = dataset.dataset_id
+       tables = table
+      }
+    ]
+  ])
 }
 
 resource "google_dataplex_datascan" "data-profile-scan" {
-  for_each = local.datasets
+  for_each = {
+    for table in local.datasets:
+      "${table.dataset_id}_${table.tables}" => table
+  }
 
-  data_scan_id = "profile-${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}"
+  data_scan_id = "${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}-profile"
   description  = null
-  display_name = "profile-${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}"
+  display_name = "${replace(each.value.dataset_id,"_", "-")}-${replace(each.value.tables,"_", "-")}-profile"
   labels       = null
   location     = var.region
   project      = var.project_id
