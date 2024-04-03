@@ -73,8 +73,8 @@ def write_output_yaml(output_file, rules):
 
 if __name__ == "__main__":
   template_file = "/rules/templates.yaml"
-  binding_file = "rules/bindings.yaml"
-  output_file = "rules/parsed_rules_combined.yaml"
+  binding_file = "/rules/bindings.yaml"
+  output_file = "/rules/parsed_rules_combined.yaml"
 
   templates, bindings = parse_yaml_files(template_file, binding_file)
   rules = generate_rules(templates, bindings)
