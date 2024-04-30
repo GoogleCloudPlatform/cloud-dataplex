@@ -1,7 +1,7 @@
 # Google Cloud Dataplex - DataScans
 
 ## Samples in this directory
- * `sample-scripts` folder provides examples in python to:
+ * `python-api-sample-scripts` folder provides examples in python to:
     * create, run, and update a Data Quality Scan
     * get job results of a Data Quality Scan
     * create a Profile Scan

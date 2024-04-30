@@ -1,0 +1,67 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at 
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+samplingPercent: 100
+rowFilter: null
+rules:
+- column: order_id
+  dimension: COMPLETENESS
+  name: non-null
+  description: Standard nullness check for domain
+  threshold: 1.0
+  non_null_expectation: {}
+- column: user_id
+  dimension: COMPLETENESS
+  name: non-null
+  description: Standard nullness check for domain
+  threshold: 1.0
+  non_null_expectation: {}
+- column: created_at
+  dimension: COMPLETENESS
+  name: non-null
+  description: Standard nullness check for domain
+  threshold: 1.0
+  non_null_expectation: {}
+- column: order_id
+  dimension: UNIQUENESS
+  name: unique
+  description: Standard uniqueness check for domain
+  threshold: 1.0
+  uniqueness_expectation: {}
+- column: ''
+  dimension: VALIDITY
+  name: not-empty-table
+  description: Non-zero number of rows in the table
+  threshold: null
+  table_condition_expectation:
+    sql_expression: COUNT(*) > 0
+- column: num_of_item
+  dimension: VALIDITY
+  name: item-non-zero
+  description: Non-zero number of items in each order
+  threshold: null
+  row_condition_expectation:
+    sql_expression: num_of_item > 0
+- column: status
+  dimension: VALIDITY
+  name: one-of-values
+  description: status is one of allowed values
+  threshold: null
+  set_expectation:
+    values:
+    - Shipped
+    - Complete
+    - Processing
+    - Cancelled
+    - Returned

@@ -1,0 +1,14 @@
+#####################
+# RULE_BINDING_SPEC #
+#####################
+bindings:
+  - template_ref: nullness_check
+    columns: ["order_id", "user_id", "created_at"]
+  - template_ref: uniqueness_check
+    columns: ["order_id"]  
+  - template_ref: empty_table_check
+    columns: [""]
+  - template_ref: item_row_check
+    columns: ["num_of_item"]
+  - template_ref: one_of_allowed_values
+    columns: ["status"]
