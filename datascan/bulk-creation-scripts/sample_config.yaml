@@ -1,0 +1,37 @@
+---
+projectId: <gcp_project_id>
+locationId: <location_id>
+bqTable: <gcp_project_id>.<dataset_id>.<table_id>
+description: datascan dataprofile description
+displayName: test_datascan
+labels:
+  key1: "value1"
+  key2: "value2"
+dataProfileSpec:
+  samplingPercent: 70
+  rowFilter: ""
+  includeFields:
+    fieldNames:
+      - "column_name"
+      - "column_name"
+  postScanActions:
+    bigqueryExport:
+      resultsTable: //bigquery.googleapis.com/projects/<gcp_project_id>/datasets/<dataset_id>/tables/<table_id>
+executionSpec:
+  trigger:
+    onDemand: {}
+---
+projectId: <gcp_project_id>
+locationId: <location_id>
+bqTable: <gcp_project_id>.<dataset_id>.<table_id>
+description: datascan dataprofile description
+displayName: test_datascan2
+dataProfileSpec:
+  samplingPercent: 90
+  postScanActions:
+    bigqueryExport:
+      resultsTable: //bigquery.googleapis.com/projects/<gcp_project_id>/datasets/<dataset_id>/tables/<table_id>
+executionSpec:
+  trigger:
+    schedule:
+      cron: "0 0 * * *"
