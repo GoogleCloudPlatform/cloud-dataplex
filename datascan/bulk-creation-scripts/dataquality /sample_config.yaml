@@ -1,0 +1,78 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+projectId: <your_gcp_project_id>
+locationId: us-central1
+bqTable: <project_id.dataset_id.table_id>
+dataQualitySpec:
+  rules:
+    - dimension: COMPLETENESS
+      non_null_expectation: {}
+      column: ID
+    - dimension: UNIQUENESS
+      uniqueness_expectation: {}
+      column: ID
+    - dimension: ACCURACY
+      set_expectation:
+        values:
+          - email
+          - phone
+      column: contact_type
+    - dimension: VALIDITY
+      regex_expectation:
+        regex: ^[^@]+[@]{1}[^@]+$
+      column: email
+    - dimension: ACCURACY
+      sql_assertion:
+        sql_statement: SELECT * FROM ${data()} WHERE ID > 10
+    - dimension: VALIDITY
+      row_condition_expectation:
+        sql_expression: length(phone_number)>10
+--- 
+projectId: <your_gcp_project_id>
+locationId: us-central1
+bqTable: <project_id.dataset_id.table_id>
+description: datascan
+displayName: Datascan10
+dataQualitySpec:
+  postScanActions:
+    bigqueryExport:
+      resultsTable: //bigquery.googleapis.com/projects/<your_gcp_project_id>/datasets/<dataset_id>/tables/<table_id>
+  rules:
+    - dimension: COMPLETENESS
+      column: contact_type
+      set_expectation: 
+        values:
+         - email
+         - name
+    - dimension: UNIQUENESS
+      column: row_id
+      uniqueness_expectation: {}
+    - dimension: COMPLETENESS
+      column: row_id
+      non_null_expectation: {}
+    - dimension: COMPLETENESS
+      column: row_id
+      set_expectation:
+        values:
+          - a
+          - b
+labels:
+  key1: "value1"
+  key2: "value2"
+executionSpec:
+  trigger:
+    schedule:
+      cron: "0 0 * * *"
