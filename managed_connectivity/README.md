@@ -13,6 +13,7 @@
   * build_and_push_docker.sh: A shell script that automates the process of Building the Docker image from the Dockerfile and    pushing the built image to a Google Cloud Container Registry.
 
 * `cloud-workflows`: This directory provides resources for orchestrating and running Dataplex metadata import workflows using Google Cloud Workflows.
+
       * `byo-connector`: Contains sample code and configurations for running the "Bring Your Own Connector" (BYOC) flow in Dataplex. Includes sample Cloud Workflow arguments, template files, and Terraform configurations.
 
 
