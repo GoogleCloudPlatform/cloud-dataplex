@@ -14,7 +14,11 @@
 
 * `cloud-workflows`: This directory provides resources for orchestrating and running Dataplex metadata import workflows using Google Cloud Workflows.
 
-      * `byo-connector`: Contains sample code and configurations for running the "Bring Your Own Connector" (BYOC) flow in Dataplex. Includes sample Cloud Workflow arguments, template files, and Terraform configurations.
-
+    * `byo-connector`: Contains sample code and configurations for running the "Bring Your Own Connector" (BYOC) flow in Dataplex. Includes sample Cloud Workflow arguments, template files, and Terraform configurations.
+    * `samples`:
+        * `gcloud`: Contains scripts to create and execute cloud workflows via gcloud
+        * `logs`: Contains scripts to retrieve metadata job logs
 
 ## Additional Resources
+
+*  [https://cloud.google.com/dataplex/docs/import-metadata](https://cloud.google.com/dataplex/docs/import-metadata)
