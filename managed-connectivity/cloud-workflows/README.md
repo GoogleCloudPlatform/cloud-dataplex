@@ -1,6 +1,6 @@
 # Orchestration for Dataplex Managed Connectivity
 
-Dataplex Managed Connectivity platform provides customers a self-service experience to connect and ingest metadata from non-GCP sources into Dataplex Catalog.
+[Dataplex Managed Connectivity](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) platform provides customers a self-service experience to connect and ingest metadata from non-GCP sources into Dataplex Catalog.
 
 This guide demonstrates how to self orchestrate the flow for Managed Connectivity. Self orchestration is achieved through a Cloud Workflow which performs the following high level steps:
 
@@ -11,6 +11,9 @@ This guide demonstrates how to self orchestrate the flow for Managed Connectivit
 5. Monitor the progress of the Import job.
 
 ## User Guide
+
+Refer to our official guide at [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) for more details.
+
 ### Deployment and Execution
 
 #### Console
