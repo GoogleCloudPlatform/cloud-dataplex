@@ -1,8 +1,8 @@
-project_id                      = "<project_id>"
-region                          = "<region>"
-service_account                 = "<service_account>"
-cron_schedule                   = "0 1 * * *"
-workflow_args                   = {"TARGET_PROJECT_ID": "<project_id>", "CLOUD_REGION": "<region>", "TARGET_ENTRY_GROUP_ID": "<entry-group-id>", "CREATE_TARGET_ENTRY_GROUP": <true/false>, "CLOUD_STORAGE_BUCKET_ID": "<bucket-id>", "SERVICE_ACCOUNT": "<service_account>", "ADDITIONAL_CONNECTOR_ARGS": [], "CUSTOM_CONTAINER_IMAGE": "<image>", "IMPORT_JOB_SCOPE_ENTRY_TYPES": [<entry_types>], "IMPORT_JOB_SCOPE_ASPECT_TYPES": [<aspect_types>], "IMPORT_JOB_LOG_LEVEL": "INFO", "NETWORK_TAGS": [], "NETWORK_URI": "", "SUBNETWORK_URI": ""}
+project_id                      = "PROJECT_ID"
+region                          = "LOCATION_ID"
+service_account                 = "SERVICE_ACCOUNT_ID"
+cron_schedule                   = "CRON_SCHEDULE_EXPRESSION"
+workflow_args                   = {"TARGET_PROJECT_ID": "PROJECT_ID", "CLOUD_REGION": "LOCATION_ID", "TARGET_ENTRY_GROUP_ID": "ENTRY_GROUP_ID", "CREATE_TARGET_ENTRY_GROUP": CREATE_ENTRY_GROUP_BOOLEAN, "CLOUD_STORAGE_BUCKET_ID": "BUCKET_ID", "SERVICE_ACCOUNT": "SERVICE_ACCOUNT_ID", "ADDITIONAL_CONNECTOR_ARGS": [ADDITIONAL_CONNECTOR_ARGUMENTS], "CUSTOM_CONTAINER_IMAGE": "CONTAINER_IMAGE", "IMPORT_JOB_SCOPE_ENTRY_TYPES": [ENTRY_TYPES], "IMPORT_JOB_SCOPE_ASPECT_TYPES": [ASPECT_TYPES], "IMPORT_JOB_LOG_LEVEL": "INFO", "NETWORK_TAGS": [TAGS], "NETWORK_URI": "NETWORK", "SUBNETWORK_URI": "SUBNET"}
 
 
 workflow_source                 = <<EOF
