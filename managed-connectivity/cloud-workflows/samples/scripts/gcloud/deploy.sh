@@ -1,23 +1,23 @@
-# Define Bash Variables (replace with your actual values)
-project_id="<your-project>"
-region="<your-region>"
-service_account="<your-service-account>"
-workflow_source="</path/to/your/connector-workflow.yaml>"
-workflow_name="connector-workflow"
-workflow_args='{"key1": "value1", "key2": "value2"}'
+# Define Bash variables (replace with your actual values)
+project_id="PROJECT_ID"
+region="LOCATION_ID"
+service_account="SERVICE_ACCOUNT_ID"
+workflow_source="WORKFLOW_DEFINITION_FILE.yaml>"
+workflow_name="WORKFLOW_NAME"
+workflow_args='WORKFLOW_ARGUMENTS'
 
-# Create Cloud Workflows Resource
+# Create Workflows resource
 gcloud workflows deploy ${workflow_name} \
   --project=${project_id} \
   --location=${region} \
   --source=${workflow_source} \
   --service-account=${service_account}
 
-# Create Cloud Scheduler Job
+# Create Cloud Scheduler job
 gcloud scheduler jobs create http ${workflow_name}-scheduler \
   --project=${project_id} \
   --location=${region} \
-  --schedule="0 0 * * *" \
+  --schedule="CRON_SCHEDULE_EXPRESSION" \
   --time-zone="UTC" \
   --uri="https://workflowexecutions.googleapis.com/v1/projects/${project_id}/locations/${region}/workflows/${workflow_name}/executions" \
   --http-method="POST" \
