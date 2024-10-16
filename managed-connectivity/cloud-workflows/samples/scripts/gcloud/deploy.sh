@@ -2,7 +2,7 @@
 project_id="PROJECT_ID"
 region="LOCATION_ID"
 service_account="SERVICE_ACCOUNT_ID"
-workflow_source="WORKFLOW_DEFINITION_FILE.yaml>"
+workflow_source="WORKFLOW_DEFINITION_FILE.yaml"
 workflow_name="WORKFLOW_NAME"
 workflow_args='WORKFLOW_ARGUMENTS'
 
