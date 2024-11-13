@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE=oracle-pyspark:0.0.1
-PROJECT=qc-cloudsql-connector-devproj
+PROJECT=<PROJECT_ID>
 
 
 REPO_IMAGE=us-central1-docker.pkg.dev/${PROJECT}/docker-repo/oracle-pyspark
