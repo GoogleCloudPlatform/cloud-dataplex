@@ -12,6 +12,12 @@ main:
         switch:
           - condition: ${NETWORK_URI != "" and SUBNETWORK_URI != ""}
             raise: "Error: cannot set both network_uri and subnetwork_uri. Please select one."
+          - condition: ${NETWORK_URI == "" and SUBNETWORK_URI == ""}
+            steps:
+             - submit_extract_job_with_default_network_uri:
+                  assign:
+                    - NETWORK_TYPE: "networkUri"
+                    - NETWORKING: ${"projects/" + args.TARGET_PROJECT_ID + "/global/networks/default"}  
           - condition: ${NETWORK_URI != ""}
             steps:
               - submit_extract_job_with_network_uri:
@@ -24,12 +30,6 @@ main:
                   assign:
                     - NETWORKING: ${SUBNETWORK_URI}
                     - NETWORK_TYPE: "subnetworkUri"
-        next: set_default_networking
-
-    - set_default_networking:
-        assign:
-          - NETWORK_TYPE: "networkUri"
-          - NETWORKING: ${"projects/" + args.TARGET_PROJECT_ID + "/global/networks/default"}
         next: check_create_target_entry_group
 
     - check_create_target_entry_group:
