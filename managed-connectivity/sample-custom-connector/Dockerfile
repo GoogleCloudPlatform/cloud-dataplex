@@ -12,7 +12,7 @@ COPY ojdbc11.jar "${SPARK_EXTRA_JARS_DIR}"
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
 ENV PATH=${CONDA_HOME}/bin:${PATH}
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.3.1-0-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.9.2-0-Linux-x86_64.sh
 
 RUN bash Miniconda3-py310_23.3.1-0-Linux-x86_64.sh -b -p /opt/miniconda3 \
   && ${CONDA_HOME}/bin/conda config --system --set always_yes True \
