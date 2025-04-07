@@ -1,0 +1,29 @@
+{
+type: 'IMPORT',
+import_spec: {
+source_storage_uri: 'gs://dataplex-catalog-connectors/managed-connectivity/oracle-connector/sample/metadata_import_request.json',
+scope: {
+  entryGroups: [
+    'projects/daniel-dataplex/locations/us-central1/entryGroups/oracle'
+  ],
+  entry_types: [
+    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-instance',
+    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-database',
+    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-schema',
+    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-table',
+    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-view'
+  ],
+  aspect_types: [
+    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-instance',
+    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-schema',
+    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-database',
+    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-table',
+    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-view',
+    'projects/dataplex-types/locations/global/aspectTypes/schema'
+  ]
+    },
+entry_sync_mode: 'FULL',
+aspect_sync_mode: 'INCREMENTAL',
+log_level: 'DEBUG'
+  }
+}

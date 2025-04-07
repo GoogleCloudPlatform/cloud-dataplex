@@ -1,0 +1,29 @@
+{
+type: 'IMPORT',
+import_spec: {
+source_storage_uri: 'gs://your-metadata-file-gcs-bucket/',
+scope: {
+  entryGroups: [
+    'projects/the-gcp-project/locations/us-central1/entryGroups/snowflake'
+  ],
+  entry_types: [
+    'projects/the-gcp-project/locations/us-central1/entryTypes/snowflake-account',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/snowflake-database',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/snowflake-schema',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/snowflake-table',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/snowflake-view'
+  ],
+  aspect_types: [
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/snowflake-account',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/snowflake-schema',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/snowflake-database',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/snowflake-table',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/snowflake-view',
+    'projects/dataplex-types/locations/global/aspectTypes/schema'
+  ]
+    },
+entry_sync_mode: 'FULL',
+aspect_sync_mode: 'INCREMENTAL',
+log_level: 'DEBUG'
+  }
+}
