@@ -48,8 +48,8 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    if not parsed_args.local_output_only and parsed_args.output_bucket is None:
-        print("--output_bucket must be supplied if not in --local_output_only mode")
+    if not parsed_args.local_output_only and (parsed_args.output_bucket is None parsed_args.output_folder is None):
+        print("--output_bucket and --output_folder must be supplied if not in --local_output_only mode")
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
