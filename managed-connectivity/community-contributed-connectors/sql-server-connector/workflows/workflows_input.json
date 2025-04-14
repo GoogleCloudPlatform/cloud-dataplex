@@ -1,0 +1,37 @@
+{
+    "ADDITIONAL_CONNECTOR_ARGS": [
+        "--target_project_id=the-project-id",
+        "--target_location_id=us-central1",
+        "--target_entry_group_id=sqlserver",
+        "--host=my-sqlserver-host",
+        "--port=1433",
+        "--user=theusername",
+        "--password_secret=projects/9999999999/secrets/sqlserver_theusername",
+        "--database=my_azure_db"
+    ],
+    "CLOUD_REGION": "us-central1",
+    "CLOUD_STORAGE_BUCKET_ID": "workflows-bqunifieid-working",
+    "CREATE_TARGET_ENTRY_GROUP": false,
+    "CUSTOM_CONTAINER_IMAGE": "us-central1-docker.pkg.dev/the-project-id/docker-repo/dataplex-sqlserver-pyspark:latest",
+    "IMPORT_JOB_LOG_LEVEL": "INFO",
+    "IMPORT_JOB_SCOPE_ASPECT_TYPES": [
+        "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-instance",
+        "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-schema",
+        "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-database",
+        "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-table",
+        "projects/the-gcp-project-id/locations/global/aspectTypes/schema"
+    ],
+    "IMPORT_JOB_SCOPE_ENTRY_TYPES": [
+        "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-instance",
+        "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-database",
+        "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-schema",
+        "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-table"
+    ],
+    "JAR_FILE_GCS_PATH": "gs://dataplex-metadata-jars/jar-files/mssql-jdbc-12.8.1.jre11.jar",
+    "NETWORK_TAGS": [],
+    "NETWORK_URI": "projects/the-project-id/global/networks/default",
+    "SERVICE_ACCOUNT": "44999992669-compute@developer.gserviceaccount.com",
+    "SUBNETWORK_URI": "",
+    "TARGET_ENTRY_GROUP_ID": "sqlserver",
+    "TARGET_PROJECT_ID": "the-project-id"
+}

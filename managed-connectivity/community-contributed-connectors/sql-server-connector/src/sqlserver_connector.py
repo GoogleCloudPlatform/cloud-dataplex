@@ -1,10 +1,24 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """Reads SQL Server using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
-
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
+from src.connection_jar import getJarPath
+from src.connection_jar import getUserJarPath
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -12,9 +26,9 @@ class SQLServerConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
 
         # Allow override for local jar file (different version / name)
-        jar_path = SPARK_JAR_PATH
+        jar_path = getJarPath()
         if config['jar']:
-            jar_path = config['jar']
+            jar_path = getJarPath(config['jar'])
 
         # PySpark entrypoint
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
@@ -35,9 +49,14 @@ class SQLServerConnector(IExternalSourceConnector):
             "database": config['database'],
             "password": config['password'],
             "loginTimeout": config['login_timeout'],
+            "encrypt" : config['encrypt'],
             "ssl": config['ssl'],
             "sslmode": config['ssl_mode'],
+            "trustServerCertificate": config['trust_server_certificate']
             }
+        
+        if config['hostname_in_certificate'] is not None:
+            self._connectOptions.hostNameInCertificate = config['hostname_in_certificate']
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""

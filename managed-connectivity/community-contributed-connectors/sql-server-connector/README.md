@@ -1,6 +1,6 @@
 # SQL Server Connector
 
-This connector extracts metadata from SQL Server for Google Cloud Dataplex Catalog.
+This connector extracts metadata from SQL Server to BigQuery Universal Catalog.
 
 ### Target objects and schemas:
 
@@ -10,24 +10,30 @@ The connector extracts metadata for the following database objects:
 
 ## Parameters
 The SQL Server connector takes the following parameters:
-|Parameter|Value|Description|Required/Optional|
-|---------|--|------------|-------------|
-|target_project_id||Google Cloud Project ID or number. Used in all generated dataplex entries|REQUIRED|
-|target_location_id||GCP region ID. Used in the all generated dataplex entries|REQUIRED|
-|target_entry_group_id||Dataplex Catalog Entry Group ID for all generated dataplex entries|REQUIRED|
-|host||SQL Server server to connect to|REQUIRED|
-|port||SQL Server host port (usually 1443)|REQUIRED|
-|instancename||SQL Server instance to connect to. If not provided default instance will be used|OPTIONAL
-|database||SQL Server database name|REQUIRED|
-|user||Username to connect with|REQUIRED|
-|password_secret||Google Cloud Secret Manager ID of the user password. Format: projects/PROJ/secrets/SECRET|REQUIRED|
-|login_timeout|0-60|Allowed wait time to establish a connection to SQL Server (seconds)|OPTIONAL
-|jar||Path to JDBC jar file. Default is mssql-jdbc-12.10.0.jre11.jar|OPTIONAL 
-|local_output_only||Generate metadata file in local directory only, do not send to Cloud Storage bucket|OPTIONAL|
-|output_bucket||GCS bucket where generated metadata file will be stored|REQUIRED|
-|output_folder||Folder in GCS bucket where the metadata file will be stored|OPTIONAL|
+|Parameter|Description|Default Value|Required/Optional|
+|---------|------------|--|-------------|
+|target_project_id|GCP Project ID of project used in the generated entries||REQUIRED|
+|target_location_id|GCP Region ID used in the generated entries||REQUIRED|
+|target_entry_group_id|ID of the [Entry Group](https://cloud.google.com/dataplex/docs/catalog-overview#catalog-model) to be used in generated metadata||REQUIRED|
+|host|SQL Server host to connect to||REQUIRED|
+|port|SQL Server host port|1433|OPTIONAL|
+|instancename|The SQL Server instance to connect to. If not provided the default instance will be used||OPTIONAL
+|database|The SQL Server database name||REQUIRED|
+|login_timeout|Allowed timeout (seconds) to establish connection to SQL Server|0 (=use JDBC driver default)|OPTIONAL
+|encrypt|True/False Encrypt connection to database|True|OPTIONAL
+|ssl|Use SSL True/False|True|OPTIONAL
+|ssl_mode|'prefer','require','allow','verify-ca', or 'verify-full|prefer|OPTIONAL
+|trust_server_certificate|Trust SQL Server TLS certificate or not|True|OPTIONAL
+|hostname_in_certificate|domain of host certificate||OPTIONAL
+|user|User name to connect with||REQUIRED|
+|password_secret|GCP Secret Manager ID holding the password for the user||REQUIRED|
+|password|Plain text password for the user. Only use for dev or testing, for production use --password_secret||REQUIRED|
+|output_bucket|GCS bucket where the output file will be stored||REQUIRED|
+|output_folder|Folder in the GCS bucket where the export output file will be stored||OPTIONAL|
+|jar|Name of JDBC jar file to use||OPTIONAL|
+|password|User password. Not recommended for production deployments, instead use --password_secret||OPTIONAL|
 
-## Preparing your SQL Server environment:
+## Prepare your SQL Server environment:
 
 Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
 
@@ -41,45 +47,45 @@ Best practise is to connect to the database using a dedicated user with the mini
 
 ## Running the connector from the command line
 
-The metadata connector can be run directly from a linux command line for development or testing.
+The metadata connector can be run from the command line by executing the main.py script.
 
-### Preparing the environment:
-1. Download the mssql-jdbc-12.10.0.jre11.jar file from the [Microsoft Github Repository](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it to the sql-server-connector directory.
-    * If a different version jar file is used, add the --jar parameter and specify the path and name of the jar file 
-2. Ensure a Java Runtime Environment (JRE) is installed in your environment
-3. Create a Python virtual environment to isolate the connector dependencies
-    Run the following in your home directory
-    ```
-    pip install virtualenv
-    python -m venv myvenv
-    source venv/bin/activate
-    ```
-    See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details about virtual environments.
+#### Prerequisites
 
-4. Install PySpark
+The following tools must be installed in order to run the connector:
+
+* Python 3.x. [See here for installation instructions](https://cloud.google.com/python/docs/setup#installing_python)
+* Java Runtime Environment (JRE)
     ```bash
-    pip install pyspark
+    sudo apt install default-jre
     ```
-5. Install all remaining dependencies from the requirements.txt file 
+* A python Virtual Environment. Follow the instructions [here](https://cloud.google.com/python/docs/setup#installing_and_using_virtualenv) to create and activate your environment.
+* Install PySpark
     ```bash
-    pip install -r requirements.txt
+    pip3 install pyspark
     ```
-6. Ensure you have a clear network path from the machine where you will run the script to the target database server
+* You must run the script with a user that is authenticated to Google Cloud in order to access services there.  You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to access Google APIs. 
 
-### Required IAM Roles
+(To use gcloud you may need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install):
 
-Before you run the script ensure you session is authenticated as a user which has the above roles at minimum. 
-
-- roles/secretmanager.secretAccessor
-- roles/storage.objectUser
-
-For example, you can use [Google Cloud SDK](https://cloud.google.com/sdk) gcloud command to authenticate as an appropriate user:
 ```bash
-gcloud auth application-default login
+    gcloud auth application-default login
 ```
+The authenticated user must have the following roles for the project: roles/secretmanager.secretAccessor, roles/storage.objectUser
 
-### Run the connector
-To execute the metadata extraction run the following command (substituting appropriate values for your environment):
+#### Set up
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd sql-server-connector
+    ```
+* Download the [mssql-jdbc-12.10.0.jre11.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) file from the [Microsoft Github repo](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the directory
+    * **Note** If you use a different version of the jdbc jar then use the --jar parameter in commands below ie. --jar mssql-jdbc-12.10.2.jre11.jar
+* Install all python dependencies 
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
+#### Run the connector
+To execute the metadata extraction run the following, substituting appropriate values for your environment as needed:
 
 ```shell 
 python3 main.py \
@@ -90,74 +96,81 @@ python3 main.py \
 --port 1433 \
 --database dbtoextractfrom \
 --user dataplexagent \
---password-secret projects/73813454526/secrets/dataplexagent_sqlserver \
+--password-secret projects/73899954526/secrets/dataplexagent_sqlserver \
 --output_bucket dataplex_connectivity_imports \
 --output_folder sqlserver
 ```
 
-### Metadata Output:
-The connector will extract metadata about database objects and generate a metadata import file in JSONL format as described in the [Dataplex documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). 
-This file will be created in the 'output' directory and also uploaded to the GCS bucket and folder specified in --output_bucket and --output_folder
-A sample output from the SQL Server connector can be found [here](sample/sqlserver_output_sample.jsonl)
+### Connector Output:
+The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file in the local 'output' directory within the connector, as well as uploading it to a Google Cloud Storage bucket as specified in --output_bucket and --output_folder (unless in --local-output_only mode)
 
-## Build a container and extract metadata using Dataproc Serverless
+A sample output from the SQL Server connector can be found [here](sample/sqlserver_output_sample.jsonl).
 
-Building a Docker container for the connector allows it to be run from a variety of container services including [Dataproc serverless](https://cloud.google.com/dataproc-serverless/docs)
+
+
+## Importing metadata into BigQuery Universal Catalog
+
+To manually import a metadata import file into BigQuery Universal Catalog see the [documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
+The [samples](/samples) directory contains a sample metadata file and request file you can use to import into the catalog.
+
+See below for the section on using Google Workflows to create an end-to-end integration which both extracts metadata and imports it on a regular schedule.
+
+
+## Build a container and running the connector using Dataproc Serverless
+
+Building a Docker container for the connector allows it to be run from a variety of Google Cloud services including [Dataproc Serverless](https://cloud.google.com/dataproc-serverless/docs).
 
 ### Building the container (one-time task)
 
-Ensure you have Docker installed in your environment before you begin. The user you run the script with must have the artifactregistry.repositories.uploadArtifacts IAM privilege on the artifact registry in your project.
-
-1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION_ID
-2. Make the script executable and the run:
+1. Ensure docker is installed in your environment.
+2. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION_ID
+3. Ensure the user that runs the script is authenticated with a Google Cloud identify which has (Artifact Registry Writer)[https://cloud.google.com/artifact-registry/docs/access-control#roles] role on the Artfiact Registry in your project.
+4. Make the script executable and run:
     ```bash
     chmod a+x build_and_push_docker.sh
     ./build_and_push_docker.sh
     ``` 
-    The process will create a Docker container called **dataplex-sqlserver-pyspark** and store it in Artifact Registry. 
-    This can take take up to 10 minutes.
 
-### Submitting a metadata extraction job to Dataproc serverless:
-Once the container is built you can run metadata extracts with as Dataproc Serverless batch.
+    This will build a Docker container called **bq-catalog-sqlserver-pyspark** and store it in Artifact Registry. 
+    This process can take take up to 10 minutes.
 
-### Preparing the environment
+### Submitting a metadata extraction job to Dataproc Serverless:
 
-1. Upload the JDBC jar file to a Google Cloud Storage bucket. Use the path to it in the **--jars** parameter below.
-2. Create a second Cloud Storage bucket which will be used for Dataproc Serverless as a working directory. Use the url to this in the **--deps-bucket** parameter below.
-3. The service account which runs the job ( **--service-account** ) must have the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles).
+Before you run please ensure:
+1. You upload the jdbc jar file to a Google Cloud Storage location and use the path to this in the **--jars** parameter below.
+2. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below.
+3. The service account you run the job with using **--service-account** below has the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles).
 You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
 
+Run the containerised metadata connector using the following command, substituting appropriate values for your environment: 
 ```shell
 gcloud dataproc batches submit pyspark \
     --project=my-gcp-project-id \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/sqlserver-pyspark@sha256:dab02ca02f60a9e12767996191b06d859b947d89490d636a34fc734d4a0b6d08 \
-    --service-account=440165342669-compute@developer.gserviceaccount.com \
-    --jars=gs://path/to/mssql-jdbc-9.4.1.jre8.jar  \
-    --network=Your-Network-Name \
+    --container-image=us-central1-docker.pkg.dev/the-project-id/docker-repo/bq-catalog-sqlserver-pyspark:latest \
+    --service-account=499995342669-compute@developer.gserviceaccount.com \
+    --jars=gs://path/to/mssql-jdbc-12.10.0.jre11.jar  \
+    --network=[Your-Network-Name] \
     main.py \
 --  --target_project_id my-gcp-project-id \
-      --target_location_id us-central1	\
-      --target_entry_group_id XXX \
-      --host the-sqlserver-server \
-      --port 1433 \
-      --user dataplexagent \
-      --password-secret projects/73813454526/dataplexagent_sqlserver \
-      --database dbtoextractfrom \
-      --output_bucket gs://dataplex_connectivity_imports \
-      --output_folder sqlserver
+    --target_location_id us-central1 \
+    --target_entry_group_id sqlserver \
+    --host the-sqlserver-server \
+    --port 1433 \
+    --database dbtoextractfrom \
+    --user catalogagent \
+    --password-secret projects/73899954526/secrets/catalogagent_sqlserver \
+    --output_bucket dataplex_connectivity_imports \
+    --output_folder sqlserver
 ```
+See [the documentation](https://cloud.google.com/sdk/gcloud/reference/dataproc/batches/submit/pyspark) for more information about Dataproc Serverless pyspark jobs
 
-### Schedule end-to-end metadata extraction and import using Google Cloud Workflows
+## Scheduling end-to-end metadata extraction and import into BigQuery Universal Catalog with Google Cloud Workflows
 
-To run an end-to-end metadata extraction and import process, run the container via Google Cloud Workflows. 
+An an end-to-end metadata extraction and import process can run via Google Cloud Workflows. 
 
-Follow the Dataplex documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
+Follow the documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
 
-
-## Manually running a metadata import into Dataplex
-
-To import a metadata import file into Dataplex, see the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
-The [samples](/samples) directory contains an examples metadata import file and request file for callng the API
+A sample input for SQL Server import via Google Workflows is included in the [workflows](workflows) directory
