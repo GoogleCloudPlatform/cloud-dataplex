@@ -18,25 +18,26 @@ Metadata for the following database objects is extracted by the connector:
 The PostgreSQL connector takes the following parameters:
 |Parameter|Description|Default|Required/Optional|
 |---------|------------|--|-------------|
-|target_project_id|GCP Project ID/Project Number, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes||REQUIRED|
-|target_location_id|GCP Region ID, or 'global'. Used in the generated Dataplex Entry, Aspects and Aspect Types||REQUIRED|
-|target_entry_group_id|Dataplex Entry Group ID to use in the generated entries||REQUIRED|
+|target_project_id|GCP Project ID/Project Number, or 'global'. Used in the generated metadata Entry, Aspects and AspectTypes||REQUIRED|
+|target_location_id|GCP Region ID, or 'global'. Used in the generated Entry, Aspects and Aspect Types||REQUIRED|
+|target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |host|PostgreSQL server to connect to||REQUIRED|
 |port|PostgreSQL server port (usually 5432)||REQUIRED|
 |database|PostgreSQL database to connect to||REQUIRED
 |user|PostgreSQL username to connect with||REQUIRED|
-|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||REQUIRED|
-|jar|Name (or full path to) JDBC jar file to use for connection||OPTIONAL|
-|min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|jar|Name (or full path to) JDBC jar file to use for connection|postgresql-42.7.5.jar|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
 
 ## Prepare your PostgreSQL environment:
 
-Best practise is to connect to the database using a dedicated user with minimum privileges required to extract metadata. 
-1. Create a user in the PostgreSQL instance(s) and grant it the following privileges and roles: 
+Best practice is to connect to the database with a dedicated user that has the minimum privileges required to extract metadata. 
+1. Create a user in the PostgreSQL instance(s) and grant it the following privileges an
+d roles: 
     * CONNECT and CREATE SESSION
     * SELECT on information_schema.tables
     * SELECT on information_schema.columns
@@ -58,11 +59,11 @@ The following tools and libraries are required to run the connector.
     ```bash
     sudo apt install default-jre
     ```
-* Install PySpark
+* Install PySpark in the local environment
     ```bash
     pip3 install pyspark
     ```
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to do this. If you are not running the connector in a Google Cloud managed environment then need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) to do this. If you are not running the connector in a Google Cloud managed environment then you will need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 The authenticated user have the following roles in the project: 
 * roles/secretmanager.secretAccessor
@@ -103,13 +104,13 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used.
+The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
 
-A sample output from the SQL Server connector can be found [here](sample/postgresql_metadata_sample.jsonl).
+A sample output from the Postgres connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into universal catalog
 
-To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. The [sample](/sample) directory in this connector contains a sample metadata file and request file you can use to import into the catalog.
+To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata.
 
 To create an end-to-end pipeline which runs metadata extraction using the connector and then submits an Import API job to bring the generated file into universal catalog, see the section below:  [Create an end-to-end metadata extraction and import pipeline to universal catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-universal-catalog)
 
@@ -137,11 +138,11 @@ Building a Docker container allows the connector to be run from a variety of Goo
 
 Before you submit a job to Dataproc Serverless:
 
-1. Create or choose a Cloud Storage bucket to be used as a working directory (add to the **--deps-bucket** parameter below)
+1. Create or choose a Cloud Storage bucket to be used as a working directory for Dataproc. Use the path for the **--deps-bucket** parameter below.
 2. The service account given in **--service-account** below must have the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles) to successfully run Dataproc. You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
 
 Note:
-* If **--service-account** is not provided then the default compute Service Account for the project will be assumed.
+* If **--service-account** is not provided then Dataproc assumes the default compute Service Account for the project will be used.
 
 #### Submit a Dataproc Serverless job
 
@@ -151,7 +152,7 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/univerisal-catalog-postgresql-pyspark:latest \ \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-postgresql-pyspark:latest \ \
     --service-account=440165342669-compute@developer.gserviceaccount.com \
     --network=Your-Network-Name \
     main.py \

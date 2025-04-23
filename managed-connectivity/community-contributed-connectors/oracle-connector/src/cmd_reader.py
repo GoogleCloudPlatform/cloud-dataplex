@@ -37,7 +37,7 @@ def read_args():
         help="The port number (usually 1521)")
     parser.add_argument("--user", type=str, required=True, help="Oracle User")
     parser.add_argument("--password_secret", type=str, required=True,
-        help="Resource name in the Google Cloud Secret Manager for the Oracle password")
+        help="Secret Manager ID of the Oracle password")
     group = parser.add_argument_group('service_or_sid', 'Oracle Service or SID')
     exclusive_group = group.add_mutually_exclusive_group(required=True)
     exclusive_group.add_argument("--service", type=str, help="Oracle Service name to connect to")

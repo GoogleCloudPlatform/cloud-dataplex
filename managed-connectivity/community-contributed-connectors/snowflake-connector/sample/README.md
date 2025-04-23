@@ -5,15 +5,15 @@ This directory contains:
  * A request to use with the Metadata Import REST API: [metadata_import_request.json](metadata_import_request.json)
 ### Import metadata into universal catalog:
 
-* In [snowflake-output.jsonl](snowflake-output.jsonl): 
+* In snowflake-output.jsonl: 
     1. Search and replace all instances of "gcp-project-id" with your project ID
     2. [OPTIONAL] Search and replace all instances of "us-central1" with your region or with "global" 
     3. Upload the .jsonl metadata import file to a Google Cloud Storage bucket
 
-* In [metadata_import_request.json](metadata_import_request.json):
+* In metadata_import_request.json:
     1. Replace the value in source_storage_uri with the path to your GCS bucket from above (Note: without the file and ending with /)
     2. Replace "gcp-project-id" with your project ID
-    3. Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_reques exist in your project
+    3. Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_request.json exist in your project
         Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
 Run import via the REST Metadata Impport API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:

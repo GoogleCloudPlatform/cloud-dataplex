@@ -12,23 +12,23 @@ The Snowflake connector takes the following parameters:
 |---------|------------|---|-------------|
 |target_project_id|Google Cloud Project ID. Used in the generated metadata and defines the scope metadata will be imported into||REQUIRED|
 |target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates the region Entries will be associated with||REQUIRED|
-|target_entry_group_id|Dataplex Entry Group ID the Entries will be associated with||REQUIRED|
+|target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |account|Snowflake account to connect to||REQUIRED|
 |user|Snowflake username to connect with||REQUIRED|
-|authentication|Authentication method: password or oauth (default is 'password')||OPTIONAL
+|authentication|Authentication method to use: password, oauth|password|OPTIONAL|
 |password_secret|GCP Secret Manager ID holding the password for the Snowflake user. Format: projects/[PROJ]/secrets/[SECRET]||REQUIRED if using password auth|
 |token|OAUTH Token||REQUIRED if using **--authentication oauth**|
 |database|Snowflake database to connect to||REQUIRED|
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
-|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
-|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
-|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||
+|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
+|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
 ### Prepare your Snowflake environment:
 
-Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
+Best practice is to connect to the database with a dedicated user that has the minimum privileges required to extract metadata.  
 
- The user for connecting should be granted a Security Role with the following privileges for the database and schemas, tables and views for which metadata needs to be extracted:
+ The user for connecting should be granted a Security Role in snowflake with the following privileges for the database, schemas,tables, and views for which metadata needs to be extracted:
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
@@ -37,7 +37,7 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-2. Add the password for the snowflake user to the Secret Manager in your project and note the Secret ID.
+2. Add the password for the user to the Secret Manager in your google cloud project and note the ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ## Running the connector from the command line
 
@@ -54,7 +54,7 @@ The following tools must be installed in order to run the connector:
     ```
 * A python Virtual Environment. Follow the instructions [here](https://cloud.google.com/python/docs/setup#installing_and_using_virtualenv) to create and activate your environment.
 
-* Install PySpark
+* Install PySpark in the local environment
     ```bash
     pip3 install pyspark
     ```
@@ -73,14 +73,23 @@ The authenticated user must have the following roles for the project: roles/secr
     cd sql-server-connector
     ```
 
-* Download the following jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
+* Download the following snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
 
-* Install all python dependencies 
+* Install python dependencies 
     ```bash
     pip3 install -r requirements.txt
     ```
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to do this. If you are not running the connector in a Google Cloud managed environment then need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+
+The authenticated user have the following roles in the project: 
+* roles/secretmanager.secretAccessor
+* roles/storage.objectUser
+
+```bash
+    gcloud auth application-default login
+```
 
 #### Run the connector
 To execute the metadata extraction run the following, substituting appropriate values for your environment as needed:
@@ -100,19 +109,19 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used.
+The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
 
-A sample output from the Snowflake connector can be found [here](sample/snowflake-output.jsonl).
+A sample output from the Postgres connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into universal catalog
 
-To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. The [sample](/sample) directory in this connector contains a sample metadata file and request file you can use to import into the catalog.
+To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. 
 
 To create an end-to-end pipeline which runs metadata extraction using the connector and then submits an Import API job to bring the generated file into universal catalog, see the section below:  [Create an end-to-end metadata extraction and import pipeline to universal catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-universal-catalog)
 
 
 
-## Build a container and running the connector using Dataproc Serverless
+## Build a container and run the connector with Dataproc Serverless
 
 Building a Docker container for the connector allows it to be run from a variety of Google Cloud services including [Dataproc Serverless](https://cloud.google.com/dataproc-serverless/docs).
 
@@ -127,18 +136,23 @@ Building a Docker container for the connector allows it to be run from a variety
     ./build_and_push_docker.sh
     ``` 
 
-    This will build a Docker container called **bq-catalog-snowflake-pyspark** and store it in Artifact Registry. 
-    This process can take take up to 10 minutes.
+    This will build a Docker container called **universal-catalog-snowflake-pyspark** and store it in Artifact Registry. This process can take take up to 5 minutes.
 
-### Submitting a metadata extraction job to Dataproc Serverless:
+### Run a metadata extraction job with Dataproc Serverless
 
-Before you run please ensure:
-1. You upload the jdbc jar file to a Google Cloud Storage location and use the path to this in the **--jars** parameter below.
-2. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below.
-3. The service account you run the job with using **--service-account** below has the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles).
-You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
+#### Set-up
 
-Run the containerised metadata connector using the following command, substituting appropriate values for your environment: 
+Before you submit a job to Dataproc Serverless:
+
+1. Create or choose a Cloud Storage bucket to be used as a working directory for Dataproc. Use the path for the **--deps-bucket** parameter below.
+2. The service account given in **--service-account** below must have the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles) to successfully run Dataproc. You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
+
+Note:
+* If **--service-account** is not provided then Dataproc assumes the default compute Service Account for the project will be used.
+
+#### Submit a Dataproc Serverless job
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:
 
 ```shell
 gcloud dataproc batches submit pyspark \
@@ -146,9 +160,9 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-bucket \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/snowflake-pyspark@sha256:dab02ca02f60a9e12769999191b06d859b947d89490d636a34fc734d4a0b6d08 \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-snowflake-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
-    --network=Your-Network-Name \
+    --network=projects/gcp-project-id/global/networks/default \
     main.py \
     --target_project_id my-gcp-project \
     --target_location_id us-central1 \
@@ -158,6 +172,7 @@ gcloud dataproc batches submit pyspark \
     --password_secret projects/499965349999/secrets/snowflake \
     --database SNOWFLAKE_SAMPLE_DATA \
     --output_bucket my-gcs-bucket
+    --output_folder snowflake_metadata
 ```
 
 Note:

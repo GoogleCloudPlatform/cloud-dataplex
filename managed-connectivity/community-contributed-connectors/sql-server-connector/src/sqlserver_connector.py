@@ -71,8 +71,6 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views."""
-        # Every line here is a column that belongs to the table or to the view.
-        # This SQL gets data from ALL the tables in a given schema.
         return (f"SELECT t.name AS TABLE_NAME, "
                 f"c.name AS COLUMN_NAME, "
                 f"ty.name AS DATA_TYPE, "
@@ -85,7 +83,7 @@ class SQLServerConnector(IExternalSourceConnector):
                 f"AND t.type = '{object_type}'")
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
-        """Gets data for a table or a view."""
+        """Gets data for a table or view."""
         # Dataset means that these entities can contain end user data.
         short_type = {"TABLE":"U", "VIEW":"V"}
         query = self._get_columns(schema_name, short_type[entry_type.name])

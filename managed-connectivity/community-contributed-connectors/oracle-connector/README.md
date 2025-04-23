@@ -15,19 +15,19 @@ Metadata for the following database objects is extracted by the connector:
 |Views|View name, column names, column data types|
 
 ### Parameters
-The Oracle connector takes the following parameters:
+The Oracle connector accepts the following parameters:
 |Parameter|Description|Default Value|Required/Optional|
 |---------|------------|----|-------------|
 |target_project_id|Google Cloud Project ID. Used in the generated metadata and defines the scope metadata will be imported into||REQUIRED|
 |target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates the region Entries will be associated with||REQUIRED|
-|target_entry_group_id|Dataplex Entry Group ID the Entries will be associated with||REQUIRED|
+|target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |host|Oracle server to connect to||REQUIRED|
 |port|Oracle server port|1521|REQUIRED|
 |service|Oracle service to connect to. Either **--service** or **--sid** required||REQUIRED|
 |sid|Oracle SID (Service Identifier). Either **--service** or **--sid** required||REQUIRED|
 |user|Oracle Username to connect with||REQUIRED|
 |password_secret|GCP Secret Manager ID holding the password for the Oracle user. Format: projects/[PROJ]/secrets/[SECRET]||REQUIRED|
-|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored. Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only** = False||
 |jar|Name (or full path to) JDBC jar file to use for connection|ojdbc11.jar|OPTIONAL|
@@ -44,7 +44,7 @@ Best practice is to connect to the database using a dedicated user with the mini
     * GRANT SELECT on DBA_OBJECTS to <monitoring_user>
     * SELECT on all schemas for which metadata needs to be extracted
 
-2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID.
+2. Add the password for the user to the Secret Manager in your google cloud project and note the ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ## Set up and run the connector
 
@@ -64,7 +64,7 @@ The following tools and libraries are required to run the connector.
     ```bash
     pip3 install pyspark
     ```
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to do this. If you are not running the connector in a Google Cloud managed environment then need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) to do this. If you are not running the connector in a Google Cloud managed environment then you will need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 The authenticated user have the following roles in the project: 
 * roles/secretmanager.secretAccessor
@@ -79,9 +79,9 @@ The authenticated user have the following roles in the project:
     ```bash
     cd oracle-connector
     ```
-* Download the [odjcb11.jar](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html) file from Oracle and save it in the local directory.
-    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. ie  --jar odjbc17.jar
-* Install all python dependencies 
+* Download the **odjcb11.jar** file from [Oracle](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html) and save it in the local directory.
+    **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. eg.   --jar odjbc17.jar
+* Install all remaining python dependencies 
     ```bash
     pip3 install -r requirements.txt
     ```
@@ -103,14 +103,13 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used.
+The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
 
-A sample output from the Oracle connector can be found [here](sample/oracle_output_sample.jsonl).
-
+A sample output from the Postgres connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into universal catalog
 
-To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. The [samples](/sample) directory in this connector contains a sample metadata file and request file you can use to import into the catalog.
+To manually import a metadata import file generated by this connector into universal catalog see the documentation [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata.
 
 To create an end-to-end pipeline which runs metadata extraction using the connector and then submits an Import API job to bring the generated file into universal catalog, see the section below:  [Create an end-to-end metadata extraction and import pipeline to universal catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-universal-catalog)
 
@@ -124,7 +123,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
 2. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION as appropriate. The container will be stored in the Artifact Registry using this information.
 3. Ensure the user which runs the script is authenticated as an Google Cloud Identity which has the 
 [Artifact Registry Writer](https://cloud.google.com/artifact-registry/docs/access-control#roles) IAM role for the Artifact Registry in your project.
-5. Make the script executable and run:
+4. Make the script executable and run:
     ```bash
     chmod a+x build_and_push_docker.sh
     ./build_and_push_docker.sh
@@ -134,11 +133,11 @@ Building a Docker container allows the connector to be run from a variety of Goo
 
 ### Run a metadata extraction job with Dataproc Serverless
 
-#### Set up
+#### Setup
 
 Before you submit a job to Dataproc Serverless:
 
-1. Create or choose a Cloud Storage bucket to be used as a working directory (add to the **--deps-bucket** parameter below)
+1. Create or choose a Cloud Storage bucket to be used as a working directory for Dataproc. Use the path for the **--deps-bucket** parameter below.
 2. The service account given in **--service-account** below must have the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles) to successfully run Dataproc. You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
 
 Note:
@@ -156,7 +155,7 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-bucket \  
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/univerisal-catalog-oracle-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
-    --network=Your-Network-Name \
+    --network=projects/gcp-project-id/global/networks/default \
     main.py \
 --  --target_project_id my-gcp-project-id \
       --target_location_id us-central1	\
