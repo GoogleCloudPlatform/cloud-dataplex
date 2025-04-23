@@ -104,7 +104,7 @@ python3 main.py \
 --port 1433 \
 --database dbtoextractfrom \
 --user dataplexagent \
---password-secret projects/73899954526/secrets/dataplexagent_sqlserver \
+--password_secret projects/73899954526/secrets/dataplexagent_sqlserver \
 --output_bucket dataplex_connectivity_imports \
 --output_folder sqlserver
 ```
@@ -161,7 +161,6 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
     --container-image=us-central1-docker.pkg.dev/gcp-project-id/docker-repo/universal-catalog-sqlserver-pyspark:latest \
     --service-account=499995342669-compute@developer.gserviceaccount.com \
-    --jars=mssql-jdbc-12.10.0.jre11.jar  \
     --network=projects/gcp-project-id/global/networks/default \
 main.py \
 --  --target_project_id gcp-project-id \
@@ -171,7 +170,7 @@ main.py \
     --port 1433 \
     --database dbtoextractfrom \
     --user dataplexagent \
-    --password-secret projects/73899954526/secrets/dataplexagent_sqlserver \
+    --password_secret projects/73899954526/secrets/dataplexagent_sqlserver \
     --output_bucket dataplex_connectivity_imports \
     --output_folder sqlserver
 ```

@@ -94,7 +94,7 @@ python3 main.py \
 --host the-mysql-server \
 --port 3306 \
 --user dataplexagent \
---password-secret projects/73869994526/secrets/dataplexagent_mysql \
+--password_secret projects/73869994526/secrets/dataplexagent_mysql \
 --database employees \
 --output_bucket dataplex_connectivity_imports \
 --output_folder mysql
@@ -151,7 +151,6 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-bucket  \
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/unified-catalog-mysql-pyspark:latest \
     --service-account=440992669-compute@developer.gserviceaccount.com \
-    --jars=gs://gcs/path/to/mysql-connector-j-9.2.0.jar  \
     --network=Your-Network-ID \
     main.py \
 --  --target_project_id my-gcp-project-id \
@@ -160,7 +159,7 @@ gcloud dataproc batches submit pyspark \
       --host the-mysql-server \
       --port 3306 \
       --user dataplexagent_mysql \
-      --password-secret projects/73819994526/secrets/dataplexagent_mysql \
+      --password_secret projects/73819994526/secrets/dataplexagent_mysql \
       --database employees \
       --output_bucket gcs_output_bucket_path \
       --output_folder mysql
