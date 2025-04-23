@@ -1,0 +1,27 @@
+{
+type: "IMPORT",
+import_spec: {
+source_storage_uri: 'gs://your-metadata-file-gcs-bucket/mysql_testing/',
+scope: {
+  entryGroups: [
+    "projects/the-gcp-project/locations/us-central1/entryGroups/mysql"
+  ],
+  entry_types: [
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-instance",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-table",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-database",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-view"
+  ],
+  aspect_types: [
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-instance",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-table",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-database",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-view",
+    "projects/dataplex-types/locations/global/aspectTypes/schema"
+  ]
+    },
+entry_sync_mode: "FULL",
+aspect_sync_mode: "INCREMENTAL",
+log_level: "DEBUG"
+  }
+}

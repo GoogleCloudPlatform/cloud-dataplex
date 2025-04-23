@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Jar files and paths for when connector is running as local script
 
-from src.constants import JDBC_JAR
+# Edit PROJECT_ID and REGION to match your environment
+PROJECT_ID=PROJECTID
+REGION=us-central1
 
-SPARK_JAR_PATH = f"."
+IMAGE_NAME="universal-catalog-snowflake-pyspark"
+IMAGE_VERSION="0.0.1"
+IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 
-def getJarPath():
-    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
+REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/docker-repo/${IMAGE_NAME}
 
-def getUserJarPath(userJar : str):
-    return f"{SPARK_JAR_PATH}/{userJar}"
+docker build -t "${IMAGE}" .
+
+# Tag and push to GCP container registry
+gcloud config set project ${PROJECT_ID}
+gcloud auth configure-docker ${REGION}-docker.pkg.dev
+docker tag "${IMAGE}" "${REPO_IMAGE}"
+docker push "${REPO_IMAGE}"

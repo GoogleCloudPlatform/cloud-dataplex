@@ -1,11 +1,13 @@
-# Google Cloud Dataplex - Managed Connectivity Connectors for External Systems
+# BigQuery universal catalog custom metadata connectors 
 
-This repository contains communithy contributed connectors for importing metadata from external systems to Google Dataplex, based on the [Managed connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) 
+These connectors extract metadata from external systems into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview)
+
+Disclaimer: These connectors are not official Google products and are provided on an as-is basis.
 
 ## Connector List
 
-* [Oracle](/managed-connectivity/community-contributed-connectors/oracle-connector)
-* [SQL Server](/managed-connectivity/community-contributed-connectors/sql-server-connector)
-* [PostgreSQL](/managed-connectivity//community-contributed-connectors/postgresql-connector)
-* [MySQL](/managed-connectivity/community-contributed-connectors/mysql-connector)
-* [SnowFlake](/managed-connectivity/community-contributed-connectors/snowflake-connector)
+* [Oracle](/managed-connectivity/oracle-connector)
+* [SQL Server](/managed-connectivity/sql-server-connector)
+* [PostgreSQL](/managed-connectivity/postgresql-connector)
+* [MySQL](/managed-connectivity/mysql-connector)
+* [SnowFlake](/managed-connectivity/snowflake-connector)

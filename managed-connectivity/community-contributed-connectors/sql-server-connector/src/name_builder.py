@@ -14,7 +14,10 @@
 
 """Builds Dataplex hierarchy identifiers."""
 from typing import Dict
-from src.constants import EntryType, SOURCE_TYPE
+from src.constants import EntryType
+from src.constants import SOURCE_TYPE
+from src.constants import DB_OBJECT_TYPES_TO_PROCESS
+
 
 FORBIDDEN_SYMBOL = "#"
 ALLOWED_SYMBOL = "!"
@@ -71,11 +74,14 @@ def create_name(config: Dict[str, str], entry_type: EntryType,
 def create_parent_name(config: Dict[str, str], entry_type: EntryType,
                        parent_name: str = ""):
     """Generates a Dataplex v2 name of the parent."""
+    # Top level entry has no parent
+    if entry_type == EntryType.INSTANCE:
+        return ""
     if entry_type == EntryType.DATABASE:
         return create_name(config, EntryType.INSTANCE)
     if entry_type == EntryType.DB_SCHEMA:
         return create_name(config, EntryType.DATABASE)
-    if entry_type == EntryType.TABLE:
+    if entry_type in DB_OBJECT_TYPES_TO_PROCESS:
         return create_name(config, EntryType.DB_SCHEMA, parent_name)
     return ""
 

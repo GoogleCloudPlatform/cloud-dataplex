@@ -12,19 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Snowflake specific constants and functions
+# SQL Server specific constants and functions
+
 import enum
+from typing import List
 
 SOURCE_TYPE = "sqlserver"
 
+# Default JDBC jar file. Can override with --jar
 JDBC_JAR = "mssql-jdbc-12.10.0.jre11.jar"
 
-# allow common bootstrap to load connector for specific datasource
+# Allow common bootstrap code to dynamically load connector for specific datasource
 CONNECTOR_MODULE = "src.sqlserver_connector"
 CONNECTOR_CLASS = "SQLServerConnector"
 
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "Y"
+
 class EntryType(enum.Enum):
-    """Types of SQL Server entries."""
+    """Hierarchy of SQL Server entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-schema"
@@ -32,16 +38,16 @@ class EntryType(enum.Enum):
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-view"
 
 # Top-level entries from above hierarchy which will be written to file before schema processing starts
-TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
+TOP_ENTRY_HIERARCHY : List[EntryType] = [EntryType.INSTANCE, EntryType.DATABASE]
 
-# EntryType in hierarchy under which database objects like tables, views are organised and processed
-COLLECTION_ENTRY = EntryType.DB_SCHEMA
+# EntryType in the hierarchy under which database objects like tables, views are organised and processed
+COLLECTION_ENTRY : EntryType = EntryType.DB_SCHEMA
 
 # DB objects to extract metadata for
-DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+DB_OBJECT_TYPES_TO_PROCESS : List[EntryType] = [EntryType.TABLE, EntryType.VIEW]
 
 # metadata file name
-def generateFileName(config: dict[str:str]):
+def generateFileName(config: dict[str:str]) -> str:
     filename = ''
     if config['instancename'] and len(config['instancename']) > 0:
         filename = f"{SOURCE_TYPE}-{config['host']}-{config['instancename']}-{config['database']}.jsonl"

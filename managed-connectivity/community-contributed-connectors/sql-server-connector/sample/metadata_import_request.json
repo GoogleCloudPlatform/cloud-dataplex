@@ -4,20 +4,20 @@ import_spec: {
 source_storage_uri: "gs://path-to-GCS-bucket-with-import-file/",
 scope: {
   entryGroups: [
-    "projects/sqlserverhost/locations/us-central1/entryGroups/sqlserver"
+    "projects/the-gcp-project-id/locations/us-central1/entryGroups/sqlserver"
   ],
   entry_types: [
-    "projects/sqlserverhost/locations/us-central1/entryTypes/sqlserver-instance",
-    "projects/sqlserverhost/locations/us-central1/entryTypes/sqlserver-database",
-    "projects/sqlserverhost/locations/us-central1/entryTypes/sqlserver-schema",
-    "projects/sqlserverhost/locations/us-central1/entryTypes/sqlserver-table"
+    "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-instance",
+    "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-database",
+    "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-schema",
+    "projects/the-gcp-project-id/locations/us-central1/entryTypes/sqlserver-table"
 
   ],
   aspect_types: [
-    "projects/sqlserverhost/locations/us-central1/aspectTypes/sqlserver-instance",
-    "projects/sqlserverhost/locations/us-central1/aspectTypes/sqlserver-schema",
-    "projects/sqlserverhost/locations/us-central1/aspectTypes/sqlserver-database",
-    "projects/sqlserverhost/locations/us-central1/aspectTypes/sqlserver-table",
+    "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-instance",
+    "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-schema",
+    "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-database",
+    "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-table",
     "projects/dataplex-types/locations/global/aspectTypes/schema"
   ]
     },

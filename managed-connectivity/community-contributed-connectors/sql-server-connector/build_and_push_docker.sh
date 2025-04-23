@@ -18,7 +18,7 @@
 PROJECT_ID=PROJECT_ID
 REGION=us-central1
 
-IMAGE_NAME="bq-catalog-sqlserver-pyspark"
+IMAGE_NAME="universal-catalog-sqlserver-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 

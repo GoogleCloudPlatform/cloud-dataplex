@@ -1,0 +1,29 @@
+{
+type: "IMPORT",
+import_spec: {
+  source_storage_uri: "gs://dataplex-metadata/postgresql/",
+scope: {
+  entryGroups: [
+    "projects/gcp-project-id/locations/us-central1/entryGroups/postgres"
+  ],
+  entry_types: [
+    "projects/gcp-project-id/locations/us-central1/entryTypes/postgres-instance",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/postgres-database",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/postgres-schema",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/postgres-table",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/postgres-view"
+  ],
+  aspect_types: [
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/postgres-instance",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/postgres-schema",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/postgres-database",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/postgres-table",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/postgres-view",
+    "projects/dataplex-types/locations/global/aspectTypes/schema"
+  ]
+    },
+entry_sync_mode: "FULL",
+aspect_sync_mode: "INCREMENTAL",
+log_level: "DEBUG"
+  }
+}
