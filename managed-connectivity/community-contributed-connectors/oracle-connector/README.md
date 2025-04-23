@@ -96,7 +96,7 @@ python3 main.py \
 --host the-oracle-server \
 --port 1521 \
 --user dataplexagent \
---password-secret projects/73819994526/secrets/dataplexagent_oracle \
+--password_secret projects/73819994526/secrets/dataplexagent_oracle \
 --service XEPDB1 \
 --output_bucket dataplex_connectivity_imports \
 --output_folder oracle
