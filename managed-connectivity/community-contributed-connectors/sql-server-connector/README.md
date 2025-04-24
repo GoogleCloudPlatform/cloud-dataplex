@@ -95,7 +95,7 @@ Note:  The authenticated user must have the following IAM roles in the project w
     ```bash
     cd sql-server-connector
     ```
-* Download the [mssql-jdbc-12.10.0.jre11.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) file from the [Microsoft Github repo](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the local directory.
+* Download the [mssql-jdbc-12.10.0.jre11.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) file from the [Microsoft Github repository](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the local directory.
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter when you run the connector. ie  --jar mssql-jdbc-12.10.X.jre11.jar
 * Install python dependencies 
     ```bash
