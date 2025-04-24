@@ -21,6 +21,7 @@ RUN apt install -y wget
 
 ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
+COPY odjbc11.jar "${SPARK_EXTRA_JARS_DIR}"
 
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
