@@ -6,6 +6,8 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See the documentation [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
+Disclaimer: This connector is not an official Google product and is provided on an as-is basis.
+
 ### Parameters
 The Snowflake connector takes the following parameters:
 |Parameter|Description|Default|Required/Optional|

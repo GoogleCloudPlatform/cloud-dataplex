@@ -6,6 +6,8 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
+Disclaimer: This connector is not an official Google product and is provided on an as-is basis.
+
 ### Target objects and schemas:
 
 Metadata for the following database objects is extracted by the connector:
