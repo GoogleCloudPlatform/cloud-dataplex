@@ -31,7 +31,7 @@ The MySQL connector takes the following parameters:
 |output_bucket|Cloud Storage bucket where output metadata file will be stored. Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only False**||
 |jar|Name/full path to JDBC jar file|mysql-connector-j-9.2.0.jar|OPTIONAL|
-|min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata file. If not met then file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
 
@@ -52,39 +52,49 @@ The metadata connector can be run directly from the command line by executing th
 
 #### Prerequisites
 
-The following tools and libraries are required to run the connector.
+The following tools and libraries are required to run the connector:
 
-* Python 3.x. [See here for installation instructions](https://cloud.google.com/python/docs/setup#installing_python)
-* A python Virtual Environment. Follow the instructions [here](https://cloud.google.com/python/docs/setup#installing_and_using_virtualenv) to create and activate your virtual environment.
+* Python 3.x. Installation on Linux:
+    ```
+    sudo apt update
+    sudo apt install python3 python3-dev python3-venv python3-pip
+    ```
+* Python Virtual Environment. To create the environment and activate:
+    ```shell
+    python3 -m venv env
+    source env/bin/activate
+    ```
 * Java Runtime Environment (JRE)
-    ```bash
+    ```shell
     sudo apt install default-jre
     ```
 * Install PySpark
-    ```bash
+    ```shell
     pip3 install pyspark
     ```
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) to do this. If you are not running the connector in a Google Cloud managed environment then you will need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 ```bash
     gcloud auth application-default login
 ```
 
-Note: The authenticated user have the following roles in the project: 
-* roles/secretmanager.secretAccessor
-* roles/storage.objectUser
+Note:  The authenticated user must have the following IAM roles in the project where the connector runs:
 
-#### Set up
+- roles/secretmanager.secretAccessor
+- roles/storage.objectUser
+
+#### Set-up
 * Ensure you are in the root directory of the connector
     ```bash
-    cd sql-server-connector
+    cd mysql-connector
     ```
-* Download **mysql-connector-j-9.2.0.jar** [from MySQL](https://dev.mysql.com/downloads/connector/j/?os=26)
-    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. ie  --jar mssql-jdbc-12.10.2.jre11.jar
 * Install all python dependencies 
     ```bash
     pip3 install -r requirements.txt
     ```
+* Download **mysql-connector-j-9.2.0.jar** [from MySQL](https://dev.mysql.com/downloads/connector/j/?os=26) and store it in the current directory.
+    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter when running the connector. eg  --jar mssql-jdbc-12.10.2.jre11.jar
 
 #### Run the connector
 To execute metadata extraction run the following command, substituting appropriate values for your environment as needed:
@@ -154,6 +164,7 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-bucket  \
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-mysql-pyspark:latest \
     --service-account=440992669-compute@developer.gserviceaccount.com \
+    --jars=mysql-connector-j-9.2.0.jar \
     --network=projects/gcp-project-id/global/networks/default \
     main.py \
 --  --target_project_id my-gcp-project-id \

@@ -51,34 +51,44 @@ The metadata connector can be run directly from the command line by executing th
 
 #### Prerequisites
 
-The following tools and libraries are required to run the connector.
+The following tools and libraries are required to run the connector:
 
-* Python 3.x. [See here for installation instructions](https://cloud.google.com/python/docs/setup#installing_python)
-* A python Virtual Environment. Follow the instructions [here](https://cloud.google.com/python/docs/setup#installing_and_using_virtualenv) to create and activate your virtual environment.
+* Python 3.x. Installation on Linux:
+    ```
+    sudo apt update
+    sudo apt install python3 python3-dev python3-venv python3-pip
+    ```
+* Python Virtual Environment. To create the environment and activate:
+    ```shell
+    python3 -m venv env
+    source env/bin/activate
+    ```
 * Java Runtime Environment (JRE)
-    ```bash
+    ```shell
     sudo apt install default-jre
     ```
-* Install PySpark in the local environment
-    ```bash
+* Install PySpark
+    ```shell
     pip3 install pyspark
     ```
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) to do this. If you are not running the connector in a Google Cloud managed environment then you will need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
-The authenticated user have the following roles in the project: 
-* roles/secretmanager.secretAccessor
-* roles/storage.objectUser
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 ```bash
     gcloud auth application-default login
 ```
 
+Note:  The authenticated user must have the following IAM roles in the project where the connector runs:
+
+- roles/secretmanager.secretAccessor
+- roles/storage.objectUser
+
 #### Set up
 * Ensure you are in the root directory of the connector
     ```bash
-    cd sql-server-connector
+    cd postgresql-connector
     ```
-* Download the [postgresql-42.7.5.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar). 
+* Download the [postgresql-42.7.5.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) and save it in the local directory.
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. ie  --jar postgresql-42.7.6.jar
 
 * Install all python dependencies 
@@ -150,10 +160,11 @@ Note:
 gcloud dataproc batches submit pyspark \
     --project=my-gcp-project-id \
     --region=us-central1 \
-    --batch=0001 \
+    --batch=postgres-metadata-0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-postgresql-pyspark:latest \ \
-    --service-account=440165342669-compute@developer.gserviceaccount.com \
+    --service-account=440199992669-compute@developer.gserviceaccount.com \
+    --jars=postgresql-42.7.5.jar \
     --network=Your-Network-Name \
     main.py \
 --  --target_project_id my-gcp-project-id \
