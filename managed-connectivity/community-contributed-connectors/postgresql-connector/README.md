@@ -134,7 +134,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
 
 ### Run a metadata extraction job with Dataproc Serverless
 
-#### Set up
+#### Set-up
 
 Before you submit a job to Dataproc Serverless:
 

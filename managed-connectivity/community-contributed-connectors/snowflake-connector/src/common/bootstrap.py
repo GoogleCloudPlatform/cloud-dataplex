@@ -31,7 +31,6 @@ from src.common import entry_builder
 from src.common import gcs_uploader
 from src.common import top_entry_builder
 from src.common.ExternalSourceConnector import IExternalSourceConnector
-from src.common.util import generateFolderName
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""

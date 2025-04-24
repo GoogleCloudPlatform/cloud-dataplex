@@ -133,7 +133,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
 
 ### Run a metadata extraction job with Dataproc Serverless
 
-#### Setup
+#### Set-up
 
 Before you submit a job to Dataproc Serverless:
 
@@ -153,7 +153,7 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-bucket \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/univerisal-catalog-oracle-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-oracle-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
     --network=projects/gcp-project-id/global/networks/default \
     main.py \

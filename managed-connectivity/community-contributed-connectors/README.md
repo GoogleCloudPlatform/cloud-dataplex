@@ -6,8 +6,8 @@ Disclaimer: These connectors are not official Google products and are provided o
 
 ## Connector List
 
-* [Oracle](/managed-connectivity/oracle-connector)
-* [SQL Server](/managed-connectivity/sql-server-connector)
-* [PostgreSQL](/managed-connectivity/postgresql-connector)
-* [MySQL](/managed-connectivity/mysql-connector)
-* [SnowFlake](/managed-connectivity/snowflake-connector)
+* [Oracle](/managed-connectivity/community-contibuted-connectors/oracle-connector)
+* [SQL Server](/managed-connectivity/community-contibuted-connectors/sql-server-connector)
+* [PostgreSQL](/managed-connectivity/community-contibuted-connectors/postgresql-connector)
+* [MySQL](/managed-connectivity/community-contibuted-connectors/mysql-connector)
+* [SnowFlake](/managed-connectivity/community-contibuted-connectors/snowflake-connector)

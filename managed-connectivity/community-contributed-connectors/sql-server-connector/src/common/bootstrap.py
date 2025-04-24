@@ -19,6 +19,7 @@
 from typing import Dict
 import os
 import importlib
+import logging
 from src import cmd_reader
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
@@ -31,7 +32,6 @@ from src.common import entry_builder
 from src.common import gcs_uploader
 from src.common import top_entry_builder
 from src.common.ExternalSourceConnector import IExternalSourceConnector
-from src.common.util import generateFolderName
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""
@@ -53,7 +53,7 @@ def run():
     """Runs a pipeline."""
     config = cmd_reader.read_args()
 
-    print(f"\nExtracting metadata from {SOURCE_TYPE}")
+    logging.info(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
         print("File will be generated in local 'output' directory only")
