@@ -29,7 +29,7 @@ The MySQL connector takes the following parameters:
 |database|MySQL database to connect to||REQUIRED|
 |user|MySQL Username to connect with||REQUIRED|
 |password_secret|ID in Secret Manager holding the password for the MySQL user. Format: projects/PROJECT-ID/secrets/SECRET||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where output metadata file will be stored. Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only False**||
 |jar|Name/full path to JDBC jar file|mysql-connector-j-9.2.0.jar|OPTIONAL|
@@ -75,7 +75,7 @@ The following tools and libraries are required to run the connector:
     pip3 install pyspark
     ```
 
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and Cloud Storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for this. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 ```bash
     gcloud auth application-default login

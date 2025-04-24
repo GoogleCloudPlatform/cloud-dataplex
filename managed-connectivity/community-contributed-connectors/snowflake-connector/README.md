@@ -22,7 +22,7 @@ The Snowflake connector takes the following parameters:
 |token|OAUTH Token||REQUIRED if using **--authentication oauth**|
 |database|Snowflake database to connect to||REQUIRED|
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
-|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|

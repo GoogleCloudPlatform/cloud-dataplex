@@ -27,7 +27,7 @@ The PostgreSQL connector takes the following parameters:
 |port|PostgreSQL server port (usually 5432)||REQUIRED|
 |database|PostgreSQL database to connect to||REQUIRED
 |user|PostgreSQL username to connect with||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |jar|Name (or full path to) JDBC jar file to use for connection|postgresql-42.7.5.jar|OPTIONAL|
@@ -74,7 +74,7 @@ The following tools and libraries are required to run the connector:
     pip3 install pyspark
     ```
 
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and Cloud Storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for this. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 ```bash
     gcloud auth application-default login

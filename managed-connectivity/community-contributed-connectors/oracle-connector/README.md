@@ -29,7 +29,7 @@ The Oracle connector accepts the following parameters:
 |sid|Oracle SID (Service Identifier). Either **--service** or **--sid** required||REQUIRED|
 |user|Oracle Username to connect with||REQUIRED|
 |password_secret|GCP Secret Manager ID holding the password for the Oracle user. Format: projects/[PROJ]/secrets/[SECRET]||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
+|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored. Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only** = False||
 |jar|Name (or full path to) JDBC jar file to use for connection|ojdbc11.jar|OPTIONAL|

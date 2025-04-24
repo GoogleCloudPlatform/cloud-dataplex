@@ -27,9 +27,9 @@ The connector accepts the following parameters:
 |port|SQL Server host port|1433|OPTIONAL|
 |instancename|SQL Server instance to connect to|<defaultinstance>|OPTIONAL|
 |database|SQL Server database name||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to cloud storage|False|OPTIONAL|
-|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
-|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||REQUIRED|
+|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
+|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |login_timeout|Time to establish connection to database (seconds)|0 (= use JDBC driver default)|OPTIONAL
 |encrypt|Use encryption for connection to database [True/False]|True|OPTIONAL|
 |trust_server_certificate|Trust SQL Server TLS certificate [True/False]|True|OPTIONAL|
@@ -81,7 +81,7 @@ The following tools and libraries are required to run the connector:
     pip3 install pyspark
     ```
 
-* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and cloud storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
+* The user that runs the connector must be authenticated with a Google Cloud identity in order to access the APIs for Secret Manager and Cloud Storage. You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector. If you are not running the connector in a Google Cloud managed environment then you need to install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). 
 
 ```bash
     gcloud auth application-default login
