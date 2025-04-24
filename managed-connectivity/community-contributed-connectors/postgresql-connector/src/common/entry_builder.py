@@ -24,38 +24,42 @@ from src import name_builder as nb
 from src.constants import IS_NULLABLE_TRUE
 
 # Property names from Dataplex_v1.Entry object in Camel Case
-KEY_NAME = "name"
-KEY_MODE = "mode"
-KEY_ENTRY = "entry"
-KEY_ENTRY_TYPE = "entryType"
-KEY_ENTRY_SOURCE = "entrySource"
-KEY_ASPECT_KEYS = "aspectKeys"
-KEY_ASPECT_TYPE = "aspectType"
-KEY_DISPLAY_NAME = "displayName"
-KEY_UPDATE_MASK = "updateMask"
-KEY_FQN = "fullyQualifiedName"
-KEY_PARENT_ENTRY = "parentEntry"
-KEY_ASPECTS = "aspects"
-KEY_DATA = "data"
-KEY_DATA_TYPE = "dataType"
-KEY_METADATA_TYPE = "metadataType"
+KEY_NAME = 'name'
+KEY_MODE = 'mode'
+KEY_ENTRY = 'entry'
+KEY_ENTRY_TYPE = 'entryType'
+KEY_ENTRY_SOURCE = 'entrySource'
+KEY_ASPECT_KEYS = 'aspectKeys'
+KEY_ASPECT_TYPE = 'aspectType'
+KEY_DISPLAY_NAME = 'displayName'
+KEY_UPDATE_MASK = 'updateMask'
+KEY_FQN = 'fullyQualifiedName'
+KEY_PARENT_ENTRY = 'parentEntry'
+KEY_ASPECTS = 'aspects'
+KEY_DATA = 'data'
+KEY_DATA_TYPE = 'dataType'
+KEY_METADATA_TYPE = 'metadataType'
 
-KEY_ENTRY_ASPECT = "entry_aspect"
+KEY_ENTRY_ASPECT = 'entry_aspect'
 
-KEY_FIELDS = "fields"
-KEY_SYSTEM = "system"
-KEY_SCHEMA = "schema"
+KEY_FIELDS = 'fields'
+KEY_SYSTEM = 'system'
+KEY_SCHEMA = 'schema'
 
-KEY_COLUMNS = "columns"
+KEY_COLUMNS = 'columns'
 
-COLUMN_TABLE_NAME = "TABLE_NAME"
-COLUMN_DATA_TYPE = "DATA_TYPE"
-COLUMN_COLUMN_NAME = "COLUMN_NAME"
-COLUMN_IS_NULLABLE = "IS_NULLABLE"
-COLUMN_SCHEMA_NAME = "SCHEMA_NAME"
+COLUMN_TABLE_NAME = 'TABLE_NAME'
+COLUMN_DATA_TYPE = 'DATA_TYPE'
+COLUMN_COLUMN_NAME = 'COLUMN_NAME'
+COLUMN_IS_NULLABLE = 'IS_NULLABLE'
+COLUMN_SCHEMA_NAME = 'SCHEMA_NAME'
 
-VALUE_NULLABLE = "NULLABLE"
-VALUE_REQUIRED = "REQUIRED"
+# Dataplex constants
+VALUE_NULLABLE = 'NULLABLE'
+VALUE_REQUIRED = 'REQUIRED'
+
+# universal catalog system AspectType for database tables and schemas
+SCHEMA_KEY = "dataplex-types.global.schema"
 
 @F.udf(returnType=StringType())
 def choose_metadata_type_udf(data_type: str):
@@ -145,7 +149,6 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     Returns:
         A dataframe with Dataplex-readable data of tables of views.
     """
-    schema_key = "dataplex-types.global.schema"
 
     # The transformation below does the following
     # 1. Alters IS_NULLABLE content from 1/0 to NULLABLE/REQUIRED
@@ -159,9 +162,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
         .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME)
 
-    # The transformation below aggregates fields, denormalizing the table
-    # TABLE_NAME becomes top-level filed, and the rest is put into
-    # the array type called "fields"
+    # transformation below aggregates fields, denormalizing the table
+    # TABLE_NAME becomes top-level field, rest put into array type "fields"
     aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE]
     df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
       .groupby(COLUMN_TABLE_NAME) \
@@ -172,10 +174,10 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # There is also an entry_aspect that is repeats entry_type as aspect_type
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
     df = df.withColumn(KEY_SCHEMA,
-                       F.create_map(F.lit(schema_key),
+                       F.create_map(F.lit(SCHEMA_KEY),
                                     F.named_struct(
                                         F.lit(KEY_ASPECT_TYPE),
-                                        F.lit(schema_key),
+                                        F.lit(SCHEMA_KEY),
                                         F.lit(KEY_DATA),
                                         F.create_map(F.lit(KEY_FIELDS),
                                                      F.col(KEY_FIELDS)))\
@@ -213,5 +215,5 @@ def build_dataset(config, df_raw, db_schema, entry_type):
       .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column)) \
     .drop(column)
 
-    df = convert_to_import_items(df, [schema_key, entry_aspect_name])
+    df = convert_to_import_items(df, [SCHEMA_KEY, entry_aspect_name])
     return df
