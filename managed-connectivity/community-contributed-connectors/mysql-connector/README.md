@@ -97,7 +97,7 @@ Note:  The authenticated user must have the following IAM roles in the project w
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter when running the connector. eg  --jar mssql-jdbc-12.10.2.jre11.jar
 
 #### Run the connector
-To execute metadata extraction run the following command, substituting appropriate values for your environment as needed:
+To execute metadata extraction run the following command, substituting appropriate values and parameters for your environment as needed:
 
 ```shell 
 python3 main.py \

@@ -98,6 +98,8 @@ Note:  The authenticated user must have the following IAM roles in the project w
 
 #### Run the connector
 
+To execute metadata extraction run the following command, substituting appropriate values and parameters for your environment as needed:
+
 ```shell 
 python3 main.py \
 --target_project_id the-gcp-project-id \

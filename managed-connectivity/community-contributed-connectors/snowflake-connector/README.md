@@ -103,7 +103,7 @@ Note the authenticated user have the following roles in the project:
 ```
 
 #### Run the connector
-To execute metadata extraction run the following command, substituting appropriate values for your environment as needed:
+To execute metadata extraction run the following command, substituting appropriate values and parameters for your environment as needed:
 
 ```shell 
 python3 main.py \
