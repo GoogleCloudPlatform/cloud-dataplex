@@ -197,3 +197,5 @@ See the [documentation](https://cloud.google.com/sdk/gcloud/reference/dataproc/b
 An end-to-end metadata extraction and import pipeline with monitoring can be created using [Workflows](https://cloud.google.com/workflows) and scheduled to run on a regular basis.
 
 Follow the documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
+
+An example of input parameters for creating an import job with Workflows can be found in the [workflows](workflows/) directory.

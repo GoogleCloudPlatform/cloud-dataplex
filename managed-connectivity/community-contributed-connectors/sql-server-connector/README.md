@@ -200,4 +200,4 @@ An end-to-end metadata extraction and import pipeline with monitoring can be cre
 
 Follow the documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
 
-Sample input parameters for an import job with Google Workflows can be found in the [workflows](workflows) directory
+An example of input parameters for creating an import job with Workflows can be found in the [workflows](workflows/) directory.
