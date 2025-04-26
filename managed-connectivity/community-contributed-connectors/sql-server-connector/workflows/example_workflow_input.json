@@ -7,7 +7,7 @@
         "--port=1433",
         "--user=theusername",
         "--password_secret=projects/9999999999/secrets/sqlserver_theusername",
-        "--database=my_azure_db"
+        "--database=mydatabase"
     ],
     "CLOUD_REGION": "us-central1",
     "CLOUD_STORAGE_BUCKET_ID": "workflows-bqunifieid-working",
@@ -33,5 +33,5 @@
     "SERVICE_ACCOUNT": "44999992669-compute@developer.gserviceaccount.com",
     "SUBNETWORK_URI": "",
     "TARGET_ENTRY_GROUP_ID": "sqlserver",
-    "TARGET_PROJECT_ID": "the-project-id"
+    "TARGET_PROJECT_ID": "the-gcp-project-id"
 }

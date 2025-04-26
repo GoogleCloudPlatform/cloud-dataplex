@@ -6,7 +6,8 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See the documentation [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
-Disclaimer: This is not an official Google product and is provided on an as-is basis.
+This is not an officially supported Google product. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
+Program](https://bughunters.google.com/open-source-security).
 
 ### Target objects and schemas:
 
@@ -56,7 +57,7 @@ Best practice is to connect to the database with a dedicated user that has the m
 
 ## Set up and run the connector
 
-The metadata connector can be run directly from the command line by executing the main.py script.
+To run the metadata connector directly from the command line follow these steps.
 
 #### Prerequisites
 

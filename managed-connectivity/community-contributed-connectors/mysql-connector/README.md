@@ -6,7 +6,8 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
-Disclaimer: This is not an official Google product and is provided on an as-is basis.
+This is not an officially supported Google product. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
+Program](https://bughunters.google.com/open-source-security).
 
 ### Target objects and schemas:
 
@@ -167,7 +168,7 @@ gcloud dataproc batches submit pyspark \
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-mysql-pyspark:latest \
     --service-account=440992669-compute@developer.gserviceaccount.com \
     --jars=mysql-connector-j-9.2.0.jar \
-    --network=projects/gcp-project-id/global/networks/default \
+    --network=default \
     main.py \
 --  --target_project_id my-gcp-project-id \
       --target_location_id us-central1	\
