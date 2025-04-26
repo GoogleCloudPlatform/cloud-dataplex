@@ -32,7 +32,7 @@ def validateArguments(parsed_args):
         print("Exiting")
         sys.exit(1)
 
-    if not parsed_args.target_location_id not in [GCP_REGIONS, 'global']:
+    if parsed_args.target_location_id not in [GCP_REGIONS, 'global']:
         print(f"--target_location_id must be valid google cloud region or 'global' : {parsed_args.target_region_id}")
         sys.exit(1)
 
