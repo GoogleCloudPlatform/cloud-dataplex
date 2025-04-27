@@ -26,6 +26,10 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def __init__(self, config: Dict[str, str]):
 
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        logger.addHandler(logging.StreamHandler())
+
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
 
