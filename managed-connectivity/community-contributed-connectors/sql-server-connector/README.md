@@ -123,7 +123,7 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used.
+The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used. If **--min_expected_entries** is set, then the number of entries in the output file will be compared with this number and the metadata import file only uploaded to cloud storage if it meets or exceeds this. This is a safety mechanism when running metadata imports in [full entry sync mode](https://cloud.google.com/dataplex/docs/import-metadata#data-modification-logic) to prevent unintended deletion of entries from the catalog due to a problem occuring during metadata extraction.
 
 A sample output from the SQL Server connector can be found in the [sample](sample/) directory.
 

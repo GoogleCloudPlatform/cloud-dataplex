@@ -53,7 +53,7 @@ def run():
     """Runs a pipeline."""
     config = cmd_reader.read_args()
 
-    logging.info(f"\nExtracting metadata from {SOURCE_TYPE}")
+    print(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
         print("File will be generated in local 'output' directory only")

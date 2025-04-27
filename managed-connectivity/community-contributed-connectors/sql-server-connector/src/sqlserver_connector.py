@@ -18,6 +18,8 @@ from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+import logging
+import sys
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -55,10 +57,20 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
-        return self._spark.read.format("jdbc") \
-            .options(**self._connectOptions) \
-            .option("query", query) \
-            .load()
+
+        result : DataFrame
+
+        try:
+            result = self._spark.read.format("jdbc") \
+                .options(**self._connectOptions) \
+                .option("query", query) \
+                .load()
+        except Exception as ex:
+            logging.fatal(f"Error during query SQL Server connector: {ex}")
+            sys.exit(1)
+
+        return result
+
 
     def get_db_schemas(self) -> DataFrame:
         """Gets a list of schemas in the database"""
