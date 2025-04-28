@@ -21,17 +21,17 @@ Metadata for the following database objects is extracted by the connector:
 The PostgreSQL connector takes the following parameters:
 |Parameter|Description|Default|Required/Optional|
 |---------|------------|--|-------------|
-|target_project_id|GCP Project ID/Project Number, or 'global'. Used in the generated metadata Entry, Aspects and AspectTypes||REQUIRED|
-|target_location_id|GCP Region ID, or 'global'. Used in the generated Entry, Aspects and Aspect Types||REQUIRED|
+|target_project_id|Google Cloud Project ID. Used in the generated metadata and defines the scope metadata will be imported into||REQUIRED|
+|target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates the region Entries will be associated with||REQUIRED|
 |target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |host|PostgreSQL server to connect to||REQUIRED|
 |port|PostgreSQL server port (usually 5432)||REQUIRED|
 |database|PostgreSQL database to connect to||REQUIRED
 |user|PostgreSQL username to connect with||REQUIRED|
 |local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
-|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
-|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||REQUIRED|
-|jar|Name (or full path to) JDBC jar file to use for connection|postgresql-42.7.5.jar|OPTIONAL|
+|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|jar|Name (or full path to) JDBC jar file|postgresql-42.7.5.jar|OPTIONAL|
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
@@ -39,8 +39,7 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 ## Prepare your PostgreSQL environment:
 
 Best practice is to connect to the database with a dedicated user that has the minimum privileges required to extract metadata. 
-1. Create a user in the PostgreSQL instance(s) and grant it the following privileges an
-d roles: 
+1. Create a user in the PostgreSQL instance(s) and grant it the following privileges and roles: 
     * CONNECT and CREATE SESSION
     * SELECT on information_schema.tables
     * SELECT on information_schema.columns
@@ -92,7 +91,7 @@ Note:  The authenticated user must have the following IAM roles in the project w
     cd postgresql-connector
     ```
 * Download the [postgresql-42.7.5.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) and save it in the local directory.
-    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. ie  --jar postgresql-42.7.6.jar
+    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. eg.  --jar postgresql-42.7.6.jar
 
 * Install all python dependencies 
     ```bash
