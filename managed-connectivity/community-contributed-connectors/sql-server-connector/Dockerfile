@@ -21,7 +21,7 @@ RUN apt install -y wget
 
 ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
-COPY ${JAR_FILE} "${SPARK_EXTRA_JARS_DIR}"
+COPY mssql-jdbc-12.10.0.jre11.jar "${SPARK_EXTRA_JARS_DIR}"
 
 ENV RUNNING_IN_CONTAINER=Y
 

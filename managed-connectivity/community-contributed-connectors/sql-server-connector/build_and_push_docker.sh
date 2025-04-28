@@ -23,8 +23,6 @@ IMAGE_NAME="universal-catalog-sqlserver-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 
-JAR_FILE="mssql-jdbc-12.10.0.jre11.jar"
-
 REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/docker-repo/${IMAGE_NAME}
 
 docker build -t "${IMAGE}" .
