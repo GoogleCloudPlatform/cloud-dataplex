@@ -15,6 +15,7 @@
 """Sends files to GCP storage."""
 from typing import Dict
 from google.cloud import storage
+import logging
 
 def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: str):
     """Uploads a file to GCP bucket."""
@@ -29,13 +30,13 @@ def checkDestination(bucketpath: str):
     client = storage.Client()
 
     if bucketpath.startswith("gs://"):
-        print(f"Please provide output cloud storage bucket {bucketpath} without gs:// prefix")
+        logging.error(f"Please provide output Cloud Storage bucket {bucketpath} without gs:// prefix")
         return False
     
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        print(f"Cloud storage bucket {bucketpath} does not exist")
+        logging.error(f"Cloud Storage bucket {bucketpath} does not exist")
         return False
     
     return True

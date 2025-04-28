@@ -30,7 +30,7 @@ def validateArguments(parsed_args):
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
-        print("Exiting")
+        logging.error("Exiting")
         sys.exit(1)
 
     if parsed_args.target_location_id not in (GCP_REGIONS + ['global']):
