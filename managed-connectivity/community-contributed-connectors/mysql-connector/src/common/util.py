@@ -26,7 +26,6 @@ def loadReferencedFile(file_path) -> str:
         return content
     except Exception as e:
         print(f"Error while reading file {file_path}: {e}")
-        print("Exiting")
         sys.exit(1)
     return None
 
@@ -40,5 +39,9 @@ def generateFolderName(SOURCE_TYPE : str) -> str:
     return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}" 
 
 # True if running in container
-def isRunningInContainer():
+def isRunningInContainer() -> bool:
     return os.environ.get("RUNNING_IN_CONTAINER", "").lower() in ("yes", "y", "on", "true", "1")
+
+# True if running in container
+def fileExists(filepath) -> bool:
+    return os.path.isfile(filepath)

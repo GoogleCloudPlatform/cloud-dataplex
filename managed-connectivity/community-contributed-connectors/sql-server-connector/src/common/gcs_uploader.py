@@ -30,13 +30,11 @@ def checkDestination(bucketpath: str):
     client = storage.Client()
 
     if bucketpath.startswith("gs://"):
-        logging.error(f"Please provide output Cloud Storage bucket {bucketpath} without gs:// prefix")
-        return False
+        raise Exception(f"Please provide output Cloud Storage bucket {bucketpath} without gs:// prefix")
     
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        logging.error(f"Cloud Storage bucket {bucketpath} does not exist")
-        return False
+        raise Exception(f"Cloud Storage bucket {bucketpath} does not exist")
     
     return True

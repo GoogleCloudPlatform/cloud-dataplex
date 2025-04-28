@@ -18,6 +18,7 @@ from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
 
 class MysqlConnector(IExternalSourceConnector):
     """Reads data from Mysql and returns Spark Dataframes."""
@@ -27,14 +28,17 @@ class MysqlConnector(IExternalSourceConnector):
 
         # Get jar file. allow override for local jar file (different version / name)
         jar_path = getJarPath(config)
-        print(f"Using jar path {jar_path}")
+
+        if not fileExists(jar_path):
+            raise Exception(f"Jar file not found: {jar_path}")
 
         self._spark = SparkSession.builder.appName("MySQLIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config
-        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true"
+        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true"
 
         self._connectOptions = {
             "driver": "com.mysql.cj.jdbc.Driver",

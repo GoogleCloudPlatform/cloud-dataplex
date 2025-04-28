@@ -17,6 +17,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
+from src.common.util import fileExists
 from src.common.connection_jar import getJarPath
 
 class SQLServerConnector(IExternalSourceConnector):
@@ -27,9 +28,12 @@ class SQLServerConnector(IExternalSourceConnector):
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
 
+        if not fileExists(jar_path):
+            raise Exception(f"Jar file not found: {jar_path}")
+
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
-            .config("spark.log.level", "WARN") \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config

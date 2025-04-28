@@ -19,6 +19,7 @@ from pyspark.sql import DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
 from src.common.entry_builder import COLUMN_IS_NULLABLE
 
 class OracleConnector(IExternalSourceConnector):
@@ -28,6 +29,9 @@ class OracleConnector(IExternalSourceConnector):
 
         # Get jar file. allow override for local jar file (different version / name)
         jar_path = getJarPath(config)
+
+        if not fileExists(jar_path):
+            raise Exception(f"Jar file not found: {jar_path}")
 
         self._spark = SparkSession.builder.appName("OracleIngestor") \
             .config("spark.jars", jar_path) \

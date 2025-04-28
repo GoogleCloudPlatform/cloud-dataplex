@@ -41,3 +41,7 @@ def generateFolderName(SOURCE_TYPE : str) -> str:
 # True if running in container
 def isRunningInContainer() -> bool:
     return os.environ.get("RUNNING_IN_CONTAINER", "").lower() in ("yes", "y", "on", "true", "1")
+
+# True if running in container
+def fileExists(filepath) -> bool:
+    return os.path.isfile(filepath)

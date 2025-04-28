@@ -18,6 +18,7 @@ from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
 
 class PostgresConnector(IExternalSourceConnector):
     """Reads data from Postgres and returns Spark Dataframes."""
@@ -27,6 +28,9 @@ class PostgresConnector(IExternalSourceConnector):
 
         # Get jar file. allow override for local jar file (different version / name)
         jar_path = getJarPath(config)
+
+        if not fileExists(jar_path):
+            raise Exception(f"Jar file not found: {jar_path}")
 
         self._spark = SparkSession.builder.appName("PostgresIngestor") \
             .config("spark.jars", jar_path) \

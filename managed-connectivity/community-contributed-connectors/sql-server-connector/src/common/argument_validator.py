@@ -29,7 +29,7 @@ def validateArguments(parsed_args):
         raise Exception("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
-        raise Exception(f"--output_bucket ${parsed_args.output_bucket}")
+        raise Exception(f"--output_bucket {parsed_args.output_bucket} is not valid")
 
     if parsed_args.target_location_id not in (GCP_REGIONS + ['global']):
         raise Exception(f"--target_location_id must be valid google cloud region or 'global' : {parsed_args.target_location_id}")

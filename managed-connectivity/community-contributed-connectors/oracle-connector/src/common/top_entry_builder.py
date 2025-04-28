@@ -41,17 +41,6 @@ def _dict_factory(data: object):
 
     return dict((k, convert(v)) for k, v in data)
 
-# Returns the object as a copy using camel case properties to match dataplex entry schema
-#def _dict_camelCase_factory(data: object):
-#    """Factory function required for converting Entry with camel case"""
-#
-#    def convert(obj: object):
-#        if isinstance(obj, proto.Message):
-#            return proto.Message.to_dict(obj)
-#        return obj
-#
-#    return dict((k, convert(v)) for k, v in data)
-
 def _to_camel_case(keyname_str: str) -> str:
     """Converts string to camelCase."""
 

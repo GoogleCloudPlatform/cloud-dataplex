@@ -69,14 +69,13 @@ def run():
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.INFO)
         log.addHandler(stream_handler)
-    else:
-        print("running in a container")
 
     try:
         config = cmd_reader.read_args()
     except Exception as ex:
         log.fatal(f"Error during argument checks: {ex}")
-        logging_client.close()
+        if logging_client is not None:
+                logging_client.close()
         sys.exit(1)
 
     if config['local_output_only']:
@@ -91,8 +90,16 @@ def run():
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
-    connector = ConnectorClass(config)
+    connector = None
     
+    try:
+        connector = ConnectorClass(config)
+    except Exception as ex:
+            log.fatal(f"Error setting up connector for {SOURCE_TYPE}: {ex}")
+            if logging_client is not None:
+                logging_client.close()
+            sys.exit(1)
+
     entries_count = 0
 
     # Build the output file name from connection details
@@ -113,10 +120,10 @@ def run():
         try:
             df_raw_schemas = connector.get_db_schemas()
         except Exception as ex:
-            logging.fatal(f"Error during metadata extraction from {SOURCE_TYPE}: {ex}")
+            log.fatal("Error during metadata extraction from db: {ex}")
             if logging_client is not None:
                 logging_client.close()
-                sys.exit(1)
+            sys.exit(1)
 
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()

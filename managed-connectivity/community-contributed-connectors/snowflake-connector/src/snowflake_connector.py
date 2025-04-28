@@ -16,6 +16,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
 
 class SnowflakeConnector:
     """Reads data from Snowflake and returns Spark Dataframes."""
@@ -25,6 +26,9 @@ class SnowflakeConnector:
 
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
+
+        if not fileExists(jar_path):
+            raise Exception(f"Jar file not found: {jar_path}")
 
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \
