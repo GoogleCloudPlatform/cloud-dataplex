@@ -70,7 +70,7 @@ def run():
 
     config = cmd_reader.read_args()
 
-    print(f"\nExtracting metadata from {SOURCE_TYPE}")
+    logging.info(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
         logger.info("File will be generated in local 'output' directory only")
