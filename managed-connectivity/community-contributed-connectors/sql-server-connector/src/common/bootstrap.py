@@ -19,6 +19,7 @@
 from typing import Dict
 import os
 import importlib
+from google.cloud import logging as gcp_logging
 import logging
 from src import cmd_reader
 from src.constants import EntryType
@@ -31,6 +32,7 @@ from src.constants import CONNECTOR_CLASS
 from src.common import entry_builder
 from src.common import gcs_uploader
 from src.common import top_entry_builder
+from src.common.util import isRunningInContainer
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 
 def write_jsonl(output_file, json_strings):
@@ -51,12 +53,23 @@ def process_dataset(
 
 def run():
     """Runs a pipeline."""
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logging.getLogger().addHandler(logging.StreamHandler())
+
+    # Add google cloud logging if containerised
+    if isRunningInContainer():
+        logging_client = gcp_logging.Client()
+        handler = logging_client.get_default_handler()
+        logger.addHandler(handler)
+
     config = cmd_reader.read_args()
 
-    print(f"\nExtracting metadata from {SOURCE_TYPE}")
+    logger.info(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
-        print("File will be generated in local 'output' directory only")
+        logger.info("File will be generated in local 'output' directory only")
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
@@ -93,18 +106,17 @@ def run():
         # Collect metadata for target db objects in each schema
         for schema in schemas:
             for object_type in DB_OBJECT_TYPES_TO_PROCESS:
-                print(f"Processing {object_type.name}S for {schema}:  ",end='')
                 objects_json = process_dataset(connector, config, schema, object_type)
-                print(f"{len(objects_json)}")
+                logger.info(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
                 entries_count += len(objects_json)
                 write_jsonl(file, objects_json)
 
-    print(f"{entries_count} rows written to file {FILENAME}") 
+    logger.info(f"{entries_count} rows written to file {FILENAME}") 
 
     # If 'min_expected_entries set, file must meet minimum number of expected entries
     if entries_count < config['min_expected_entries']:
-        print(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
+        logger.info(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
     elif not config['local_output_only']:
-        print(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
+        logger.info(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
-    print(f"\nFinished")
+    logger.info(f"\nFinished")

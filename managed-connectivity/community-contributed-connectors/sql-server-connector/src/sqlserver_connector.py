@@ -18,11 +18,17 @@ from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import isRunningInContainer
+from google.cloud import logging as gcp_logging
 import logging
 import sys
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
+
+
+    logger = []
+    logging_client = []
 
     def __init__(self, config: Dict[str, str]):
 
@@ -35,6 +41,7 @@ class SQLServerConnector(IExternalSourceConnector):
 
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config
