@@ -16,7 +16,7 @@
 
 from pathlib import Path
 from src.constants import JDBC_JAR
-from src.common.util import runningInContainer
+from src.common.util import isRunningInContainer
 
 # Returns jar path, allowing override with --jar option
 def getJarPath(config : dict[str:str]):
