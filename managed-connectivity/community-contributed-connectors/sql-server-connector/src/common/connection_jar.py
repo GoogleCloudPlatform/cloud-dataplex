@@ -24,7 +24,7 @@ def getJarPath(config : dict[str:str]):
     base_jar_path = "" 
     user_jar = config.get('jar')
 
-    # jar directory path varies when running as local script vs in docker container
+    # jar directory path depending on whether local script or running in container
     if isRunningInContainer():
         base_jar_path = "/opt/spark/jars"
     else:
