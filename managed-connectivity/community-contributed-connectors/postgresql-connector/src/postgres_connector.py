@@ -34,6 +34,7 @@ class PostgresConnector(IExternalSourceConnector):
 
         self._spark = SparkSession.builder.appName("PostgresIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config

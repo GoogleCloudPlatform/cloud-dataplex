@@ -28,6 +28,7 @@ The PostgreSQL connector takes the following parameters:
 |port|PostgreSQL server port (usually 5432)||REQUIRED|
 |database|PostgreSQL database to connect to||REQUIRED
 |user|PostgreSQL username to connect with||REQUIRED|
+|password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|
 |local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||REQUIRED|

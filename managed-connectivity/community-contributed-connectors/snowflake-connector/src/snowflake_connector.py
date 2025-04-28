@@ -32,6 +32,7 @@ class SnowflakeConnector:
 
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._url = f"{config['account']}.snowflakecomputing.com"
