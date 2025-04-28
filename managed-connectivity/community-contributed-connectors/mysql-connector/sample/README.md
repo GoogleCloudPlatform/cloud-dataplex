@@ -13,6 +13,7 @@ This directory contains:
     1. Replace the value in source_storage_uri with the path to your GCS bucket from above (Note: without the file and ending with /)
     2. Replace "gcp-project-id" with your project ID
     3. Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_reques exist in your project
+        
         Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
 Run import via the REST Metadata Import API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
