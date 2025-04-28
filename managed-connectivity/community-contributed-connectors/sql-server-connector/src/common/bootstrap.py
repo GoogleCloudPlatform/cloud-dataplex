@@ -19,6 +19,7 @@
 from typing import Dict
 import os
 import importlib
+import sys
 from google.cloud import logging as gcp_logging
 import logging
 from src import cmd_reader
@@ -34,6 +35,8 @@ from src.common import gcs_uploader
 from src.common import top_entry_builder
 from src.common.util import isRunningInContainer
 from src.common.ExternalSourceConnector import IExternalSourceConnector
+
+logging_client = []
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""
@@ -56,7 +59,6 @@ def run():
 
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    logging.getLogger().addHandler(logging.StreamHandler())
 
     # Add google cloud logging if containerised
     if isRunningInContainer():
@@ -97,7 +99,15 @@ def run():
             file.writelines("\n")
 
         # Collect list of schemas for extract
-        df_raw_schemas = connector.get_db_schemas()
+        df_raw_schemas = []
+        try:
+            df_raw_schemas = connector.get_db_schemas()
+        except Exception as ex:
+            logging.fatal("Error during metadata extraction from db: {ex}")
+            if isRunningInContainer:
+                logging_client.close()
+                sys.exit(1)
+
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
 
@@ -115,7 +125,7 @@ def run():
 
     # If 'min_expected_entries set, file must meet minimum number of expected entries
     if entries_count < config['min_expected_entries']:
-        logger.info(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
+        logger.warning(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
     elif not config['local_output_only']:
         logger.info(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)

@@ -19,22 +19,12 @@ from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
 from src.common.util import isRunningInContainer
-from google.cloud import logging as gcp_logging
-import logging
 import sys
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
 
-
-    logger = []
-    logging_client = []
-
     def __init__(self, config: Dict[str, str]):
-
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
-        logger.addHandler(logging.StreamHandler())
 
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
@@ -69,19 +59,10 @@ class SQLServerConnector(IExternalSourceConnector):
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
 
-        result : DataFrame
-
-        try:
-            result = self._spark.read.format("jdbc") \
+        return self._spark.read.format("jdbc") \
                 .options(**self._connectOptions) \
                 .option("query", query) \
                 .load()
-        except Exception as ex:
-            logging.fatal(f"Error during query SQL Server connector: {ex}")
-            sys.exit(1)
-
-        return result
-
 
     def get_db_schemas(self) -> DataFrame:
         """Gets a list of schemas in the database"""
