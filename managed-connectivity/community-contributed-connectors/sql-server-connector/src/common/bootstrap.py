@@ -65,10 +65,12 @@ def run():
         logging_client = gcp_logging.Client()
         handler = logging_client.get_default_handler()
         logger.addHandler(handler)
+    else:
+        logging.getLogger().addHandler(logging.StreamHandler())
 
     config = cmd_reader.read_args()
 
-    logger.info(f"\nExtracting metadata from {SOURCE_TYPE}")
+    print(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
         logger.info("File will be generated in local 'output' directory only")
@@ -117,7 +119,7 @@ def run():
         for schema in schemas:
             for object_type in DB_OBJECT_TYPES_TO_PROCESS:
                 objects_json = process_dataset(connector, config, schema, object_type)
-                logger.info(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
+                logging.info(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
                 entries_count += len(objects_json)
                 write_jsonl(file, objects_json)
 
@@ -129,4 +131,4 @@ def run():
     elif not config['local_output_only']:
         logger.info(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
-    logger.info(f"\nFinished")
+    logging.info(f"\nFinished")
