@@ -26,26 +26,20 @@ GCP_REGIONS = ['asia-east1', 'asia-east2', 'asia-northeast1', 'asia-northeast2',
 def validateArguments(parsed_args):
 
     if parsed_args.local_output_only == False and (parsed_args.output_bucket is None or parsed_args.output_folder is None):
-        logging.fatal("ERROR: both --output_bucket and --output_folder must be supplied if not using --local_output_only")
-        sys.exit(1)
+        raise Exception("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
-        logging.fatal("Exiting")
-        sys.exit(1)
+        raise Exception(f"--output_bucket ${parsed_args.output_bucket}")
 
     if parsed_args.target_location_id not in (GCP_REGIONS + ['global']):
-        logging.fatal(f"ERROR: --target_location_id must be valid google cloud region or 'global' : {parsed_args.target_location_id}")
-        sys.exit(1)
+        raise Exception(f"--target_location_id must be valid google cloud region or 'global' : {parsed_args.target_location_id}")
 
     if parsed_args.password_secret is not None:
 
         validateSecretID(parsed_args.password_secret)
 
-        try:
-            parsed_args.password = get_password(parsed_args.password_secret)
-        except Exception as ex:
-            logging.fatal(ex)
-            sys.exit(1)
+        parsed_args.password = get_password(parsed_args.password_secret)
+
     return parsed_args
 
 
@@ -53,9 +47,7 @@ def validateSecretID(secretpath: str) -> bool:
     pattern = r"^projects/[^/]+/secrets/[^/]+$"
 
     if not re.match(pattern, secretpath):
-        logging.fatal(
-            f"ERROR: {secretpath} is not a valid Secret ID. Format is projects/PROJECTID/secrets/SECRETNAME.\nExiting.")
-        sys.exit(1)
+        raise Exception(f"{secretpath} is not a valid Secret ID. Format is projects/PROJECTID/secrets/SECRETNAME.\nExiting.")
     return True
 
 # Validates that a value for least one of given list arguments has been supplied
@@ -75,6 +67,4 @@ def true_or_false(arg):
         return False
     else:
         logging.fatal(
-            f"ERROR: Received parameter value '{arg}' but expected true or false")
-        logging.fatal("Exiting")
-        sys.exit(1)
+            f"Received parameter value '{arg}' but expected true or false")

@@ -29,7 +29,7 @@ class SQLServerConnector(IExternalSourceConnector):
 
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
-            .config("spark.log.level", "ERROR") \
+            .config("spark.log.level", "WARN") \
             .getOrCreate()
 
         self._config = config

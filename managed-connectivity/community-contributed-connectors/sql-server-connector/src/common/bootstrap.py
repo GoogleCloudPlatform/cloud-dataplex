@@ -20,7 +20,7 @@ from typing import Dict
 import os
 import importlib
 import sys
-from google.cloud import logging as gcp_logging
+import google.cloud.logging
 import logging
 from src import cmd_reader
 from src.constants import EntryType
@@ -57,24 +57,31 @@ def process_dataset(
 def run():
     """Runs a pipeline."""
 
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    print(f"\nExtracting metadata from {SOURCE_TYPE}")
 
-    # Add google cloud logging if containerised
-    if isRunningInContainer():
-        logging_client = gcp_logging.Client()
-        handler = logging_client.get_default_handler()
-        logger.addHandler(handler)
-        logging.warning("metadata_import setting google cloud logging")
+    logging_client = google.cloud.logging.Client()
+    logging_client.setup_logging()
+    log = logging.getLogger(f"metadata_extract_${SOURCE_TYPE}")
+
+    if not isRunningInContainer():
+    # Add a stream handler to log messages to the console.
+        print("Setting up local logging")
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.INFO)
+        log.addHandler(stream_handler)
     else:
-        logging.getLogger().addHandler(logging.StreamHandler())
+        print("running in a container")
 
-    config = cmd_reader.read_args()
-
-    logging.warning(f"\nExtracting metadata from {SOURCE_TYPE}")
+    try:
+        config = cmd_reader.read_args()
+    except Exception as ex:
+        log.fatal(f"Error during argument checks: {ex}")
+        logging_client.close()
+        sys.exit(1)
 
     if config['local_output_only']:
-        logger.info("File will be generated in local 'output' directory only")
+        log.info("File will be generated in local 'output' directory only")
+
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
@@ -106,10 +113,10 @@ def run():
         try:
             df_raw_schemas = connector.get_db_schemas()
         except Exception as ex:
-            logging.fatal("Error during metadata extraction from db: {ex}")
+            logging.fatal(f"Error during metadata extraction from {SOURCE_TYPE}: {ex}")
             if logging_client is not None:
                 logging_client.close()
-            sys.exit(1)
+                sys.exit(1)
 
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
@@ -120,16 +127,17 @@ def run():
         for schema in schemas:
             for object_type in DB_OBJECT_TYPES_TO_PROCESS:
                 objects_json = process_dataset(connector, config, schema, object_type)
-                logging.info(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
+                log.info(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
                 entries_count += len(objects_json)
                 write_jsonl(file, objects_json)
 
-    logger.info(f"{entries_count} rows written to file {FILENAME}") 
+    #log.info(f"{entries_count} rows written to file {FILENAME}") 
 
     # If 'min_expected_entries set, file must meet minimum number of expected entries
     if entries_count < config['min_expected_entries']:
-        logger.warning(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
+        log.warning(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
     elif not config['local_output_only']:
-        logger.info(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
+        log.info(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
-    logging.info(f"\nFinished")
+    print("Finished")
+    logging_client.close()
