@@ -23,6 +23,8 @@ ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
 COPY mysql-connector-j-9.2.0.jar "${SPARK_EXTRA_JARS_DIR}"
 
+ENV RUNNING_IN_CONTAINER=Y
+
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
 ENV PATH=${CONDA_HOME}/bin:${PATH}

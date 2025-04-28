@@ -24,6 +24,8 @@ RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
 COPY snowflake-jdbc-3.19.0.jar "${SPARK_EXTRA_JARS_DIR}"
 COPY spark-snowflake_2.12-3.1.1.jar "${SPARK_EXTRA_JARS_DIR}"
 
+ENV RUNNING_IN_CONTAINER=Y
+
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
 ENV PATH=${CONDA_HOME}/bin:${PATH}
