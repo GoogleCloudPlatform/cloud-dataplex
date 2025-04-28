@@ -18,8 +18,6 @@ from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
-from src.common.util import isRunningInContainer
-import sys
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""

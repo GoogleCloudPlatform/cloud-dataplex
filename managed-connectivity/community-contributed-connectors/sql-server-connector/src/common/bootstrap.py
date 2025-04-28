@@ -65,12 +65,13 @@ def run():
         logging_client = gcp_logging.Client()
         handler = logging_client.get_default_handler()
         logger.addHandler(handler)
+        logging.warning("metadata_import setting google cloud logging")
     else:
         logging.getLogger().addHandler(logging.StreamHandler())
 
     config = cmd_reader.read_args()
 
-    logging.info(f"\nExtracting metadata from {SOURCE_TYPE}")
+    logging.warning(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
         logger.info("File will be generated in local 'output' directory only")
@@ -101,7 +102,7 @@ def run():
             file.writelines("\n")
 
         # Collect list of schemas for extract
-        df_raw_schemas = []
+        df_raw_schemas = None
         try:
             df_raw_schemas = connector.get_db_schemas()
         except Exception as ex:
