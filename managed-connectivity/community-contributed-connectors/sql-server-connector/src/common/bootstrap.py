@@ -36,7 +36,7 @@ from src.common import top_entry_builder
 from src.common.util import isRunningInContainer
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 
-logging_client = []
+logging_client = None
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""
@@ -104,9 +104,9 @@ def run():
             df_raw_schemas = connector.get_db_schemas()
         except Exception as ex:
             logging.fatal("Error during metadata extraction from db: {ex}")
-            if isRunningInContainer:
+            if logging_client is not None:
                 logging_client.close()
-                sys.exit(1)
+            sys.exit(1)
 
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
