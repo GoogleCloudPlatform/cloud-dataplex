@@ -21,7 +21,9 @@ RUN apt install -y wget
 
 ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
-COPY mssql-jdbc-12.10.0.jre11.jar "${SPARK_EXTRA_JARS_DIR}"
+COPY ${JAR_FILE} "${SPARK_EXTRA_JARS_DIR}"
+
+ENV RUNNING_IN_CONTAINER=Y
 
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
@@ -49,7 +51,6 @@ RUN python -m pip install -r requirements.txt
 ENV PYTHONPATH=/opt/python/packages
 RUN mkdir -p "${PYTHONPATH}/src/"
 COPY src/ "${PYTHONPATH}/src/"
-COPY src/spark_jar_path/ "${PYTHONPATH}/src/common/"
 COPY main.py .
 
 RUN groupadd -g 1099 spark

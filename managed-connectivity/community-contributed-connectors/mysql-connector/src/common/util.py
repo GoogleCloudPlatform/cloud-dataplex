@@ -16,6 +16,7 @@
 import sys
 from datetime import datetime
 import re
+import os
 
 # Returns string content from file at given path
 def loadReferencedFile(file_path) -> str:
@@ -37,4 +38,7 @@ def to_camel_case(text) -> str:
 def generateFolderName(SOURCE_TYPE : str) -> str:
     currentDate = datetime.now()
     return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}" 
-    
+
+# True if running in container
+def isRunningInContainer():
+    return os.environ.get("RUNNING_IN_CONTAINER", "").lower() in ("yes", "y", "on", "true", "1")
