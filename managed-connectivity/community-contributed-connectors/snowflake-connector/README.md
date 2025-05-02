@@ -7,6 +7,14 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 This is not an officially supported Google product and is provided on an as-is basis, without warrenty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
+### Target objects and schemas:
+
+Metadata for the following database objects is extracted by the connector:
+|Object|Metadata Extracted|
+|---------|------------|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL|
+|Views|View name, column names, column data types, column NULL/NOT NULL|
+
 ### Parameters
 The Snowflake connector takes the following parameters:
 |Parameter|Description|Default|Required/Optional|
@@ -29,7 +37,7 @@ The Snowflake connector takes the following parameters:
 
 Best practice is to connect to the database with a dedicated user that has the minimum privileges required to extract metadata.  
 
-The user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) in snowflake with the following privileges for the database, schemas,tables, and views for which metadata needs to be extracted:
+The user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) in snowflake with usage and reference privileges for the database, schemas,tables, and views for which metadata needs to be extracted:
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
