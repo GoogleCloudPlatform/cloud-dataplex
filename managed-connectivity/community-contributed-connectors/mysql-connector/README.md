@@ -6,6 +6,8 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
+Note that metadata for MySQL instances running on [Cloud SQL](https://cloud.google.com/sql/mysql) can be collected automatically and this connector is not required for these. See [catalog integration](https://cloud.google.com/sql/docs/mysql/dataplex-catalog-integration) for details.
+
 This is not an officially supported Google product and is provided on an as-is basis, without warrenty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
