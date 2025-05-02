@@ -41,7 +41,7 @@ def read_args():
     parser.add_argument("--password_secret", type=str, required=True,
                         help="Google Secrets Manager ID for MySQL password")
     
-    parser.add_argument("--jar", type=str, required=False, help="path to jar file")
+    parser.add_argument("--jar", type=str, required=False, help="path to JDBC jar file if using a different version than the default")
     
     parser.add_argument("--use_ssl", type=true_or_false,required=False,default=True,help="connect with SSL")
     parser.add_argument("--ssl_mode", type=str, required=False,choices=['prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
@@ -52,7 +52,7 @@ def read_args():
     output_option_group.add_argument("--output_bucket", type=str,
                         help="Destination Google Cloud Storage bucket for generated metadata import file. Do not include gs:// prefix ")  
     parser.add_argument("--output_folder", type=str, required=False,
-                        help="Folder within bucket where generated metadata import file will be written. Name only required")
+                        help="Folder within bucket where generated metadata import file will be written. Please specify folder name only.")
     
     parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,
                         help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Saftey mechanism for when using Full Entry Sync metadata jobs")
