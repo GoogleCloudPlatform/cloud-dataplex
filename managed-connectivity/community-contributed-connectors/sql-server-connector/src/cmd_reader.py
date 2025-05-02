@@ -37,7 +37,7 @@ def read_args():
         help="SQL Server port number ")
     parser.add_argument("--user", type=str, required=True, help="SQL Server User")
 
-    parser.add_argument("--jar", type=str, required=False, help="Path to JDBC jar file")
+    parser.add_argument("--jar", type=str, required=False, help="path to JDBC jar file if using a different version than the default")
 
     password_option_group = parser.add_mutually_exclusive_group()
     password_option_group.add_argument("--password_secret",type=str,help="Google Secret Manager ID of the password")
