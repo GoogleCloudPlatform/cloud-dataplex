@@ -34,12 +34,12 @@ def read_args():
     parser.add_argument("--host", type=str, required=True,
                         help="Mysql host server")
     parser.add_argument("--port", type=str, required=True,
-                        help="The port number (usually 3306)")
+                        help="database port number (usually 3306)")
     parser.add_argument("--database", type=str, required=True,
                         help="MySQL database to connect to")
     parser.add_argument("--user", type=str, required=True, help="Mysql User")
     parser.add_argument("--password_secret", type=str, required=True,
-                        help="Google Secrets Manager ID for MySQL password")
+                        help="Google Secret Manager ID for MySQL password")
     
     parser.add_argument("--jar", type=str, required=False, help="path to JDBC jar file if using a different version than the default")
     
