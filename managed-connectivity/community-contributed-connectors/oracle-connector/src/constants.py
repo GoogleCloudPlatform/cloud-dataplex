@@ -47,7 +47,7 @@ DB_OBJECT_TYPES_TO_PROCESS : List[EntryType] = [EntryType.TABLE, EntryType.VIEW]
 
 def generateFileName(config: dict[str:str]) -> str:
     filename = ''
-    if config.get('sid'):
+    if config.get('sid') and config.get('sid') is not None:
         filename = f"{SOURCE_TYPE}-{config['host']}-{config['sid']}.jsonl"
     elif config.get('service') and config.get('service') is not None:
         filename = f"{SOURCE_TYPE}-{config['host']}-{config['service']}.jsonl"
