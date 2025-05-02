@@ -6,7 +6,7 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 See the documentation [Develop Custom Connectors](https://cloud.google.com/dataplex/docs/develop-custom-connector) for more information about custom connectors for universal catalog.
 
-This is not an officially supported Google product. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
+This is not an officially supported Google product and is provided on an as-is basis, without warrenty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
 ### Parameters
