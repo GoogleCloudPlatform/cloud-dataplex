@@ -12,8 +12,8 @@ Program](https://bughunters.google.com/open-source-security).
 Metadata for the following database objects is extracted by the connector:
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types|
-|Views|View name, column names, column data types|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL|
+|Views|View name, column names, column data types, column NULL/NOT NULL|
 
 ### Parameters
 The Oracle connector accepts the following parameters:
