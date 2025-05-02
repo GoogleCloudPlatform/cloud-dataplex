@@ -63,7 +63,7 @@ def read_args():
     output_option_group.add_argument("--output_bucket", type=str,
                         help="Destination Cloud Storage bucket for storing generated metadata import file. Do not include gs:// prefix ")  
     parser.add_argument("--output_folder", type=str, required=False,
-                        help="Folder within bucket where generated metadata import file will be written. Name only required")
+                        help="Folder within bucket where generated metadata import file will be written. Specify folder name only")
     
     parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,
                         help="Minimum number of entries expected in metadata file. If less then file not uploaded to Cloud Storage. Prevents unintended deletion of entries when using Full Entry Sync metadata jobs")
