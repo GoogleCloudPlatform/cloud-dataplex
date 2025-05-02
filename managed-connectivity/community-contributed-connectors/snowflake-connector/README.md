@@ -148,7 +148,7 @@ Building a Docker container for the connector allows it to be run from a variety
     ./build_and_push_docker.sh
     ``` 
 
-    This will build a Docker container called **universal-catalog-snowflake-pyspark** and store it in Artifact Registry. This process can take take up to 5 minutes.
+    This will build a Docker container called **catalog-snowflake-pyspark** and store it in Artifact Registry. This process can take take up to 5 minutes.
 
 ### Run a metadata extraction job with Dataproc Serverless
 
@@ -164,7 +164,12 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
-Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd snowflake-connector
+    ```
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
 
 ```shell
 gcloud dataproc batches submit pyspark \
@@ -172,10 +177,10 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=snowflake-metadata-001 \
     --deps-bucket=dataplex-metadata-collection-bucket \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-snowflake-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/catalog-snowflake-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
     --jars=snowflake-jdbc-3.19.0.jar,spark-snowflake_2.12-3.1.1.jar \
-    --network=projects/gcp-project-id/global/networks/default \
+    --network=default \
     main.py \
     --target_project_id my-gcp-project \
     --target_location_id us-central1 \

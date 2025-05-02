@@ -8,7 +8,7 @@ This directory contains:
 
 * In sqlserver-sample-output.jsonl: 
     1. Search and replace all instances of "gcp-project-id" with your project ID
-    2. [OPTIONAL] Search and replace all instances of "us-central1" with your region or with "global" 
+    2. (OPTIONAL) Search and replace all instances of "us-central1" with your region or with "global" 
     3. Upload the .jsonl metadata import file to a Cloud Storage bucket
 
 * In metadata_import_request.json:
@@ -27,4 +27,4 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 "https://dataplex.googleapis.com/v1/projects/gcp-project-id/locations/us-central1/metadataJobs?metadataJobId=a001"
 ```
 
-For more details about the Metadata Import Process see [the documentation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata)
+For more details about the metadata import process see [the documentation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata)

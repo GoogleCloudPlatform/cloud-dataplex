@@ -143,7 +143,7 @@ Building a docker container allows the connector to be run from a variety of Goo
     ./build_and_push_docker.sh
     ``` 
 
-    The process will build a container called **universal-catalog-mysql-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
+    The process will build a container called **catalog-mysql-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
 
 ### Run a metadata extraction job with Dataproc Serverless
 
@@ -159,13 +159,20 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd mysql-connector
+    ```
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
+
 ```shell
 gcloud dataproc batches submit pyspark \
     --project=my-gcp-project-id \
     --region=us-central1 \
     --batch=mysql-metadata-0001 \
     --deps-bucket=dataplex-metadata-collection-bucket  \
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-mysql-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/catalog-mysql-pyspark:latest \
     --service-account=440992669-compute@developer.gserviceaccount.com \
     --jars=mysql-connector-j-9.2.0.jar \
     --network=default \

@@ -144,7 +144,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
     ./build_and_push_docker.sh
     ``` 
 
-    The process will build a container called **universal-catalog-oracle-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
+    The process will build a container called **catalog-oracle-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
 
 ### Run a metadata extraction job with Dataproc Serverless
 
@@ -160,7 +160,12 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
-Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd oracle-connector
+    ```
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
 
 ```shell
 gcloud dataproc batches submit pyspark \
@@ -168,10 +173,10 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=oracle-metadata-0001 \
     --deps-bucket=dataplex-metadata-collection-bucket \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-oracle-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/catalog-oracle-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
     --jars=ojdbc11.jar \
-    --network=projects/gcp-project-id/global/networks/default \
+    --network=default \
     main.py \
 --  --target_project_id my-gcp-project-id \
       --target_location_id us-central1	\

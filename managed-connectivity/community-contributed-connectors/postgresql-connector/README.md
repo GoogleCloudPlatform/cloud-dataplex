@@ -143,7 +143,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
     ./build_and_push_docker.sh
     ``` 
 
-    The process will build a container called **universal-catalog-postgresql-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
+    The process will build a container called **catalog-postgresql-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
 
 ### Run a metadata extraction job with Dataproc Serverless
 
@@ -159,16 +159,23 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd postgresql-connector
+    ```
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
+
 ```shell
 gcloud dataproc batches submit pyspark \
     --project=my-gcp-project-id \
     --region=us-central1 \
     --batch=postgres-metadata-0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/universal-catalog-postgresql-pyspark:latest \ \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/catalog-postgresql-pyspark:latest \ \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
     --jars=postgresql-42.7.5.jar \
-    --network=Your-Network-Name \
+    --network=default \
     main.py \
 --  --target_project_id my-gcp-project-id \
     --target_location_id us-central1 \

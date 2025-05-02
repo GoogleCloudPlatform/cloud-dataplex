@@ -1,4 +1,4 @@
-# universal catalog custom metadata connectors 
+# custom metadata connectors 
 
 These connectors extract metadata from external systems into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview)
 

@@ -12,7 +12,7 @@
     "CLOUD_REGION": "us-central1",
     "CLOUD_STORAGE_BUCKET_ID": "workflows-bqunifieid-working",
     "CREATE_TARGET_ENTRY_GROUP": false,
-    "CUSTOM_CONTAINER_IMAGE": "us-central1-docker.pkg.dev/the-project-id/docker-repo/dataplex-sqlserver-pyspark:latest",
+    "CUSTOM_CONTAINER_IMAGE": "us-central1-docker.pkg.dev/the-project-id/docker-repo/catalog-sqlserver-pyspark:latest",
     "IMPORT_JOB_LOG_LEVEL": "INFO",
     "IMPORT_JOB_SCOPE_ASPECT_TYPES": [
         "projects/the-gcp-project-id/locations/us-central1/aspectTypes/sqlserver-instance",

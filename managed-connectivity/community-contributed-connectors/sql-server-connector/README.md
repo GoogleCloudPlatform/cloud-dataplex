@@ -118,7 +118,7 @@ python3 main.py \
 --database dbtoextractfrom \
 --user dataplexagent \
 --password_secret projects/73899954526/secrets/dataplexagent_sqlserver \
---output_bucket dataplex_connectivity_imports \
+--output_bucket catalog_integration_imports \
 --output_folder sqlserver
 ```
 
@@ -149,7 +149,7 @@ Building a Docker container allows the connector to be run from a variety of Goo
     ./build_and_push_docker.sh
     ``` 
 
-    The process will build a container called **universal-catalog-sqlserver-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
+    The process will build a container called **catalog-sqlserver-pyspark** and store it in Artifact Registry. This can take up to 5 minutes.
 
 ### Run a metadata extraction job with Dataproc Serverless
 
@@ -165,7 +165,12 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
-Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:
+* Ensure you are in the root directory of the connector
+    ```bash
+    cd sqlserver-connector
+    ```
+
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
 
 ```shell
 gcloud dataproc batches submit pyspark \
@@ -173,10 +178,10 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
-    --container-image=us-central1-docker.pkg.dev/gcp-project-id/docker-repo/universal-catalog-sqlserver-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/gcp-project-id/docker-repo/catalog-sqlserver-pyspark:latest \
     --service-account=499995342669-compute@developer.gserviceaccount.com \
     --jars=mssql-jdbc-12.10.0.jre11.jar \
-    --network=projects/gcp-project-id/global/networks/default \
+    --network=default \
 main.py \
 --  --target_project_id gcp-project-id \
     --target_location_id us-central1 \
@@ -186,7 +191,7 @@ main.py \
     --database dbtoextractfrom \
     --user dataplexagent \
     --password_secret projects/73899954526/secrets/dataplexagent_sqlserver \
-    --output_bucket dataplex_connectivity_imports \
+    --output_bucket catalog_integration_imports \
     --output_folder sqlserver
 ```
 

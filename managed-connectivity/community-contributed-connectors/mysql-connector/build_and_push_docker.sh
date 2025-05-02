@@ -19,7 +19,7 @@ set -e
 PROJECT_ID=PROJECT_ID
 REGION=us-central1
 
-IMAGE_NAME="universal-catalog-mysql-pyspark"
+IMAGE_NAME="catalog-mysql-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/docker-repo/${IMAGE_NAME}
