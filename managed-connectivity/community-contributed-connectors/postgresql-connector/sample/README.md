@@ -5,19 +5,19 @@ This directory contains:
 
 ### Import metadata into universal catalog:
 
-1   In postgres-metadata-sample.jsonl: 
+* In postgres-metadata-sample.jsonl: 
         * Search and replace all instances of "gcp-project-id" with your project ID
         * [OPTIONAL] Search and replace all instances of "us-central1" with your region or with "global" 
         * Upload the file to a Google Cloud Storage bucket
 
-2   In metadata_import_request.json:
+* In metadata_import_request.json:
         * Replace the value in source_storage_uri with the path to your GCS bucket from above (Note: without the file and ending with /)
         * Replace "gcp-project-id" with your project ID
         * Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_reques exist in your project
         
     Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
-3   Run import via the REST Metadata Import API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
+* Run import via the Metadata Import REST API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
 
 ```bash
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \

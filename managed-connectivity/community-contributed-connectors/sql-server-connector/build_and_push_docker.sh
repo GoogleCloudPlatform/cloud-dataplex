@@ -27,7 +27,7 @@ REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/docker-repo/${IMAGE_NAME}
 
 docker build -t "${IMAGE}" .
 
-# Tag and push to GCP artifact registry
+# Tag and push to Artifact Registry
 gcloud config set project ${PROJECT_ID}
 gcloud auth configure-docker ${REGION}-docker.pkg.dev
 docker tag "${IMAGE}" "${REPO_IMAGE}"

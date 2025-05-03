@@ -55,7 +55,7 @@ def read_args():
                         help="Folder within bucket where generated metadata import file will be written. Please specify folder name only.")
     
     parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,
-                        help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Saftey mechanism for when using Full Entry Sync metadata jobs")
+                        help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Safety mechanism for when using Full Entry Sync metadata jobs")
     
     parsed_args = parser.parse_known_args()[0]
 

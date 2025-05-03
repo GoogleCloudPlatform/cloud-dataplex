@@ -11,13 +11,13 @@ This directory contains:
     3. Upload the .jsonl metadata import file to a Google Cloud Storage bucket
 
 * In metadata_import_request.json:
-    1. Replace the value in source_storage_uri with the path to your GCS bucket from above (Note: without the file and ending with /)
+    1. Replace the value in source_storage_uri with the path to your Cloud Storage bucket from above (Note: without the file and ending with /)
     2. Replace "gcp-project-id" with your project ID
     3. Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_request.json exist in your project
         
         Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
-Run import via the REST Metadata Impport API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
+* Run import via the Metadata Import REST API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
 
 ```bash
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
