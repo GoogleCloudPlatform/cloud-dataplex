@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Sends files to GCP storage."""
+"""Sends files to Cloud Storage."""
 from typing import Dict
 from google.cloud import storage
 import logging
