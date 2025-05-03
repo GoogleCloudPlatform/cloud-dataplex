@@ -18,7 +18,7 @@ from google.cloud import storage
 import logging
 
 def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: str):
-    """Uploads a file to GCP bucket."""
+    """Uploads a file to a Cloud Storage bucket."""
     client = storage.Client()
     bucket = client.get_bucket((config["output_bucket"]))
 
