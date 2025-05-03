@@ -24,20 +24,20 @@ def read_args():
 
     # Project arguments for basic generation of metadata entries
     parser.add_argument("--target_project_id", type=str, required=True,
-                        help="GCP Project ID metadata entries will be import into")
+                        help="Google Project ID metadata entries will be import into")
     parser.add_argument("--target_location_id", type=str, required=True,
-                        help="GCP region metadata will be imported into")
+                        help="Google cloud region into which metadata will be imported")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
                         help="Dataplex Entry Group ID to import metadata into")
 
-    # Mysql specific arguments
+    # MySQL specific arguments
     parser.add_argument("--host", type=str, required=True,
-                        help="Mysql host server")
+                        help="MySQL host server")
     parser.add_argument("--port", type=str, required=True,
                         help="database port number (usually 3306)")
     parser.add_argument("--database", type=str, required=True,
                         help="MySQL database to connect to")
-    parser.add_argument("--user", type=str, required=True, help="Mysql User")
+    parser.add_argument("--user", type=str, required=True, help="MySQL User")
     parser.add_argument("--password_secret", type=str, required=True,
                         help="Google Secret Manager ID for MySQL password")
     
