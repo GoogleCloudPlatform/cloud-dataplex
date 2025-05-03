@@ -2,7 +2,7 @@
 
 ## Contributor License Agreements
 
-We'd love to accept your patches and contributions to this set of metadata collectors! 
+We'd love to accept your patches and contributions to this set of metadata connectors! 
 Before we can take them, we have to jump a couple of legal hurdles.
 
 Please fill out either the individual or corporate Contributor License Agreement
