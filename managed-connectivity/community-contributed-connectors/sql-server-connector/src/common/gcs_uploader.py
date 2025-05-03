@@ -26,7 +26,7 @@ def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: st
     blob.upload_from_filename(f"{fileDirectory}/{filename}")
 
 def checkDestination(bucketpath: str):
-    """Check GCS output folder exists"""
+    """Check Cloud Storage output folder exists"""
     client = storage.Client()
 
     if bucketpath.startswith("gs://"):
