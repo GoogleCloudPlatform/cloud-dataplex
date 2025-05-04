@@ -12,7 +12,7 @@
     "CLOUD_REGION": "global",
     "CLOUD_STORAGE_BUCKET_ID": "workflows-catalog-metadata",
     "CREATE_TARGET_ENTRY_GROUP": false,
-    "CUSTOM_CONTAINER_IMAGE": "global-docker.pkg.dev/gcp-project-id/docker-repo/universal-catalog-mysql-pyspark:latest",
+    "CUSTOM_CONTAINER_IMAGE": "global-docker.pkg.dev/gcp-project-id/docker-repo/catalog-mysql-pyspark:latest",
     "IMPORT_JOB_LOG_LEVEL": "INFO",
     "IMPORT_JOB_SCOPE_ASPECT_TYPES": [
         "projects/gcp-project-id/locations/global/aspectTypes/mysql-instance",
