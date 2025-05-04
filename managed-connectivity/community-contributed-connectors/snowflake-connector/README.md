@@ -202,7 +202,8 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-bucket \  
     --container-image=us-central1-docker.pkg.dev/gcp-project-id/docker-repo/catalog-snowflake-pyspark:latest \
     --service-account=gcp-project-number-compute@developer.gserviceaccount.com \
-    --jars=snowflake-jdbc-3.19.0.jar,spark-snowflake_2.12-3.1.1.jar \
+    --jars=spark-snowflake_2.12-3.1.1.jar,snowflake-jdbc-3.19.0.jar \
+    --version=1.1 \
     --network=default \
     main.py \
     --target_project_id my-gcp-project \

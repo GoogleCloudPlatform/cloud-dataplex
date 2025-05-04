@@ -15,7 +15,7 @@
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
-from src.common.connection_jar import getJarPath
+from src.connection_jar import getJarPath
 from src.common.util import fileExists
 
 class SnowflakeConnector:
