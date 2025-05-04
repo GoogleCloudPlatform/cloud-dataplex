@@ -38,8 +38,9 @@ def getJarPath(config : dict[str:str]):
         else:
                 jar_path = Path(base_jar_path).joinpath(user_jar)
     else:
-        jar_path = Path(base_jar_path).joinpath(JDBC_JAR) + "," + \
-            Path(base_jar_path).joinpath(SNOWFLAKE_SPARK_JAR)
+        jdbc_jar_path = Path(base_jar_path).joinpath(JDBC_JAR)
+        sf_spark_jar_path = Path(base_jar_path).joinpath(SNOWFLAKE_SPARK_JAR)
+        jar_path = f"{jdbc_jar_path},{sf_spark_jar_path}"
 
     print(f"connection_jar Jar path is {jar_path}")
     return jar_path
