@@ -116,9 +116,9 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
+The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
 
-A sample output from the Postgres connector can be found in the [sample](sample/) directory.
+A sample output from the Oracle connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into universal catalog
 

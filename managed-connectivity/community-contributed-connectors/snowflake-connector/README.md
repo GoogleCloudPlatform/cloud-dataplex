@@ -95,7 +95,7 @@ Note:  The authenticated user must have the following IAM roles in the project w
     cd snowflake-connector
     ```
 
-* Download the following snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
+* Download the following Snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
 
@@ -125,16 +125,16 @@ python3 main.py \
 --account RXXXXXA-GX00020 \
 --user dataplex_snowflake_user \
 --password_secret projects/gcp-project-number/secrets/snowflake \
---database my_snowflake_database \
+--database MY_SNOWFLAKE_DB \
 --warehouse COMPUTE_WH \
 --output_bucket my-gcs-bucket
 --output_folder snowflake
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
+The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
 
-A sample output from the Postgres connector can be found in the [sample](sample/) directory.
+A sample output from the Snowflake connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into universal catalog
 
@@ -207,7 +207,7 @@ gcloud dataproc batches submit pyspark \
     --account RXXXXXA-GX00020 \
     --user snowflakeuser \
     --password_secret projects/gcp-project-number/secrets/snowflake \
-    --database SNOWFLAKE_SAMPLE_DATA \
+    --database MY_SNOWFLAKE_DB \
     --output_bucket my-gcs-bucket
     --output_folder snowflake_metadata
 ```
