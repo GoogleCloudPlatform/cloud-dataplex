@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Grants the required Google Cloud IAM roles to a service account in order to run Dataproc serverless pyspark jobs for custom metadata connectors
 
 # Set variables
 PROJECT_ID="your-project-id"  # Replace with your Google Cloud project ID
