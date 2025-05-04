@@ -28,13 +28,13 @@ The Oracle connector accepts the following parameters:
 |sid|Oracle SID (Service Identifier). Either **--service** or **--sid** required||REQUIRED|
 |user|Oracle Username to connect with||REQUIRED|
 |password_secret|ID in Secret Manager holding the password for the user. Format: projects/{PROJECT-ID}/secrets/{SECRET}||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
+|local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored. Required if **--local_output_only** = False||REQUIRED|
-|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only** = False||
+|output_folder|Folder in the Cloud Storage bucket where the output metadata import file will be stored. Required if **--local_output_only** = False||
 |jar|Name (or full path to) JDBC jar file to use for connection|ojdbc11.jar|OPTIONAL|
-|min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata import fil. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
-Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
+Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 
 ### Prepare your database environment:
 

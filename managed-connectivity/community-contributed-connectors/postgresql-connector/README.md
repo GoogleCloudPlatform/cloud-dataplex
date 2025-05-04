@@ -35,7 +35,7 @@ The PostgreSQL connector takes the following parameters:
 |jar|Name (or full path to) JDBC jar file|postgresql-42.7.5.jar|OPTIONAL|
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
-Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
+Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 
 ## Prepare your PostgreSQL environment:
 
