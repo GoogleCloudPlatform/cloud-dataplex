@@ -1,7 +1,7 @@
 {
 type: "IMPORT",
 import_spec: {
-source_storage_uri: "gs://path-to-GCS-bucket-with-import-file/",
+source_storage_uri: "gs://path-to-cloud-storage-bucket-containing-import-file/",
 scope: {
   entryGroups: [
     "projects/gcp-project-id/locations/us-central1/entryGroups/sqlserver"

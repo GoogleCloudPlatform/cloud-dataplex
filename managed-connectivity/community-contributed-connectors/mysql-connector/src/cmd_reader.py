@@ -46,7 +46,7 @@ def read_args():
     parser.add_argument("--use_ssl", type=true_or_false,required=False,default=True,help="connect with SSL")
     parser.add_argument("--ssl_mode", type=str, required=False,choices=['prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
     
-    # Output destination arguments. Generate local only, or local + to GCS bucket
+    # Output destination arguments. Generate local only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,

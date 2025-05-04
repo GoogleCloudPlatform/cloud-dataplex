@@ -43,7 +43,7 @@ def read_args():
     exclusive_group.add_argument("--service", type=str, help="Oracle Service name to connect to")
     exclusive_group.add_argument("--sid", type=str, help="Oracle SID (Service Identifier) to connect to (for older Oracle versions)")
  
-    # Output destination arguments. Generate local only, or local + to GCS bucket
+    # Output destination arguments. Generate local only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,

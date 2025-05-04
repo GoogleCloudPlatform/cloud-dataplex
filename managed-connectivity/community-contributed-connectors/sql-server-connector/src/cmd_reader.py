@@ -57,7 +57,7 @@ def read_args():
         help="Domain of the host certificate")
     parser.add_argument("--authentication",type=str,required=False,default="NotSpecified",help="SQL Server authentication scheme")
     
-    # Output destination arguments. Generate metadata file in local directory only, or local + to GCS bucket
+    # Output destination arguments. Generate metadata file in local directory only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,

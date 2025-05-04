@@ -44,7 +44,7 @@ def read_args():
     credentials_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID for password")
     credentials_group.add_argument("--token", type=str, help="Authentication token for oauth")
 
-    # Output destination arguments. Generate local only, or local + to GCS bucket
+    # Output destination arguments. Generate local only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,help="Cloud Storage bucket for metadata import file. Do not include gs:// prefix")  

@@ -11,7 +11,7 @@ This directory contains:
         * Upload the file to a Google Cloud Storage bucket
 
 * In metadata_import_request.json:
-        * Replace the value in source_storage_uri with the path to your GCS bucket from above (Note: without the file and ending with /)
+        * Replace the value in source_storage_uri with the path to your Cloud Storage bucket from above (Note: without the file and ending with /)
         * Replace "gcp-project-id" with your project ID
         * Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_reques exist in your project
         
