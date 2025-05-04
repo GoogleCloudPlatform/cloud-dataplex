@@ -29,11 +29,11 @@ The PostgreSQL connector takes the following parameters:
 |database|PostgreSQL database to connect to||REQUIRED
 |user|PostgreSQL username to connect with||REQUIRED|
 |password_secret|ID in Secret Manager holding the password for the user. Format: projects/{PROJECT-ID}/secrets/{SECRET}||REQUIRED|
-|local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
+|local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
-|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in the Cloud Storage bucket where the output metadata import file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |jar|Name (or full path to) JDBC jar file|postgresql-42.7.5.jar|OPTIONAL|
-|min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata import file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 

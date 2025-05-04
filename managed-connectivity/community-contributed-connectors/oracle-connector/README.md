@@ -122,7 +122,7 @@ A sample output from the Oracle connector can be found in the [sample](sample/) 
 
 ## Import metadata into universal catalog
 
-Before importing metadata into universal catalog, the Entry Group and all Entry Types and Aspect Types found in the metadata file must exist in the target project and location (either a Google Cloud region, or 'global'). This connector requires the following Entry Group, Entry Types and Aspect Types:
+Before importing metadata into universal catalog, the Entry Group and all Entry Types and Aspect Types found in the metadata import file must exist in the target project and location (either a Google Cloud region, or 'global'). This connector requires the following Entry Group, Entry Types and Aspect Types:
 
 |Catalog Object|IDs required by connector|
 |---------|-------------------|
