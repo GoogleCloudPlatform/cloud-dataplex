@@ -16,6 +16,7 @@
 
 from pathlib import Path
 from src.constants import JDBC_JAR
+from src.constants import SNOWFLAKE_SPARK_JAR_FILE
 from src.common.util import isRunningInContainer
 
 # Returns jar path, allowing override with --jar option
@@ -37,6 +38,8 @@ def getJarPath(config : dict[str:str]):
         else:
                 jar_path = Path(base_jar_path).joinpath(user_jar)
     else:
-        jar_path = Path(base_jar_path).joinpath(JDBC_JAR)
-    
+        jar_path = Path(base_jar_path).joinpath(JDBC_JAR) + "," + \
+            Path(base_jar_path).joinpath(SNOWFLAKE_SPARK_JAR_FILE)
+
+    print(f"connection_jar Jar path is {jar_path}")
     return jar_path
