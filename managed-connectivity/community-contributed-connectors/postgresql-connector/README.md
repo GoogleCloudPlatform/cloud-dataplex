@@ -6,7 +6,7 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 
 Note that metadata for PostgreSQL instances running on [Cloud SQL](https://cloud.google.com/sql/postgresql) is collected automatically and this connector is not required for these. See [catalog integration](https://cloud.google.com/sql/docs/postgres/dataplex-catalog-integration) for details.
 
-This is not an officially supported Google product and is provided on an as-is basis, without warrenty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
+This is not an officially supported Google product and is provided on an as-is basis, without warranty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
 ### Target objects and schemas:

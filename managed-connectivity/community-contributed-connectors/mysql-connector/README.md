@@ -146,7 +146,7 @@ Building a docker container allows the connector to be run from a variety of Goo
 ### Build the container (one-time task)
 
 1. Ensure [docker](https://docs.docker.com/engine/install/) is installed in your environment.
-2. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION as appropriate. The container will be stored in the Artifact Registry using this information.
+2. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION as appropriate. The container will be stored in Artifact Registry using this information.
 3. Ensure the user which runs the script is authenticated as an Google Cloud Identity which has the 
 [Artifact Registry Writer](https://cloud.google.com/artifact-registry/docs/access-control#roles) IAM role for the Artifact Registry in your project.
 4. Make the script executable and run:

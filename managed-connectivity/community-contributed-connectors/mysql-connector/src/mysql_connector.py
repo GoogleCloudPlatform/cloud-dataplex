@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Reads Mysql using PySpark."""
+"""Reads MySQL using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
@@ -21,7 +21,7 @@ from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
 
 class MysqlConnector(IExternalSourceConnector):
-    """Reads data from Mysql and returns Spark Dataframes."""
+    """Reads data from MySQL and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint

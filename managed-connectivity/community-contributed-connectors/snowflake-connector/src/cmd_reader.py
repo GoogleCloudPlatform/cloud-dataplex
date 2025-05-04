@@ -22,9 +22,9 @@ def read_args():
 
     # Project arguments for basic generation of metadata entries
     parser.add_argument("--target_project_id", type=str, required=True,
-                        help="GCP Project ID metadata entries will be import into")
+                        help="Google Cloud Project ID metadata entries will be import into")
     parser.add_argument("--target_location_id", type=str, required=True,
-                        help="GCP region metadata will be imported into")
+                        help="Google Cloud region metadata will be imported into")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
                         help="Dataplex Entry Group ID to import metadata into")
     

@@ -23,11 +23,11 @@ JDBC_JAR = "postgresql-42.7.5.jar"
 CONNECTOR_MODULE = "src.postgres_connector"
 CONNECTOR_CLASS = "PostgresConnector"
 
-# Value to test for if column is nullable. Postgresql specific. Matches _get_dataset  
+# Value to test for if column is nullable. PostgreSQL specific. Matches _get_dataset in postgres_connector.py  
 IS_NULLABLE_TRUE = "YES"
 
 class EntryType(enum.Enum):
-    """Hierarchy of Postgresql entries"""
+    """Hierarchy of PostgreSQL entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/postgresql-schema"
