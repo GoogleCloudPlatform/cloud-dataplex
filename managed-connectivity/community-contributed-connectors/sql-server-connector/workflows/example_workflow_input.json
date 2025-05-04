@@ -16,7 +16,7 @@
         "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-schema",
         "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-database",
         "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-table",
-        "projects/dataplex/locations/global/aspectTypes/schema"
+        "projects/dataplex-types/locations/global/aspectTypes/schema"
     ],
     "IMPORT_JOB_SCOPE_ENTRY_TYPES": [
         "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-instance",
