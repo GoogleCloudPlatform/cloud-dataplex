@@ -37,7 +37,6 @@ The connector accepts the following parameters:
 |hostname_in_certificate|domain of host certificate||OPTIONAL|
 |user|User name to connect with||REQUIRED|
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|
-|password|Plain text user password. Use for dev or testing only. For production use **--password_secret**||OPTIONAL|
 |jar|Name (or full path to) JDBC jar file||OPTIONAL|
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
