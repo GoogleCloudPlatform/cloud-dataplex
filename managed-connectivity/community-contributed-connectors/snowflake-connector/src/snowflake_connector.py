@@ -26,16 +26,8 @@ class SnowflakeConnector:
 
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
-
-        # Check one or multiple jar files are on path
-        if "," in jar_path:
-            jar_list = jar_path.split(",")
-            for jar_file_path in jar_list:
-                if not fileExists(jar_file_path):
-                    raise Exception(f"Jar file not found: {jar_path}")
-        else:
-            if not fileExists(jar_path):
-                raise Exception(f"Jar file not found: {jar_path}")
+        # Check jar files exist. Throws exception if not found
+        jarsExist = fileExists(jar_path)
 
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \
