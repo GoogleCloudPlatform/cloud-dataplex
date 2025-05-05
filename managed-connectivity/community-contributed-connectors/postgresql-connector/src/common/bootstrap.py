@@ -71,7 +71,6 @@ def run():
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
-
     connector = ConnectorClass(config)
 
     entries_count = 0

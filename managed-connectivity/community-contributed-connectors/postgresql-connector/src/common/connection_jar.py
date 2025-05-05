@@ -15,11 +15,10 @@
 # Jar files and paths for when connector is running as local script
 
 from pathlib import Path
-from src.constants import JDBC_JAR
 from src.common.util import isRunningInContainer
 
 # Returns jar path, allowing override with --jar option
-def getJarPath(config : dict[str:str]) -> str:
+def getJarPath(config : dict[str:str], jars_to_include: list[str]) -> str:
 
     base_jar_path = "" 
     user_jar = config.get('jar')
@@ -31,12 +30,16 @@ def getJarPath(config : dict[str:str]) -> str:
         base_jar_path = "."
 
     if user_jar is not None:
-        # if file path to jar provided then use, otherwise current path + jar name
+        # if file path to jar provided then use it, otherwise current path + jar name
         if (user_jar.startswith(".") or user_jar.startswith("/")):
                 jar_path = user_jar
         else:
                 jar_path = f"{Path(base_jar_path).joinpath(user_jar)}"
     else:
-        jar_path = f"{Path(base_jar_path).joinpath(JDBC_JAR)}"
-    
+        for jar in jars_to_include:
+            if len(jar_path) > 0:
+                jar_path = f"{jar_path},{Path(base_jar_path).joinpath(jar)}"
+            else:
+                jar_path = f"{Path(base_jar_path).joinpath(jar)}"
+
     return jar_path
