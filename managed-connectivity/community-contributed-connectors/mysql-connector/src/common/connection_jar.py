@@ -18,7 +18,7 @@ from pathlib import Path
 from src.common.util import isRunningInContainer
 
 # Returns jar path, allowing override with --jar option
-def getJarPath(config : dict[str:str], jars_to_include: list[str]) -> str:
+def getJarPath(config : dict[str:str], jars_to_include: [str]) -> str:
 
     base_jar_path = "" 
     user_jar = config.get('jar')
