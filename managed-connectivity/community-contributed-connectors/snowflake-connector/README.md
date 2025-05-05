@@ -216,6 +216,7 @@ gcloud dataproc batches submit pyspark \
     --output_bucket my-gcs-bucket
     --output_folder snowflake_metadata
 ```
+Note: Due to the use of the Snowflake Spark JAR in the connector, runtime version 1.2 of Dataproc serverless must be specified for this connector.
 
 See the [documentation](https://cloud.google.com/sdk/gcloud/reference/dataproc/batches/submit/pyspark) for more information about Dataproc Serverless pyspark jobs.
 
