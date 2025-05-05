@@ -71,13 +71,8 @@ def run():
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
-    connector = None
-    
-    try:
-        connector = ConnectorClass(config)
-    except Exception as ex:
-            print(f"Error setting up connector for {SOURCE_TYPE}: {ex}")
-            raise Exception(ex)
+
+    connector = ConnectorClass(config)
 
     entries_count = 0
 
