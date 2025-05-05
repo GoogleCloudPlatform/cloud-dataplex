@@ -91,7 +91,7 @@ Note:  The authenticated user must have the following IAM roles in the project w
     ```bash
     cd postgresql-connector
     ```
-* Download the [postgresql-42.7.5.jar](https://jdbc.postgresql.org/download/) and save it in the local directory.
+* Download [postgresql-42.7.5.jar](https://jdbc.postgresql.org/download/postgresql-42.7.5.jar) from [postgresql.org](https://jdbc.postgresql.org/download/) and save it in the local directory.
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. eg.  --jar postgresql-42.7.6.jar
 
 * Install all python dependencies 
