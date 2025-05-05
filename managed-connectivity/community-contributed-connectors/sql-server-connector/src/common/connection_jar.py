@@ -43,7 +43,5 @@ def getJarPath(config : dict[str:str], jars_to_include: [str]) -> str:
                 output_jar_path = f"{output_jar_path},{Path(base_jar_path).joinpath(jar)}"
             else:
                 output_jar_path = f"{Path(base_jar_path).joinpath(jar)}"
-    
-    print(f"Returning jar_path {output_jar_path}")
 
     return output_jar_path
