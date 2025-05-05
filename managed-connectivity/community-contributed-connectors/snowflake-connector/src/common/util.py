@@ -51,11 +51,11 @@ def fileExists(filepath) -> bool:
         # Split into individual file paths and check each
         jar_list = filepath.split(",")
         for jar_file_path in jar_list:
-            if not os.path.isfile(filepath):
+            if not os.path.isfile(jar_file_path):
                 raise Exception(f"Jar file not found: {jar_file_path}")
     else:
         # check single file path
         if not os.path.isfile(filepath):
-            raise Exception(f"Jar file not found: {jar_file_path}")
+            raise Exception(f"Jar file not found: {filepath}")
 
     return True
