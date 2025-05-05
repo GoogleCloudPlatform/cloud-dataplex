@@ -29,7 +29,10 @@ class PostgresConnector(IExternalSourceConnector):
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
         # Check jdbc jar file exist. Throws exception if not found
-        jarsExist = fileExists(jar_path)
+        try:
+            jarsExist = fileExists(jar_path)
+        except Exception as ex:
+            raise Exception(ex)
 
         self._spark = SparkSession.builder.appName("PostgresIngestor") \
             .config("spark.jars", jar_path) \
