@@ -27,9 +27,8 @@ class SQLServerConnector(IExternalSourceConnector):
 
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
-
-        if not fileExists(jar_path):
-            raise Exception(f"Jar file not found: {jar_path}")
+        # Check jdbc jar file exist. Throws exception if not found
+        jarsExist = fileExists(jar_path)
 
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
