@@ -20,7 +20,7 @@ from src.constants import SNOWFLAKE_SPARK_JAR
 from src.common.util import isRunningInContainer
 
 # Returns jar path, allowing override with --jar option
-def getJarPath(config : dict[str:str]):
+def getJarPath(config : dict[str:str]) -> str:
 
     base_jar_path = "" 
     user_jar = config.get('jar')
@@ -36,7 +36,7 @@ def getJarPath(config : dict[str:str]):
         if (user_jar.startswith(".") or user_jar.startswith("/")):
                 jar_path = user_jar
         else:
-                jar_path = Path(base_jar_path).joinpath(user_jar)
+                jar_path = f"{Path(base_jar_path).joinpath(user_jar)}"
     else:
         jdbc_jar_path = Path(base_jar_path).joinpath(JDBC_JAR)
         sf_spark_jar_path = Path(base_jar_path).joinpath(SNOWFLAKE_SPARK_JAR)
