@@ -19,6 +19,7 @@ from src.constants import EntryType
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
+from src.constants import JDBC_JAR
 
 class PostgresConnector(IExternalSourceConnector):
     """Reads data from Postgres and returns Spark Dataframes."""
@@ -27,7 +28,7 @@ class PostgresConnector(IExternalSourceConnector):
         # PySpark entrypoint
 
         # Get jar file, allowing override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        jar_path = getJarPath(config,[JDBC_JAR])
         # Check jdbc jar file exist. Throws exception if not found
         jarsExist = fileExists(jar_path)
 
