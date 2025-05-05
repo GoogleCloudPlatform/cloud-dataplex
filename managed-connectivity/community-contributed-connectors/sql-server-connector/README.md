@@ -28,6 +28,7 @@ The connector accepts the following parameters:
 |port|SQL Server host port|1433|OPTIONAL|
 |instancename|SQL Server instance to connect to|<defaultinstance>|OPTIONAL|
 |database|SQL Server database name||REQUIRED|
+|user|User name to connect with||REQUIRED|
 |local_output_only|Generate metadata file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only False**||REQUIRED|
@@ -35,7 +36,6 @@ The connector accepts the following parameters:
 |encrypt|Use encryption for connection to database [True/False]|True|OPTIONAL|
 |trust_server_certificate|Trust SQL Server TLS certificate [True/False]|True|OPTIONAL|
 |hostname_in_certificate|domain of host certificate||OPTIONAL|
-|user|User name to connect with||REQUIRED|
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|
 |jar|Name (or full path to) JDBC jar file||OPTIONAL|
 |min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
