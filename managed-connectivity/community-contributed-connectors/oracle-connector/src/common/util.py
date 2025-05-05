@@ -45,7 +45,7 @@ def isRunningInContainer() -> bool:
 
 # Returns True is file exists at given path.
 # filePath can also be comma-seperated list of multiple jar paths
-def fileExists(filepath) -> bool:
+def fileExists(filepath : str) -> bool:
 
     if "," in filepath:
         # Split into individual file paths and check each
