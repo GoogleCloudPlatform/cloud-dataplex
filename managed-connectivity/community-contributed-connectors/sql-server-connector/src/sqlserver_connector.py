@@ -19,6 +19,7 @@ from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.util import fileExists
 from src.common.connection_jar import getJarPath
+from src.constants import JDBC_JAR
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -26,7 +27,7 @@ class SQLServerConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
 
         # Get jar file, allowing override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        jar_path = getJarPath(config,[JDBC_JAR])
         # Check jdbc jar file exist. Throws exception if not found
         jarsExist = fileExists(jar_path)
 

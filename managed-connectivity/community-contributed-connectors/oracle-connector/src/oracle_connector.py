@@ -21,6 +21,7 @@ from src.constants import EntryType
 from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
 from src.common.entry_builder import COLUMN_IS_NULLABLE
+from src.constants import JDBC_JAR
 
 class OracleConnector(IExternalSourceConnector):
     """Reads data from Oracle and returns Spark Dataframes."""
@@ -28,7 +29,7 @@ class OracleConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
 
         # Get jar file, allowing override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        jar_path = getJarPath(config,[JDBC_JAR])
         # Check jdbc jar file exist. Throws exception if not found
         jarsExist = fileExists(jar_path)
 

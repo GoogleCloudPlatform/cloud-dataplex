@@ -17,6 +17,8 @@ from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
 from src.connection_jar import getJarPath
 from src.common.util import fileExists
+from src.constants import JDBC_JAR
+from src.constants import SNOWFLAKE_SPARK_JAR
 
 class SnowflakeConnector:
     """Reads data from Snowflake and returns Spark Dataframes."""
@@ -25,7 +27,7 @@ class SnowflakeConnector:
         # PySpark entrypoint
 
         # Get jar file, allowing override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        jar_path = getJarPath(config,[SNOWFLAKE_SPARK_JAR,JDBC_JAR])
         # Check jar files exist. Throws exception if not found
         jarsExist = fileExists(jar_path)
 
