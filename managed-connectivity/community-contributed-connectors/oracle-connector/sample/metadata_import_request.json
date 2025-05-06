@@ -1,0 +1,29 @@
+{
+type: 'IMPORT',
+import_spec: {
+source_storage_uri: 'gs://your-metadata-file-gcs-bucket/oracle_testing/',
+scope: {
+  entryGroups: [
+    'projects/the-gcp-project/locations/us-central1/entryGroups/oracle'
+  ],
+  entry_types: [
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-instance',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-database',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-schema',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-table',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-view'
+  ],
+  aspect_types: [
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-instance',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-schema',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-database',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-table',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-view',
+    'projects/dataplex-types/locations/global/aspectTypes/schema'
+  ]
+    },
+entry_sync_mode: 'FULL',
+aspect_sync_mode: 'INCREMENTAL',
+log_level: 'DEBUG'
+  }
+}

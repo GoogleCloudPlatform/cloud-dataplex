@@ -1,0 +1,28 @@
+{
+type: "IMPORT",
+import_spec: {
+source_storage_uri: "gs://path-to-cloud-storage-bucket-containing-import-file/",
+scope: {
+  entryGroups: [
+    "projects/gcp-project-id/locations/us-central1/entryGroups/sqlserver"
+  ],
+  entry_types: [
+    "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-instance",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-database",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-schema",
+    "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-table"
+
+  ],
+  aspect_types: [
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-instance",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-schema",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-database",
+    "projects/gcp-project-id/locations/us-central1/aspectTypes/sqlserver-table",
+    "projects/dataplex-types/locations/global/aspectTypes/schema"
+  ]
+    },
+entry_sync_mode: "FULL",
+aspect_sync_mode: "INCREMENTAL",
+log_level: "DEBUG"
+  }
+}

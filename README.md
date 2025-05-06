@@ -5,9 +5,9 @@ This repository contains code and documentation for use with
 
 ## Samples in this Repository
  * `datascan` provides samples around Dataplex DataScans.
- * `managed-connectivity` provides code samples for Dataplex Managed Connectivity
+ * `managed-connectivity` provides code samples and community contributed connectors for Dataplex Managed Connectivity
 
-See each directories README for more information.
+See each directory's README for more information.
 
 ## Additional Dataplex Resources
 

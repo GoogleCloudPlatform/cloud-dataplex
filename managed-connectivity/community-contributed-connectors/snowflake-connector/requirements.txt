@@ -1,0 +1,5 @@
+google-cloud-dataplex
+google-cloud-storage
+google-cloud-secret-manager
+google-cloud-logging
+cryptography
