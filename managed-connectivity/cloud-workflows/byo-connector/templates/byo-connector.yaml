@@ -76,6 +76,8 @@ main:
                 - ${"--output_bucket=" + args.CLOUD_STORAGE_BUCKET_ID}
                 - ${"--output_folder=" + WORKFLOW_ID}
                 - ${args.ADDITIONAL_CONNECTOR_ARGS}
+              jarFileUris:
+                - ${args.JAR_FILE_URI}
             runtimeConfig:
                 containerImage: ${args.CUSTOM_CONTAINER_IMAGE}
             environmentConfig:
