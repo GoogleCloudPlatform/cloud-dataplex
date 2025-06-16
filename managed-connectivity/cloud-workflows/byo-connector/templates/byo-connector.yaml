@@ -37,7 +37,7 @@ main:
           - condition: ${args.CREATE_TARGET_ENTRY_GROUP == true}
             next: create_target_entry_group
           - condition: ${args.CREATE_TARGET_ENTRY_GROUP == false}
-            next: generate_extract_job_link
+            next: prepare_pyspark_job_body
 
     - create_target_entry_group:
         call: http.post
@@ -46,6 +46,26 @@ main:
           auth:
             type: OAuth2
             scopes: "https://www.googleapis.com/auth/cloud-platform"
+        next: prepare_pyspark_job_body
+      
+    - prepare_pyspark_job_body:
+        assign:
+          - pyspark_batch_body:
+              mainPythonFileUri: file:///main.py
+              args:
+                - ${"--target_project_id=" + args.TARGET_PROJECT_ID}
+                - ${"--target_location_id=" + args.CLOUD_REGION}
+                - ${"--target_entry_group_id=" + args.TARGET_ENTRY_GROUP_ID}
+                - ${"--output_bucket=" + args.CLOUD_STORAGE_BUCKET_ID}
+                - ${"--output_folder=" + WORKFLOW_ID}
+                - ${args.ADDITIONAL_CONNECTOR_ARGS}
+        next: add_jar_file_uri_if_present
+
+    - add_jar_file_uri_if_present:
+        switch:
+          - condition: ${args.JAR_FILE_URI != "" and args.JAR_FILE_URI != null}
+            assign:
+              - pyspark_batch_body.jarFileUris : ${args.JAR_FILE_URI}
         next: generate_extract_job_link
 
     - generate_extract_job_link:
@@ -67,17 +87,7 @@ main:
           query:
             batchId: ${WORKFLOW_ID}
           body:
-            pysparkBatch:
-              mainPythonFileUri: file:///main.py
-              args:
-                - ${"--target_project_id=" + args.TARGET_PROJECT_ID}
-                - ${"--target_location_id=" + args.CLOUD_REGION}
-                - ${"--target_entry_group_id=" + args.TARGET_ENTRY_GROUP_ID}
-                - ${"--output_bucket=" + args.CLOUD_STORAGE_BUCKET_ID}
-                - ${"--output_folder=" + WORKFLOW_ID}
-                - ${args.ADDITIONAL_CONNECTOR_ARGS}
-              jarFileUris:
-                - ${args.JAR_FILE_URI}
+            pysparkBatch: ${pyspark_batch_body}
             runtimeConfig:
                 containerImage: ${args.CUSTOM_CONTAINER_IMAGE}
             environmentConfig:
