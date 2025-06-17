@@ -24,7 +24,7 @@
         "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-schema",
         "projects/gcp-project-id/locations/us-central1/entryTypes/sqlserver-table"
     ],
-    "JAR_FILE_GCS_PATH": "file:///opt/spark/jars/mssql-jdbc-12.8.1.jre11.jar",
+    "JAR_FILE_URI": "file:///opt/spark/jars/mssql-jdbc-12.8.1.jre11.jar",
     "NETWORK_TAGS": [],
     "NETWORK_URI": "projects/gcp-project-id/global/networks/default",
     "SERVICE_ACCOUNT": "gcp-project-number-compute@developer.gserviceaccount.com",
