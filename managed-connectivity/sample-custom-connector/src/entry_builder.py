@@ -153,7 +153,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     create_fqn_udf = F.udf(lambda x: nb.create_fqn(config, entry_type,
                                                    db_schema, x), StringType())
 
-    parent_name = nb.create_parent_name(entry_type, db_schema)
+    parent_name = nb.create_parent_name(config, entry_type, db_schema)
     full_entry_type = entry_type.value.format(
         project=config["target_project_id"],
         location=config["target_location_id"])
