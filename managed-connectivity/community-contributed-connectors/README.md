@@ -1,6 +1,6 @@
 # Custom metadata connectors 
 
-These custom connectors extract metadata from third-party systems and can be used when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) to import metadata into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview).
+These custom connectors extract metadata from third-party systems and can be used when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) to import metadata into [Dataplex Universal Catalog](https://cloud.google.com/dataplex/docs/introduction).
 
 They have been built based on the sample connector code found in [sample-custom-connector](../sample-custom-connector) and use python and pyspark.
 
