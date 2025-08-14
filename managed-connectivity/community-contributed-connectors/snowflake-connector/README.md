@@ -15,6 +15,8 @@ Metadata for the following database objects is extracted by the connector:
 |Tables|Table name, column names, column data types, column NULL/NOT NULL|
 |Views|View name, column names, column data types, column NULL/NOT NULL|
 
+Metadata is not extracted for objects in INFORMATION_SCHEMA.
+
 ### Parameters
 The connector takes the following parameters:
 
@@ -39,9 +41,9 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 ## Create a database user
 
-Best practice is to create with a dedicated database user for the connector that has the minimum privileges required to extract metadata.
+Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-The Snowflake user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas,tables, and views for which metadata will be extracted:
+The Snowflake user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata will be extracted
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
@@ -158,7 +160,7 @@ Aspect Type|**snowflake-account**&nbsp;&nbsp;**snowflake-database**&nbsp;&nbsp;*
 
 See [manage entries and create custom sources](https://cloud.google.com/dataplex/docs/ingest-custom-sources) for instructions on creating Entry Groups, Entry Types, and Aspect Types.
 
-To create an end-to-end pipeline which extracts metadata and starts an Import API job to bring the generated file into universal catalog, see section [Create an end-to-end metadata extraction and import pipeline to universal catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-dataplex-universal-catalog)
+To create an end-to-end pipeline which extracts metadata and starts an Import API job to bring the generated file into universal catalog, see section [Create an end-to-end metadata extraction and import pipeline to Dataplex Universal Catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-dataplex-universal-catalog)
 
 ## Build a container and run the connector with Dataproc Serverless
 

@@ -14,7 +14,7 @@ Metadata for the following database objects is extracted by the connector:
 |Tables|Table name, column names, column data types, column NULL/NOT NULL|
 |Views|View name, column names, column data types, column NULL/NOT NULL|
 
-Metadata is not collected from the Oracle system schemas found in **get_db_schemas** in [oracle_connector.py](src/oracle_connector.py)
+Metadata is not collected for objects in system schemas. See the **get_db_schemas** function in [oracle_connector.py](src/oracle_connector.py) for a complete list.
 
 ### Parameters
 The connector takes the following parameters:
@@ -40,7 +40,7 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 ## Create a database user
 
-The connector requires a user to be created in each target instance. Best practice is to connect with a dedicated user that has the minimum privileges required to extract metadata.
+Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
 1. Create an Oracle user with the following privileges and roles: 
     * CONNECT and CREATE SESSION to <monitoring_user>
@@ -147,7 +147,7 @@ Aspect Types|**oracle-instance**&nbsp;&nbsp;**oracle-database**&nbsp;&nbsp;**ora
 
 See [manage entries and create custom sources](https://cloud.google.com/dataplex/docs/ingest-custom-sources) for instructions on creating Entry Groups, Entry Types, and Aspect Types.
 
-To create an end-to-end pipeline which extracts metadata and starts an Import API job to bring the generated file into universal catalog, see section [Create an end-to-end metadata extraction and import pipeline to universal catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-dataplex-universal-catalog)
+To create an end-to-end pipeline which extracts metadata and starts an Import API job to bring the generated file into universal catalog, see section [Create an end-to-end metadata extraction and import pipeline to Dataplex Universal Catalog](#create-an-end-to-end-metadata-extraction-and-import-pipeline-to-dataplex-universal-catalog)
 
 ## Build a container and run the connector with Dataproc Serverless
 
