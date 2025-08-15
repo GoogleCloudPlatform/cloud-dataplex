@@ -186,7 +186,7 @@ Note:
     cd oracle-connector
     ```
 
-Run a Dataproc serverless job with the containerised metadata connector using the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch** :
+Run a Dataproc serverless job with the containerised metadata connector using the following command, substituting appropriate values for your environment and provide a unique batch ID in **--batch** :
 
 ```shell
 gcloud dataproc batches submit pyspark \

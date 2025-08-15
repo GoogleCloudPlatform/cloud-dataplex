@@ -185,7 +185,7 @@ Note:
     cd sqlserver-connector
     ```
 
-Run the following command, substituting appropriate values for your environment and provding a unique batch ID in **--batch**
+Run the following command, substituting appropriate values for your environment and provide a unique batch ID in **--batch**
 
 ```shell
 gcloud dataproc batches submit pyspark \
