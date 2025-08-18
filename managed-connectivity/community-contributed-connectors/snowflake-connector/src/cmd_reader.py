@@ -39,10 +39,12 @@ def read_args():
     parser.add_argument("--role", type=str,required=False,help="Snowflake Role")
 
     # Authentication arguments
-    parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password'],help="Authentication method")
+    parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password','keypair'],help="Authentication method")
     credentials_group = parser.add_mutually_exclusive_group()
     credentials_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID for password")
+    credentials_group.add_argument("--keypair_secret", type=str,help="Google Cloud Secret Manager ID for private key")
     credentials_group.add_argument("--token", type=str, help="Authentication token for oauth")
+    credentials_group.add_argument("--key_file", type=str, help="Path to private key file for Snowflake Key-Pair authentication")
 
     # Output destination arguments. Generate local only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
@@ -61,6 +63,10 @@ def read_args():
     if parsed_args.authentication == 'oauth' and parsed_args.token is None:
         print("--token must also be supplied if using --authentication oauth")
         sys.exit(1)
+    
+    if parsed_args.authentication == 'key-pair' and parsed_args.keypair_secret is None:
+        print("--keypair_secret must also be supplied if using --authentication key-pair")
+        sys.exit(1) 
     
     if (parsed_args.authentication is None or parsed_args.authentication == 'password') and parsed_args.password_secret is None:
         print("--password_secret must also be supplied if using --authentication password")

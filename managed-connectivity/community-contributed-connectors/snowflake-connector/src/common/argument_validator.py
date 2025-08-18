@@ -37,8 +37,20 @@ def validateArguments(parsed_args):
     if parsed_args.password_secret is not None:
 
         validateSecretID(parsed_args.password_secret)
+        try:
+            parsed_args.password = get_password(parsed_args.password_secret)
+        except Exception as e:
+            print(f"Error retrieving password from Secret Manager with key: {parsed_args.password_secret}")
+            raise Exception(e)
+    
+    if parsed_args.keypair_secret is not None:
 
-        parsed_args.password = get_password(parsed_args.password_secret)
+        validateSecretID(parsed_args.keypair_secret)
+        try:
+            parsed_args.password = get_password(parsed_args.keypair_secret)
+        except Exception as e:
+            print(f"Error retrieving password from Secret Manager with key: {parsed_args.keypair_secret}")
+            raise Exception(e)
 
     return parsed_args
 
