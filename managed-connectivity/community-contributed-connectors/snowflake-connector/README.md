@@ -27,9 +27,10 @@ The connector takes the following parameters:
 |target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |account|Snowflake account to connect to||REQUIRED|
 |user|Snowflake username to connect with||REQUIRED|
-|authentication|Authentication method to use: password, oauth|password|OPTIONAL|
+|authentication|Authentication method to use for Snowflake: password, oauth, key-pair|password|OPTIONAL|
 |password_secret|Google Secret Manager ID holding the password for the Snowflake user. Format: projects/{project-number}/secrets/{secret-name}||REQUIRED if using password auth|
 |token|OAUTH Token||REQUIRED if using **--authentication oauth**|
+|keypair_secret|Google Secret Manager ID holding the private key for the Snowflake user.||REQUIRED if using **--authentication key-pair**|
 |database|Snowflake database to connect to||REQUIRED|
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
@@ -43,7 +44,7 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-The Snowflake user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata will be extracted
+The Snowflake user should be a [service user](https://docs.snowflake.com/en/user-guide/admin-user-management) who has been granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata will be extracted
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
@@ -81,7 +82,7 @@ The following tools and libraries are required to run the connector:
     ```
 * Install PySpark
     ```shell
-    pip3 install pyspark
+    pip3 install pyspark==3.5.6
     ```
 
 Note: If you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)

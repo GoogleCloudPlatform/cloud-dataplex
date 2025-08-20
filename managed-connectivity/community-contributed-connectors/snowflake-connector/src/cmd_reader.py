@@ -39,7 +39,7 @@ def read_args():
     parser.add_argument("--role", type=str,required=False,help="Snowflake Role")
 
     # Authentication arguments
-    parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password','keypair'],help="Authentication method")
+    parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password','key-pair'],help="Authentication method")
     credentials_group = parser.add_mutually_exclusive_group()
     credentials_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID for password")
     credentials_group.add_argument("--keypair_secret", type=str,help="Google Cloud Secret Manager ID for private key")

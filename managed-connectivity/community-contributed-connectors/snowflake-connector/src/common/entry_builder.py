@@ -39,6 +39,7 @@ KEY_ASPECTS = 'aspects'
 KEY_DATA = 'data'
 KEY_DATA_TYPE = 'dataType'
 KEY_METADATA_TYPE = 'metadataType'
+KEY_DESCRIPTION = 'description'
 
 KEY_ENTRY_ASPECT = 'entry_aspect'
 
@@ -53,6 +54,7 @@ COLUMN_DATA_TYPE = 'DATA_TYPE'
 COLUMN_COLUMN_NAME = 'COLUMN_NAME'
 COLUMN_IS_NULLABLE = 'IS_NULLABLE'
 COLUMN_SCHEMA_NAME = 'SCHEMA_NAME'
+COLUMN_COMMENT = 'COMMENT'
 
 # Dataplex constants
 VALUE_NULLABLE = 'NULLABLE'
@@ -125,7 +127,7 @@ def build_schemas(config, df_raw_schemas):
         project=config["target_project_id"],
         location=config["target_location_id"])
 
-    # Converts a list of schema names to the Dataplex-compatible form
+    # Convert list of schema names to Dataplex-compatible form
     column = F.col(COLUMN_SCHEMA_NAME)
     df = df_raw_schemas.withColumn(KEY_NAME, create_name_udf(column)) \
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
@@ -142,8 +144,7 @@ def build_schemas(config, df_raw_schemas):
 def build_dataset(config, df_raw, db_schema, entry_type):
     """Build table entries from a flat list of columns.
     Args:
-        df_raw - a plain dataframe with TABLE_NAME, COLUMN_NAME, DATA_TYPE,
-                 and NULLABLE columns
+        df_raw - a plain dataframe with TABLE_NAME, COLUMN_NAME, DATA_TYPE,NULLABLE,COMMENT columns
         db_schema - parent database schema
         entry_type - entry type: table or view
     Returns:
@@ -155,23 +156,26 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 2. Renames IS_NULLABLE to mode
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
+    # 5. Renames COMMENT to DESCRIPTION
     df = df_raw \
-      .withColumn(KEY_MODE, F.when(F.col(COLUMN_IS_NULLABLE) == IS_NULLABLE_TRUE, VALUE_NULLABLE).otherwise(VALUE_REQUIRED)) \
+        .withColumn(KEY_MODE, F.when(F.col(COLUMN_IS_NULLABLE) == IS_NULLABLE_TRUE, VALUE_NULLABLE).otherwise(VALUE_REQUIRED)) \
         .drop(COLUMN_IS_NULLABLE) \
         .withColumnRenamed(COLUMN_DATA_TYPE, KEY_DATA_TYPE) \
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
-        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME)
+        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME) \
+        .withColumnRenamed(COLUMN_COMMENT, KEY_DESCRIPTION) \
+        .na.fill(value='',subset=[KEY_DESCRIPTION])
 
     # transformation below aggregates fields, denormalizing the table
-    # TABLE_NAME becomes top-level field, rest put into array type "fields"
-    aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE]
+    # TABLE_NAME becomes top-level field, the rest are put into array type "fields"
+    aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE, KEY_DESCRIPTION]
     df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
       .groupby(COLUMN_TABLE_NAME) \
       .agg(F.collect_list(KEY_COLUMNS).alias(KEY_FIELDS))
 
     # Create nested structured called aspects.
-    # Fields are becoming a part of a `schema` struct
-    # There is also an entry_aspect that is repeats entry_type as aspect_type
+    # Fields becoming part of the 'schema' struct
+    # Entry_aspect repeats each entry_type for the aspect_type
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
     df = df.withColumn(KEY_SCHEMA,
                        F.create_map(F.lit(SCHEMA_KEY),
@@ -184,9 +188,9 @@ def build_dataset(config, df_raw, db_schema, entry_type):
                                     )\
                        )\
       .withColumn(KEY_ENTRY_ASPECT, create_entry_aspect(entry_aspect_name)) \
-    .drop(KEY_FIELDS)
+      .drop(KEY_FIELDS)
 
-    # Merge separate aspect columns into the one map called 'aspects'
+    # Merge separate aspect columns into 'aspects' map
     df = df.select(F.col(COLUMN_TABLE_NAME),
                    F.map_concat(KEY_SCHEMA, KEY_ENTRY_ASPECT).alias(KEY_ASPECTS))
 
@@ -216,4 +220,5 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     .drop(column)
 
     df = convert_to_import_items(df, [SCHEMA_KEY, entry_aspect_name])
+
     return df

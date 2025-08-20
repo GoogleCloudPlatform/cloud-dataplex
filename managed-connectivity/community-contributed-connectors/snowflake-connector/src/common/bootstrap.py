@@ -47,6 +47,7 @@ def process_dataset(
     """Builds dataset and converts it to jsonl."""
     df_raw = connector.get_dataset(schema_name, entry_type)
     df = entry_builder.build_dataset(config, df_raw, schema_name, entry_type)
+
     return df.toJSON().collect()
 
 def run():

@@ -39,6 +39,7 @@ KEY_ASPECTS = 'aspects'
 KEY_DATA = 'data'
 KEY_DATA_TYPE = 'dataType'
 KEY_METADATA_TYPE = 'metadataType'
+KEY_COMMENT = 'description'
 
 KEY_ENTRY_ASPECT = 'entry_aspect'
 
@@ -53,6 +54,7 @@ COLUMN_DATA_TYPE = 'DATA_TYPE'
 COLUMN_COLUMN_NAME = 'COLUMN_NAME'
 COLUMN_IS_NULLABLE = 'IS_NULLABLE'
 COLUMN_SCHEMA_NAME = 'SCHEMA_NAME'
+COLUMN_COMMENT = 'COMMENT'
 
 # Dataplex constants
 VALUE_NULLABLE = 'NULLABLE'
@@ -160,11 +162,12 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .drop(COLUMN_IS_NULLABLE) \
         .withColumnRenamed(COLUMN_DATA_TYPE, KEY_DATA_TYPE) \
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
-        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME)
+        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME) \
+        .withColumnRenamed(COLUMN_COMMENT, KEY_DESCRIPTION) #DH add comments
 
     # transformation below aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, rest put into array type "fields"
-    aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE]
+    aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE,KEY_DESCRIPTION]
     df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
       .groupby(COLUMN_TABLE_NAME) \
       .agg(F.collect_list(KEY_COLUMNS).alias(KEY_FIELDS))
@@ -216,4 +219,5 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     .drop(column)
 
     df = convert_to_import_items(df, [SCHEMA_KEY, entry_aspect_name])
+
     return df

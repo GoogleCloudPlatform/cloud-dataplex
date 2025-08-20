@@ -47,7 +47,7 @@ def validateArguments(parsed_args):
 
         validateSecretID(parsed_args.keypair_secret)
         try:
-            parsed_args.password = get_password(parsed_args.keypair_secret)
+            parsed_args.keypair_secret = get_password(parsed_args.keypair_secret)
         except Exception as e:
             print(f"Error retrieving password from Secret Manager with key: {parsed_args.keypair_secret}")
             raise Exception(e)

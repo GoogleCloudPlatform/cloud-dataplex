@@ -36,15 +36,10 @@ class SnowflakeConnector:
         # Check jar files exist. Throws exception if not found
         jarsExist = fileExists(jar_path)
 
-        print("0. Starting the spark code")
-        print(f"Spark jars is {jar_path}")
-
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \
             .config("spark.log.level", "ERROR") \
             .getOrCreate()
-        
-        print("1. Built the session")
 
         self._url = f"{config['account']}.snowflakecomputing.com"
         
@@ -62,14 +57,10 @@ class SnowflakeConnector:
                     self._sfOptions['sfToken'] = config['token']
                 case 'password':
                     self._sfOptions['sfPassword'] = config['password']
-                case 'keypair':
-
-                    data=open('/home/danielholgate/temp_can_delete_later/snowflake_key_pair_temp/rsa_key.p8').read().encode('utf-8')
-                    print(f"PEM Data is {data}")
+                case 'key-pair':
  
                     p_key = serialization.load_pem_private_key(
-                    data=open('/home/danielholgate/temp_can_delete_later/snowflake_key_pair_temp/rsa_key.p8').read().encode('utf-8'),
-                    #data=bytes(config['keypair_secret'], 'utf-8'),
+                    data=bytes(config['keypair_secret'], 'utf-8'),
                     password = None, #os.environ['PRIVATE_KEY_PASSPHRASE'].encode()',
                     backend = default_backend()
                     )
@@ -84,10 +75,7 @@ class SnowflakeConnector:
                     pkb = re.sub("-*(BEGIN|END) PRIVATE KEY-*\n","",pkb).replace("\n","")
 
                     self._sfOptions['pem_private_key'] = pkb
-
-                    print(f"Key-pair assigned value: {self._sfOptions}")
         else:
-                print(f"Authentication was None!! {config.get('authentication')} - {config}")
                 self._sfOptions['sfPassword'] = config['password']
         
         if config.get('warehouse') is not None:
@@ -99,13 +87,8 @@ class SnowflakeConnector:
         if config.get('role') is not None:
             self._sfOptions['sfRole'] = config['role']
 
-        print(f"2. Finished Spark confg: {self._sfOptions}")
-
     def _execute(self, query: str) -> DataFrame:
-        sfOptions = self._sfOptions
         SNOWFLAKE_SOURCE_NAME = "net.snowflake.spark.snowflake"
-
-        print(f"3. Running a query: {query}")
 
         return self._spark.read.format(SNOWFLAKE_SOURCE_NAME) \
             .options(**self._sfOptions) \
@@ -122,7 +105,7 @@ class SnowflakeConnector:
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Returns list of columns a tables or view"""
         return (f"SELECT c.table_name, c.column_name,  "
-                f"c.data_type, c.is_nullable "
+                f"c.data_type, c.is_nullable, c.comment "
                 f"FROM information_schema.columns c "
                 f"JOIN information_schema.tables t ON  "
                 f"c.table_catalog = t.table_catalog "
