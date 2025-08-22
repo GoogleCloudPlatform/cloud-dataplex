@@ -45,6 +45,7 @@ KEY_ENTRY_ASPECT = 'entry_aspect'
 
 KEY_FIELDS = 'fields'
 KEY_SYSTEM = 'system'
+KEY_PLATFORM = 'platform'
 KEY_SCHEMA = 'schema'
 
 KEY_COLUMNS = 'columns'
@@ -54,7 +55,8 @@ COLUMN_DATA_TYPE = 'DATA_TYPE'
 COLUMN_COLUMN_NAME = 'COLUMN_NAME'
 COLUMN_IS_NULLABLE = 'IS_NULLABLE'
 COLUMN_SCHEMA_NAME = 'SCHEMA_NAME'
-COLUMN_COMMENT = 'COMMENT'
+COLUMN_COLUMN_COMMENT = 'COMMENT'
+COLUMN_TABLE_COMMENT = 'TABLE_COMMENT'
 
 # Dataplex constants
 VALUE_NULLABLE = 'NULLABLE'
@@ -69,12 +71,25 @@ def choose_metadata_type_udf(data_type: str):
     return get_catalog_metadata_type(data_type)
 
 
-def create_entry_source(column):
+def create_entry_source(column,entryType,comment):
     """Create Entry Source segment."""
-    return F.named_struct(F.lit(KEY_DISPLAY_NAME),
+    ## Add Snowflake comments to the description field for tables and views 
+    if entryType.endswith("-table") or entryType.endswith("-view"):
+        return F.named_struct(F.lit(KEY_DISPLAY_NAME),
                           column,
                           F.lit(KEY_SYSTEM),
-                          F.lit(SOURCE_TYPE))
+                          F.lit(SOURCE_TYPE),
+                          F.lit(KEY_DESCRIPTION),
+                          F.lit(comment)
+                          )
+    else:
+        return F.named_struct(F.lit(KEY_DISPLAY_NAME),
+                          column,
+                          F.lit(KEY_SYSTEM),
+                          F.lit(SOURCE_TYPE),
+                          F.lit(KEY_DESCRIPTION),
+                          F.lit("not a table")
+                          )
 
 
 def create_entry_aspect(entry_aspect_name):
@@ -133,7 +148,7 @@ def build_schemas(config, df_raw_schemas):
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
       .withColumn(KEY_PARENT_ENTRY, F.lit(parent_name)) \
       .withColumn(KEY_ENTRY_TYPE, F.lit(full_entry_type)) \
-      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column)) \
+      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column,full_entry_type,F.col(KEY_DESCRIPTION))) \
       .withColumn(KEY_ASPECTS, create_entry_aspect(entry_aspect_name)) \
     .drop(column)
 
@@ -163,15 +178,19 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumnRenamed(COLUMN_DATA_TYPE, KEY_DATA_TYPE) \
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
         .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME) \
-        .withColumnRenamed(COLUMN_COMMENT, KEY_DESCRIPTION) \
-        .na.fill(value='',subset=[KEY_DESCRIPTION])
+        .withColumnRenamed(COLUMN_COLUMN_COMMENT, KEY_DESCRIPTION) \
+        .na.fill(value='',subset=[KEY_DESCRIPTION]) \
+        .na.fill(value='',subset=[COLUMN_TABLE_COMMENT])
+
 
     # transformation below aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, the rest are put into array type "fields"
     aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE, KEY_DESCRIPTION]
     df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
-      .groupby(COLUMN_TABLE_NAME) \
+      .groupby(COLUMN_TABLE_NAME, COLUMN_TABLE_COMMENT) \
       .agg(F.collect_list(KEY_COLUMNS).alias(KEY_FIELDS))
+
+    df = df.withColumnRenamed(COLUMN_TABLE_COMMENT, KEY_DESCRIPTION) 
 
     # Create nested structured called aspects.
     # Fields becoming part of the 'schema' struct
@@ -191,7 +210,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
       .drop(KEY_FIELDS)
 
     # Merge separate aspect columns into 'aspects' map
-    df = df.select(F.col(COLUMN_TABLE_NAME),
+    df = df.select(F.col(COLUMN_TABLE_NAME),F.col(KEY_DESCRIPTION),
                    F.map_concat(KEY_SCHEMA, KEY_ENTRY_ASPECT).alias(KEY_ASPECTS))
 
     # Define user-defined functions to fill the general information
@@ -216,8 +235,9 @@ def build_dataset(config, df_raw, db_schema, entry_type):
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
       .withColumn(KEY_ENTRY_TYPE, F.lit(full_entry_type)) \
       .withColumn(KEY_PARENT_ENTRY, F.lit(parent_name)) \
-      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column)) \
-    .drop(column)
+      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column,full_entry_type,F.col(KEY_DESCRIPTION))) \
+    .drop(column) \
+    .drop(KEY_DESCRIPTION)
 
     df = convert_to_import_items(df, [SCHEMA_KEY, entry_aspect_name])
 

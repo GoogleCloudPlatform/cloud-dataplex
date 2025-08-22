@@ -19,23 +19,23 @@ Metadata is not extracted for objects in INFORMATION_SCHEMA.
 
 ### Parameters
 The connector takes the following parameters:
-
+#### Project Parmaters
 |Parameter|Description|Default|Required/Optional|
 |---------|------------|---|-------------|
-|target_project_id|Google Cloud Project ID. Used in the generated metadata and defines the scope metadata will be imported into||REQUIRED|
-|target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates the region Entries will be associated with||REQUIRED|
+|target_project_id|Google Cloud Project ID. Used in generated metadata and defines the scope metadata will be imported into||REQUIRED|
+|target_location_id|Google Cloud Region ID, or 'global'. Used in generated metadata, indicates the region Entries will be associated with||REQUIRED|
 |target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |account|Snowflake account to connect to||REQUIRED|
 |user|Snowflake username to connect with||REQUIRED|
+|database|Snowflake database to connect to||REQUIRED|
+|warehouse|Snowflake warehouse to connect to||OPTIONAL|
 |authentication|Authentication method to use for Snowflake: password, oauth, key-pair|password|OPTIONAL|
 |password_secret|Google Secret Manager ID holding the password for the Snowflake user. Format: projects/{project-number}/secrets/{secret-name}||REQUIRED if using password auth|
 |token|OAUTH Token||REQUIRED if using **--authentication oauth**|
-|keypair_secret|Google Secret Manager ID holding the private key for the Snowflake user.||REQUIRED if using **--authentication key-pair**|
-|database|Snowflake database to connect to||REQUIRED|
-|warehouse|Snowflake warehouse to connect to||OPTIONAL|
+|keypair_secret|Google Secret Manager ID holding the private key for the Snowflake user||REQUIRED if using **--authentication key-pair**|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
-|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
-|output_folder|Folder in Cloud Storage bucket where the output metadata import file will be stored. Required if **--local_output_only False**||
+|output_bucket|Cloud Storage bucket where the metadata import file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||
 |min_expected_entries|Minimum number of entries expected in generated metadata import file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
@@ -53,7 +53,7 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-2. Add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
+Add the password for the user to the Secret Manager to the Google Cloud project where you will run the connector and note the ID.
 
 ## Install the connector
 
