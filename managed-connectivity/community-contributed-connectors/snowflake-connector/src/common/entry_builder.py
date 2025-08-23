@@ -73,7 +73,7 @@ def choose_metadata_type_udf(data_type: str):
 
 def create_entry_source(column,entryType,comment):
     """Create Entry Source segment."""
-    ## Add Snowflake comments to the description field for tables and views 
+    ## Add comments to the description field for tables and views only 
     if entryType.endswith("-table") or entryType.endswith("-view"):
         return F.named_struct(F.lit(KEY_DISPLAY_NAME),
                           column,
@@ -86,9 +86,7 @@ def create_entry_source(column,entryType,comment):
         return F.named_struct(F.lit(KEY_DISPLAY_NAME),
                           column,
                           F.lit(KEY_SYSTEM),
-                          F.lit(SOURCE_TYPE),
-                          F.lit(KEY_DESCRIPTION),
-                          F.lit("not a table")
+                          F.lit(SOURCE_TYPE)
                           )
 
 
