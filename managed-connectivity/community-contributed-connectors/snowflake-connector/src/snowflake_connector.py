@@ -60,7 +60,7 @@ class SnowflakeConnector:
                 case 'key-pair':
  
                     p_key = serialization.load_pem_private_key(
-                    data=bytes(config['keypair_secret'], 'utf-8'),
+                    data=bytes(config['key_secret'], 'utf-8'),
                     password = None, #os.environ['PRIVATE_KEY_PASSPHRASE'].encode()',
                     backend = default_backend()
                     )

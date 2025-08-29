@@ -17,17 +17,28 @@ import sys
 from datetime import datetime
 import re
 import os
+from google.cloud import storage
 
-# Loads file at a given path and returns the content as a string
-def loadReferencedFile(file_path) -> str:
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content
-    except Exception as e:
-        print(f"Error while reading file {file_path}: {e}")
-        sys.exit(1)
-    return None
+# Retrieves content as string from file at given path
+# supports local file system, cloud storage paths
+def loadReferencedFile(path: str) -> str:
+    if path.startswith("gs://"):
+        client = storage.Client()
+        bucket_name, file_path = path[5:].split('/', 1)
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(file_path)
+        return blob.download_as_text()
+    else:
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+def upload(config: dict[str, str], fileDirectory: str, filename: str, folder: str):
+    """Uploads a file to a Cloud Storage bucket."""
+    client = storage.Client()
+    bucket = client.get_bucket((config["output_bucket"]))
+
+    blob = bucket.blob(f"{folder}/{filename}")
+    blob.upload_from_filename(f"{fileDirectory}/{filename}")
 
 # Convert string to camel case - dataplex v1 property names
 def to_camel_case(text) -> str:

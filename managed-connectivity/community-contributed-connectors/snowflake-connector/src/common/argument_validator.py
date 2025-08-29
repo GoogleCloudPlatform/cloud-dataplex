@@ -18,6 +18,7 @@ import argparse
 import sys
 import re
 import logging
+from src.common.util import loadReferencedFile
 
 GCP_REGIONS = ['asia-east1', 'asia-east2', 'asia-northeast1', 'asia-northeast2', 'asia-northeast3', 'asia-south1', 'asia-south2', 'asia-southeast1', 'asia-southeast2', 'australia-southeast1', 'australia-southeast2', 'europe-central2', 'europe-north1', 'europe-southwest1', 'europe-west1', 'europe-west2', 'europe-west3',
                'europe-west4', 'europe-west6', 'europe-west8', 'europe-west9', 'europe-west12', 'me-central1', 'me-west1', 'northamerica-northeast1', 'northamerica-northeast2', 'southamerica-east1', 'southamerica-east2', 'us-central1', 'us-east1', 'us-east4', 'us-east5', 'us-south1', 'us-west1', 'us-west2', 'us-west3', 'us-west4']
@@ -32,7 +33,7 @@ def validateArguments(parsed_args):
         raise Exception(f"--output_bucket {parsed_args.output_bucket} is not valid")
 
     if parsed_args.target_location_id not in (GCP_REGIONS + ['global']):
-        raise Exception(f"--target_location_id must be valid google cloud region or 'global' : {parsed_args.target_location_id}")
+        raise Exception(f"--target_location_id must be a valid google cloud region or 'global' : {parsed_args.target_location_id}")
 
     if parsed_args.password_secret is not None:
 
@@ -43,13 +44,21 @@ def validateArguments(parsed_args):
             print(f"Error retrieving password from Secret Manager with key: {parsed_args.password_secret}")
             raise Exception(e)
     
-    if parsed_args.keypair_secret is not None:
+    if parsed_args.key_secret is not None:
 
-        validateSecretID(parsed_args.keypair_secret)
+        validateSecretID(parsed_args.key_secret)
         try:
-            parsed_args.keypair_secret = get_password(parsed_args.keypair_secret)
+            parsed_args.key_secret = get_password(parsed_args.key_secret)
         except Exception as e:
-            print(f"Error retrieving password from Secret Manager with key: {parsed_args.keypair_secret}")
+            print(f"Error retrieving private key from Secret Manager with ID: {parsed_args.key_secret}")
+            raise Exception(e)
+    
+    if parsed_args.key_file is not None:
+
+        try:
+            parsed_args.key_secret = loadReferencedFile(parsed_args.key_file)
+        except Exception as e:
+            print(f"Error retrieving private key file from path: {parsed_args.key_file}")
             raise Exception(e)
 
     return parsed_args
