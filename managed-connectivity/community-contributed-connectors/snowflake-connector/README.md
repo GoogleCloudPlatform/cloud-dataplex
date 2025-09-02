@@ -109,11 +109,11 @@ Note: If you are not running the connector in a Google Cloud managed environment
 * Download the following Snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
 
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
-    * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
+    * [spark-snowflake_2.12-3.1.1.jar](https//repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
     
     ```bash
-    wget https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/snowflake-jdbc-3.19.0.jar
-    wget https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/spark-snowflake_2.12-3.1.1.jar
+    wget https://repo1.maven.org/maven2/net/nowflake/snowflake-jdbc/3.19.0/snowflake-jdbc-3.19.0.jar
+    wget https://repo1.maven.org/maven2/net/nowflake/spark-snowflake_2.12/3.1.1/spark-snowflake_2.12-3.1.1.jar
     ```
 
 * Install python dependencies 
@@ -122,7 +122,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     ```
 
 ### Authentication and Authorization for the connector in Google Cloud
-Before running the connector from the command line, ensure your session user is authenticated as a Google Cloud identity that has been granted read access to Secret Manager and read/write to Cloud Storage in the current project.  The user requires the following IAM roles in the project where the connector runs:
+Before running the connector from the command line, ensure your session user is authenticated as a Google Cloud identity that has been read access to Secret Manager and read/write to Cloud Storage in the current project. The following IAM roles are required in the project where the connector runs:
 
 * roles/secretmanager.secretAccessor
 * roles/storage.objectUser
