@@ -18,6 +18,11 @@ Metadata for the following database objects is extracted by the connector:
 
 Metadata is not extracted for objects in INFORMATION_SCHEMA.
 
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to PostgreSQL: 
+* Password
+
 ### Parameters
 The connector takes the following parameters
 

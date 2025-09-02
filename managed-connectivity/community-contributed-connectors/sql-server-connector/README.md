@@ -18,6 +18,11 @@ Metadata for the following database objects is extracted by the connector:
 
 Metadata is not extracted from objects in system schemas: db_accessadmin,db_backupoperator,db_datareader,db_datawriter,db_ddladmin,db_denydatareader,db_denydatawriter,db_owner,db_securityadmin,guest,sys,INFORMATION_SCHEMA
 
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to SQL Server
+* Password
+
 ## Parameters
 The connector takes the following parameters:
 

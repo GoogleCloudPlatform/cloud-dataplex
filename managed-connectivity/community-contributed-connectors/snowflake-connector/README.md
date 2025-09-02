@@ -7,7 +7,7 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 This is not an officially supported Google product and is provided on an as-is basis, without warranty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
-### Target objects and schemas:
+### Target objects and schemas
 
 Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
@@ -15,11 +15,18 @@ Metadata for the following database objects is extracted by the connector
 |Tables|Table name, table comments, column names, column data types, column comments, column NULL/NOT NULL|
 |Views|View name, view comments, column names, column data types, column comments, column NULL/NOT NULL|
 
-Metadata is not extracted for objects in INFORMATION_SCHEMA.
+Metadata is not extracted for objects in INFORMATION_SCHEMA
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to Snowflake: 
+* Password
+* Key pair
+* OAuth
 
 ### Parameters
-The connector takes the following parameters:
-#### Project Parmaters
+The connector takes the following parameters
+
 |Parameter|Description|Default|Required/Optional|
 |---------|------------|---|-------------|
 |target_project_id|Google Cloud Project ID. Used in generated metadata and defines the scope metadata will be imported into||REQUIRED|
@@ -31,12 +38,14 @@ The connector takes the following parameters:
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
 |authentication|Authentication method to use for Snowflake: password, oauth, key-pair|password|OPTIONAL|
 |password_secret|Google Secret Manager ID holding the password for the Snowflake user. Format: projects/{project-number}/secrets/{secret-name}||REQUIRED if using password auth|
-|token|OAUTH Token||REQUIRED if using **--authentication oauth**|
-|keypair_secret|Google Secret Manager ID holding the private key for the Snowflake user||REQUIRED if using **--authentication key-pair**|
+|token_file|File containing the OAUTH Token. Can be file system path or gs:// path to Cloud Storage||REQUIRED if using **--authentication oauth**|
+|key_secret|Google Secret Manager ID holding the private key for the Snowflake user||REQUIRED if using **--authentication key-pair**|
+|key_file|Path to file containing the private key. Can be file system path or gs:// path to Cloud Storage||key_file or key_secret REQUIRED if using **--authentication key-pair**|
+|passphrase_file|Path to file containing the passphrase for the private key. Can be file system path or gs:// path to Cloud Storage. Can also be provided by setting environment variable PRIVATE_KEY_PASSPHRASE||OPTIONAL|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the metadata import file will be stored.  Required if **--local_output_only False**||REQUIRED|
-|output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||
-|min_expected_entries|Minimum number of entries expected in generated metadata import file. If less than the, the file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata import file. If less than this number, the file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 

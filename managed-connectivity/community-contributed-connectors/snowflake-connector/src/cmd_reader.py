@@ -42,11 +42,15 @@ def read_args():
     parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password','key-pair'],help="Authentication method")
     credentials_group = parser.add_mutually_exclusive_group()
     credentials_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID for password")
+    credentials_group.add_argument("--password_file", type=str,help="Path to file containing password")
+
     privatekey_option_group = parser.add_mutually_exclusive_group()
     privatekey_option_group.add_argument("--key_secret", type=str,help="Google Cloud Secret Manager ID of the private key")
-    privatekey_option_group.add_argument("--key_file", type=str, help="Path to private key file for Key-Pair authentication")
+    privatekey_option_group.add_argument("--key_file", type=str, help="Path to private key file for Key pair authentication")
 
-    credentials_group.add_argument("--token", type=str, help="Authentication token for oauth")
+    parser.add_argument("--passphrase_file",type=str,required=False,help="Path to file containing passphrase for private key file. Can also use environment variable PRIVATE_KEY_PASSPHRASE")
+    
+    credentials_group.add_argument("--token_file", type=str, help="Path to file containing OAUTH authentication token")
 
     # Output destination arguments. Generate local only, or local + to Cloud Storage bucket
     output_option_group = parser.add_mutually_exclusive_group()
@@ -67,11 +71,36 @@ def read_args():
         sys.exit(1)
     
     if parsed_args.authentication == 'key-pair' and parsed_args.key_secret is None and parsed_args.key_file is None:
-        print("either --key_secret or --key_file must be provided if using --authentication key-pair")
+        print("either --key_secret or --key_file must be provided if using key-pair authentication")
         sys.exit(1) 
     
-    if (parsed_args.authentication is None or parsed_args.authentication == 'password') and parsed_args.password_secret is None:
-        print("--password_secret must also be supplied if using --authentication password")
+    if (parsed_args.authentication is None or parsed_args.authentication == 'password') and (parsed_args.password_secret is None and parsed_args.password_file is None):
+        print("--password_secret or --password_file must supplied if using password authentication")
         sys.exit(1)
+    
+        if parsed_args.key_secret is not None:
+
+            validateSecretID(parsed_args.key_secret)
+        try:
+            parsed_args.key_secret = get_password(parsed_args.key_secret)
+        except Exception as e:
+            print(f"Error retrieving private key from Secret Manager: {parsed_args.key_secret}")
+            raise Exception(e)
+    
+    if parsed_args.key_file is not None:
+
+        try:
+            parsed_args.key_secret = loadReferencedFile(parsed_args.key_file)
+        except Exception as e:
+            print(f"Error retrieving private key file from file at {parsed_args.key_file}")
+            raise Exception(e)
+        
+    if parsed_args.passphrase_file is not None:
+
+        try:
+            parsed_args.key_secret = loadReferencedFile(parsed_args.passphrase_file)
+        except Exception as e:
+            print(f"Error retrieving private key file from file at {parsed_args.passphrase_file}")
+            raise Exception(e)
     
     return vars(parsed_args)

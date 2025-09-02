@@ -20,7 +20,7 @@ import os
 from google.cloud import storage
 
 # Retrieves content as string from file at given path
-# supports local file system, cloud storage paths
+# Supports local file system, Cloud Storage
 def loadReferencedFile(path: str) -> str:
     if path.startswith("gs://"):
         client = storage.Client()

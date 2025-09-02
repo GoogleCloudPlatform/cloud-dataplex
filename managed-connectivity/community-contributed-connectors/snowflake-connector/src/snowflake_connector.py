@@ -58,10 +58,15 @@ class SnowflakeConnector:
                 case 'password':
                     self._sfOptions['sfPassword'] = config['password']
                 case 'key-pair':
+
+                    # Option to provide passphrase via environment variable
+                    passphrase= os.environ.get('PRIVATE_KEY_PASSPHRASE')
+                    if passphrase is not None:
+                        passphrase = passphrase.encode()
  
                     p_key = serialization.load_pem_private_key(
                     data=bytes(config['key_secret'], 'utf-8'),
-                    password = None, #os.environ['PRIVATE_KEY_PASSPHRASE'].encode()',
+                    password = passphrase,
                     backend = default_backend()
                     )
 

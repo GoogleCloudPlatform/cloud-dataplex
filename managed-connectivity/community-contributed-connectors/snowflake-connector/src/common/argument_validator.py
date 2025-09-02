@@ -43,26 +43,8 @@ def validateArguments(parsed_args):
         except Exception as e:
             print(f"Error retrieving password from Secret Manager with key: {parsed_args.password_secret}")
             raise Exception(e)
-    
-    if parsed_args.key_secret is not None:
-
-        validateSecretID(parsed_args.key_secret)
-        try:
-            parsed_args.key_secret = get_password(parsed_args.key_secret)
-        except Exception as e:
-            print(f"Error retrieving private key from Secret Manager with ID: {parsed_args.key_secret}")
-            raise Exception(e)
-    
-    if parsed_args.key_file is not None:
-
-        try:
-            parsed_args.key_secret = loadReferencedFile(parsed_args.key_file)
-        except Exception as e:
-            print(f"Error retrieving private key file from path: {parsed_args.key_file}")
-            raise Exception(e)
 
     return parsed_args
-
 
 def validateSecretID(secretpath: str) -> bool:
     pattern = r"^projects/[^/]+/secrets/[^/]+$"
