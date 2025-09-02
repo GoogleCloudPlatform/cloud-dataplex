@@ -122,7 +122,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     ```
 
 ### Authentication and Authorization for the connector in Google Cloud
-Before running the connector from the command line, ensure your session user is authenticated as a Google Cloud identity that has been read access to Secret Manager and read/write to Cloud Storage in the current project. The following IAM roles are required in the project where the connector runs:
+If you are using parameters that read from the Google Cloud Secret Manager, or read/write to Cloud Storage then ensure your session user is authenticated as a Google Cloud identity that has the following IAM roles in the project where the connector runs:
 
 * roles/secretmanager.secretAccessor
 * roles/storage.objectUser
