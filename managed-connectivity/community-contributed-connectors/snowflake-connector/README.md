@@ -41,7 +41,7 @@ The connector takes the following parameters
 |token_file|File containing the OAUTH Token. Can be file system path or gs:// path to Cloud Storage||REQUIRED if using **--authentication oauth**|
 |key_secret|Google Secret Manager ID holding the private key for the Snowflake user||REQUIRED if using **--authentication key-pair**|
 |key_file|Path to file containing the private key. Can be file system path or gs:// path to Cloud Storage||key_file or key_secret REQUIRED if using **--authentication key-pair**|
-|passphrase_file|Path to file containing the passphrase for the private key. Can be file system path or gs:// path to Cloud Storage. Can also be provided by setting environment variable PRIVATE_KEY_PASSPHRASE||OPTIONAL|
+|passphrase_file|Path to file containing the passphrase for the private key. Can be file system path or gs:// path to Cloud Storage. Passphrase can also be provided by setting environment variable PRIVATE_KEY_PASSPHRASE||OPTIONAL|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
 |output_bucket|Cloud Storage bucket where the metadata import file will be stored.  Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||OPTIONAL|
