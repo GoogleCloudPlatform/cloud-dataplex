@@ -58,9 +58,13 @@ class SnowflakeConnector:
                 case 'password':
                     self._sfOptions['sfPassword'] = config['password']
                 case 'key-pair':
-
                     # Option to provide passphrase via environment variable
-                    passphrase= os.environ.get('PRIVATE_KEY_PASSPHRASE')
+                    passphrase = os.environ.get('PRIVATE_KEY_PASSPHRASE')
+                    if passphrase is not None:
+                        passphrase = config['passphrase_file']
+                        if passphrase is not None:
+                            passphrase = config['passphrase_secret']
+
                     if passphrase is not None:
                         passphrase = passphrase.encode()
  

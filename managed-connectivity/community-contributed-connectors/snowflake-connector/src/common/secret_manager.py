@@ -15,7 +15,7 @@
 from google.cloud import secretmanager
 
 # Retrieve password from Secret Manager
-def get_password(secret_path: str) -> str:
+def get_secret(secret_path: str) -> str:
     client = secretmanager.SecretManagerServiceClient()
     if "versions" not in secret_path:
         # If not specified, we need the latest version of a password

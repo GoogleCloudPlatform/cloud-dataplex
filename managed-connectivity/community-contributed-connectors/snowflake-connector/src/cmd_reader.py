@@ -16,6 +16,8 @@ import argparse
 import sys
 from src.common.util import loadReferencedFile
 from src.common.argument_validator import validateArguments
+from src.common.secret_manager import get_secret
+from src.common.argument_validator import validateSecretID
 
 def read_args():
     parser = argparse.ArgumentParser()
@@ -49,6 +51,7 @@ def read_args():
     privatekey_option_group.add_argument("--key_file", type=str, help="Path to private key file for Key pair authentication")
 
     parser.add_argument("--passphrase_file",type=str,required=False,help="Path to file containing passphrase for private key file. Can also use environment variable PRIVATE_KEY_PASSPHRASE")
+    parser.add_argument("--passphrase_secret",type=str,required=False,help="Google Cloud Secret Manager ID forprivate key passphrase.")
     
     credentials_group.add_argument("--token_file", type=str, help="Path to file containing OAUTH authentication token")
 
@@ -78,13 +81,13 @@ def read_args():
         print("--password_secret or --password_file must supplied if using password authentication")
         sys.exit(1)
     
-        if parsed_args.key_secret is not None:
+    if parsed_args.key_secret is not None:
 
-            validateSecretID(parsed_args.key_secret)
+        validateSecretID(parsed_args.key_secret)
         try:
-            parsed_args.key_secret = get_password(parsed_args.key_secret)
+            parsed_args.key_secret = get_secret(parsed_args.key_secret)
         except Exception as e:
-            print(f"Error retrieving private key from Secret Manager: {parsed_args.key_secret}")
+            print(f"Error retrieving from Secret Manager: {parsed_args.key_secret}")
             raise Exception(e)
     
     if parsed_args.key_file is not None:
@@ -92,7 +95,7 @@ def read_args():
         try:
             parsed_args.key_secret = loadReferencedFile(parsed_args.key_file)
         except Exception as e:
-            print(f"Error retrieving private key file from file at {parsed_args.key_file}")
+            print(f"Error retrieving from file at {parsed_args.key_file}")
             raise Exception(e)
         
     if parsed_args.passphrase_file is not None:
@@ -100,7 +103,15 @@ def read_args():
         try:
             parsed_args.key_secret = loadReferencedFile(parsed_args.passphrase_file)
         except Exception as e:
-            print(f"Error retrieving private key file from file at {parsed_args.passphrase_file}")
+            print(f"Error retrieving from file at {parsed_args.passphrase_file}")
             raise Exception(e)
+    
+    if parsed_args.passphrase_secret is not None:
+
+        try:
+            parsed_args.passphrase_secrett = get_secret(parsed_args.passphrase_secret)
+        except Exception as e:
+            print(f"Error retrieving from file at {parsed_args.passphrase_secret}")
+        raise Exception(e)
     
     return vars(parsed_args)

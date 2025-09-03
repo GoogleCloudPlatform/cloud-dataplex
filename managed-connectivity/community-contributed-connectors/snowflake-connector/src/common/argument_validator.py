@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from src.common.gcs_uploader import checkDestination
-from src.common.secret_manager import get_password
+from src.common.secret_manager import get_secret
 import argparse
 import sys
 import re
@@ -36,10 +36,9 @@ def validateArguments(parsed_args):
         raise Exception(f"--target_location_id must be a valid google cloud region or 'global' : {parsed_args.target_location_id}")
 
     if parsed_args.password_secret is not None:
-
         validateSecretID(parsed_args.password_secret)
         try:
-            parsed_args.password = get_password(parsed_args.password_secret)
+            parsed_args.password = get_secret(parsed_args.password_secret)
         except Exception as e:
             print(f"Error retrieving password from Secret Manager with key: {parsed_args.password_secret}")
             raise Exception(e)
