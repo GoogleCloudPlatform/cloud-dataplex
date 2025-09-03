@@ -113,7 +113,7 @@ class SnowflakeConnector:
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Returns list of columns a tables or view"""
-        return (f"SELECT c.table_name, t.comment as TABLE_COMMENT,c.column_name,  "
+        return (f"SELECT c.table_name, left(t.comment,1024) as TABLE_COMMENT,c.column_name,  "
                 f"c.data_type, c.is_nullable, c.comment "
                 f"FROM information_schema.columns c "
                 f"JOIN information_schema.tables t ON  "
