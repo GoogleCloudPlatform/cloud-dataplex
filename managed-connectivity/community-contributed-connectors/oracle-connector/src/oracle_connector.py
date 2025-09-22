@@ -53,8 +53,10 @@ class OracleConnector(IExternalSourceConnector):
             }
         
         cdb_pdb_resultset = self.get_cdb_or_pdb()
-        cdb_pdb = [cdb_pdb_resultset.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("cdb_or_pdb").collect()]
-        print(f"CDB or PDB: {cdb_pdb.show()}")
+        cdb_pdb = [cdbpdb.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDB_OR_PDB").collect()]
+        #schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
+       
+        print(f"CDB or PDB: {cdb_pdb}")
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
