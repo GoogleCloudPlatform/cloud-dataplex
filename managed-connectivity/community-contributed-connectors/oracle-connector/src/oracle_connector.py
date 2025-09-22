@@ -95,20 +95,27 @@ class OracleConnector(IExternalSourceConnector):
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         query = f"""
         SELECT
-        col.TABLE_NAME,
-        col.COLUMN_NAME,
-        col.DATA_TYPE,
-        col.NULLABLE AS {COLUMN_IS_NULLABLE},
-        cmt.COMMENTS AS TABLE_COMMENT
+            col.TABLE_NAME,
+            col.COLUMN_NAME,
+            col.DATA_TYPE,
+            col.NULLABLE AS {COLUMN_IS_NULLABLE},
+            cmt.COMMENTS AS TABLE_COMMENT,
+            ccmt.COMMENTS AS comment -- column comment
         FROM
             dba_tab_columns col
         INNER JOIN
             DBA_OBJECTS tab
             ON tab.OBJECT_NAME = col.TABLE_NAME
+            AND tab.OWNER = col.OWNER
         LEFT JOIN
             dba_tab_comments cmt
             ON cmt.TABLE_NAME = col.TABLE_NAME
-            AND cmt.OWNER = tab.OWNER -- Assuming comments are tied to the same owner
+            AND cmt.OWNER = col.OWNER
+        LEFT JOIN
+            dba_col_comments ccmt
+            ON ccmt.TABLE_NAME = col.TABLE_NAME
+            AND ccmt.COLUMN_NAME = col.COLUMN_NAME
+            AND ccmt.OWNER = col.OWNER
         WHERE
             tab.OWNER = '{schema_name}'
             AND tab.OBJECT_TYPE = '{object_type}'
