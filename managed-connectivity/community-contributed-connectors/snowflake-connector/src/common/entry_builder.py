@@ -141,7 +141,6 @@ def build_schemas(config, df_raw_schemas):
         location=config["target_location_id"])
 
     # Convert list of schema names to Dataplex-compatible form
-    print(f"1. {entry_type} Calling create_entry_source with ({full_entry_type})")
 
     column = F.col(COLUMN_SCHEMA_NAME)
     df = df_raw_schemas.withColumn(KEY_NAME, create_name_udf(column)) \
@@ -230,8 +229,6 @@ def build_dataset(config, df_raw, db_schema, entry_type):
 
     # Fill the top-level fields
     column = F.col(COLUMN_TABLE_NAME)
-
-    print(f"2. {entry_type} Calling create_entry_source with ({full_entry_type})")
 
     df = df.withColumn(KEY_NAME, create_name_udf(column)) \
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
