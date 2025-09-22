@@ -229,6 +229,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # Fill the top-level fields
     column = F.col(COLUMN_TABLE_NAME)
 
+    print(f"Calling create_entry_source with ({full_entry_type})")
+
     df = df.withColumn(KEY_NAME, create_name_udf(column)) \
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
       .withColumn(KEY_ENTRY_TYPE, F.lit(full_entry_type)) \
