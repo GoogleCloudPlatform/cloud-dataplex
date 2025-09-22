@@ -52,7 +52,7 @@ class OracleConnector(IExternalSourceConnector):
             "password": config['password']
             }
         
-        cdb_pdb_resultset = self.get_cdb_or_pdb(self)
+        cdb_pdb_resultset = self.get_cdb_or_pdb()
         cdb_pdb = [cdb_pdb_resultset.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDP_OR_PDB").collect()]
         print(f"CDB or PDB: {cdb_pdb}")
 
