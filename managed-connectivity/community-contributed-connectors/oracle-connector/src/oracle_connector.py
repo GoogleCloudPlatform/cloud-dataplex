@@ -53,7 +53,7 @@ class OracleConnector(IExternalSourceConnector):
             }
         
         cdb_pdb_resultset = self.get_cdb_or_pdb(self)
-        cdb_pdb = [cdb_pdb_resultset.CDB_OR_PDB for cdbpdb in df_raw_schemas.select("CDP_OR_PDB").collect()]
+        cdb_pdb = [cdb_pdb_resultset.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDP_OR_PDB").collect()]
         print(f"CDB or PDB: {cdb_pdb}")
 
     def _execute(self, query: str) -> DataFrame:
