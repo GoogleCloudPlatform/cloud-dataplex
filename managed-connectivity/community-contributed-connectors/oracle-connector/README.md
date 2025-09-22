@@ -48,10 +48,14 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-1. Create an Oracle user with the following privileges and roles: 
-    * CONNECT and CREATE SESSION to <monitoring_user>
-    * GRANT SELECT on DBA_OBJECTS to <monitoring_user>
-    * SELECT on all schemas for which metadata needs to be extracted
+1. Create an Oracle user with the following privileges and roles:
+    ```sql
+    CREATE USER dataplex_connector IDENTIFIED BY qwerty;
+    CREATE ROLE dataplex_role;
+    GRANT dataplex_role TO dataplex_connector;
+    GRANT CREATE SESSION TO dataplex_role;
+    GRANT SELECT_CATALOG_ROLE TO dataplex_role;
+    ```
 
 2. Add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
 

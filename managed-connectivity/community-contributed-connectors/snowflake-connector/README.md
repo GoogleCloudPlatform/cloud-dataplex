@@ -43,9 +43,10 @@ The connector takes the following parameters
 |key_file|Path to file containing the private key. Can be file system path or gs:// path to Cloud Storage||key_file or key_secret REQUIRED if using **--authentication key-pair**|
 |passphrase_file|Path to file containing the passphrase for the private key. Can be file system path or gs:// path to Cloud Storage. Passphrase can also be provided by setting environment variable PRIVATE_KEY_PASSPHRASE||OPTIONAL|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
-|output_bucket|Cloud Storage bucket where the metadata import file will be stored.  Required if **--local_output_only False**||REQUIRED|
+|output_bucket|Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||REQUIRED|
 |output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||OPTIONAL|
 |min_expected_entries|Minimum number of entries expected in generated metadata import file. If less than this number, the file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|empty_comments_overwrite|If included, even when Snowflake object comments are empty they will overwrite table, view and column descriptions in Dataplex Universal Catalog|False|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 
@@ -53,7 +54,7 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-The Snowflake user should be a [service user](https://docs.snowflake.com/en/user-guide/admin-user-management) who has been granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata will be extracted
+The Snowflake user should be a [service user](https://docs.snowflake.com/en/user-guide/admin-user-management) who has been granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata needs to be extracted
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
@@ -62,7 +63,8 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-Add the password for the user to the Secret Manager to the Google Cloud project where you will run the connector and note the ID.
+If using password authenticstion for the user to the Secret Manager to the Google Cloud project where you will run the connector and note the ID.
+If using keypair or oauth authentication, add the credentials either to the Secret Manager, or secure them in files or Cloud Storage with access permission only for the connector user. See the parameters above for options.
 
 ## Install the connector
 
@@ -97,7 +99,7 @@ The following tools and libraries are required to run the connector:
 Note: If you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
 
 #### Set-up
-* Clone repository to local machine
+* Clone repository to your local machine
     ```bash
     git clone https://github.com/GoogleCloudPlatform/cloud-dataplex.git
     ```
@@ -106,11 +108,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     cd cloud-dataplex/managed-connectivity/community-contributed-connectors/snowflake-connector
     ```
 
-* Download the following Snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
-
-    * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
-    * [spark-snowflake_2.12-3.1.1.jar](https//repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
-    
+* Download the Snowflake jar files
     ```bash
     wget https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/snowflake-jdbc-3.19.0.jar
     wget https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/spark-snowflake_2.12-3.1.1.jar
@@ -122,7 +120,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     ```
 
 ### Authentication and Authorization for the connector in Google Cloud
-If you are using parameters that read from the Google Cloud Secret Manager, or read/write to Cloud Storage then ensure your session user is authenticated as a Google Cloud identity that has the following IAM roles in the project where the connector runs:
+If you are running the connector with authentication parameters that read from the Google Cloud Secret Manager, or read/write to Cloud Storage then ensure your session user is authenticated as a Google Cloud identity that has the following IAM roles in the project where the connector runs:
 
 * roles/secretmanager.secretAccessor
 * roles/storage.objectUser
@@ -133,7 +131,7 @@ You can use [Application Default Credentials](https://cloud.google.com/sdk/gclou
 gcloud auth application-default login
 ```
 
-Note: If you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
+Note: If the above applies but you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
 
 ## Run the connector from the command line
 
@@ -154,13 +152,13 @@ python3 main.py \
 ```
 
 ## Connector Output:
-The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
+The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector will also upload the file to the Cloud Storage bucket and folder specified in **--output_bucket** and **--output_folder** unless **--local-output_only True** is used.
 
 A sample output from the Snowflake connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into Dataplex Universal Catalog
 
-To manually import a metadata import file generated by this connector into universal catalog see [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. 
+To manually import a metadata import file generated by this connector into Dataplex Universal Catalog see [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. 
 
 Before importing metadata, the Entry Group and all Entry Types and Aspect Types found in the metadata file must exist in Dataplex for the target project and location (either a Google Cloud region, or 'global'). This connector requires the following Entry Group, Entry Types and Aspect Types:
 

@@ -81,9 +81,6 @@ def run():
 
     entries_count = 0
 
-    # Build the output file name from connection details
-    FILENAME = generateFileName(config) 
-
     output_path = './output'
     if not os.path.exists(output_path):
         os.mkdir(output_path)

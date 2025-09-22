@@ -51,6 +51,10 @@ class OracleConnector(IExternalSourceConnector):
             "user": config['user'],
             "password": config['password']
             }
+        
+        cdb_pdb_resultset = self.get_cdb_or_pdb(self)
+        cdb_pdb = [cdb_pdb_resultset.CDB_OR_PDB for cdbpdb in df_raw_schemas.select("CDP_OR_PDB").collect()]
+        print(f"CDB or PDB: {cdb_pdb}")
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
@@ -58,6 +62,16 @@ class OracleConnector(IExternalSourceConnector):
             .options(**self._connectOptions) \
             .option("query", query) \
             .load()
+    
+    def get_cdb_or_pdb(self) -> DataFrame:
+        """Select db schemas to process. Exclude system schemas"""
+        query = """
+        select case sys_context('USERENV', 'CON_ID') 
+        when '1' then 'CDB' else 'PDB' end
+        as cdb_or_pdb
+        from dual
+        """
+        return self._execute(query)
 
     def get_db_schemas(self) -> DataFrame:
         """Select db schemas to process. Exclude system schemas"""

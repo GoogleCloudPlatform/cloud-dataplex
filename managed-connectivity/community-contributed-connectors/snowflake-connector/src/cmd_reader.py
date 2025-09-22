@@ -61,6 +61,7 @@ def read_args():
     
     parser.add_argument("--output_folder", type=str, required=False,help="Folder within bucket where generated metadata import file will be written. Specify folder name only")
     parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Safety mechanism for when using Full Entry Sync metadata jobs")
+    parser.add_argument("--empty_comments_overwrite",action="store_true",help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Safety mechanism for when using Full Entry Sync metadata jobs")
     
     parsed_args = parser.parse_known_args()[0]
 
@@ -79,6 +80,7 @@ def read_args():
     if (parsed_args.authentication is None or parsed_args.authentication == 'password') and (parsed_args.password_secret is None and parsed_args.password_file is None):
         print("--password_secret or --password_file must be provided if using password authentication")
         sys.exit(1)
+        
     
     if parsed_args.key_secret is not None:
 
