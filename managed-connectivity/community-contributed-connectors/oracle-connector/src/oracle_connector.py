@@ -53,9 +53,7 @@ class OracleConnector(IExternalSourceConnector):
             }
         
         cdb_pdb_resultset = self.get_cdb_or_pdb()
-        cdb_pdb = [cdbpdb.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDB_OR_PDB").collect()]
-        #schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
-       
+        cdb_pdb = [cdbpdb.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDB_OR_PDB").collect()] 
         print(f"CDB or PDB: {cdb_pdb}")
 
     def _execute(self, query: str) -> DataFrame:
@@ -97,7 +95,7 @@ class OracleConnector(IExternalSourceConnector):
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         return (f"SELECT col.TABLE_NAME, col.COLUMN_NAME, "
                 f"col.DATA_TYPE, col.NULLABLE as {COLUMN_IS_NULLABLE} "
-                f"FROM all_tab_columns col "
+                f"FROM dba_tab_columns col "
                 f"INNER JOIN DBA_OBJECTS tab "
                 f"ON tab.OBJECT_NAME = col.TABLE_NAME "
                 f"WHERE tab.OWNER = '{schema_name}' "
