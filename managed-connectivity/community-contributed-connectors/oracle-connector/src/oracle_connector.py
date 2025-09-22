@@ -99,7 +99,7 @@ class OracleConnector(IExternalSourceConnector):
         col.COLUMN_NAME,
         col.DATA_TYPE,
         col.NULLABLE AS {COLUMN_IS_NULLABLE},
-        cmt.COMMENTS
+        cmt.COMMENTS AS TABLE_COMMENT
         FROM
             dba_tab_columns col
         INNER JOIN
