@@ -93,7 +93,7 @@ class OracleConnector(IExternalSourceConnector):
         return self._execute(query)
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
-        query = """
+        query = f"""
         SELECT
         col.TABLE_NAME,
         col.COLUMN_NAME,
@@ -112,13 +112,6 @@ class OracleConnector(IExternalSourceConnector):
         WHERE
             tab.OWNER = '{schema_name}'
             AND tab.OBJECT_TYPE = '{object_type}'
-        return (f"SELECT col.TABLE_NAME, col.COLUMN_NAME, "
-                f"col.DATA_TYPE, col.NULLABLE as {COLUMN_IS_NULLABLE} "
-                f"FROM dba_tab_columns col "
-                f"INNER JOIN DBA_OBJECTS tab "
-                f"ON tab.OBJECT_NAME = col.TABLE_NAME "
-                f"WHERE tab.OWNER = '{schema_name}' "
-                f"AND tab.OBJECT_TYPE = '{object_type}'")
         """
         return query
 
