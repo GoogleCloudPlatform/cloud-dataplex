@@ -179,7 +179,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumnRenamed(Columns.DATA_TYPE.value, JSONKeys.DATA_TYPE.value) \
         .withColumn(JSONKeys.METADATA_TYPE.value, choose_metadata_type_udf(JSONKeys.DATA_TYPE.value)) \
         .withColumnRenamed(Columns.COLUMN_NAME.value, JSONKeys.NAME.value) \
-        .withColumnRenamed(Columns.COLUMN_COMMENT, JSONKeys.DESCRIPTION.value) \
+        .withColumnRenamed(Columns.COLUMN_COMMENT.value, JSONKeys.DESCRIPTION.value) \
         .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
         .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
 
