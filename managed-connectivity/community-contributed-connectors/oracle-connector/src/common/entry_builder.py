@@ -157,6 +157,8 @@ def build_schemas(config, df_raw_schemas):
       .withColumn(JSONKeys.ASPECTS.value, create_entry_aspect(entry_aspect_name)) \
     .drop(column)
 
+    print (f"{df.show()}")
+
     df = convert_to_import_items(df, [entry_aspect_name])
     return df
 
