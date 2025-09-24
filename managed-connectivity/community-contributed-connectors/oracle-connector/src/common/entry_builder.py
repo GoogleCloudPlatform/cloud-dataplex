@@ -177,7 +177,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     # 5. Renames COMMENT to DESCRIPTION
-    print (f"DF RAW: {df.show()}")
+    print (f"DF RAW: {df_raw.show()}")
 
     df = df_raw \
         .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
