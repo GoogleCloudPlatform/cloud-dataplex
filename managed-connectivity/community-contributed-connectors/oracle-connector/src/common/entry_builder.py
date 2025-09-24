@@ -219,6 +219,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # Merge separate aspect columns into 'aspects' map
     df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),F.col(JSONKeys.DEFAULT_VALUE.value),
                    F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
+    
+    print(f"1. df = {df.show()}")
 
     # Define user-defined functions to fill the general information
     # and hierarchy names
