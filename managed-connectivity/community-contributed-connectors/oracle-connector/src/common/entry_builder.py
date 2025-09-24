@@ -49,6 +49,7 @@ class JSONKeys(Enum):
     PLATFORM = 'platform'
     SCHEMA = 'schema'
     COLUMNS = 'columns'
+    DEFAULT_VALUE = 'default'
 
 """Enum representing the Spark dataframe columns"""
 class Columns(Enum):
@@ -59,6 +60,7 @@ class Columns(Enum):
     SCHEMA_NAME = 'SCHEMA_NAME'
     COLUMN_COMMENT = 'COLUMN_COMMENT'
     TABLE_COMMENT = 'TABLE_COMMENT'
+    COLUMN_DEFAULT_VALUE = 'DATA_DEFAULT'
 
 # Dataplex constants
 class DataplexTypesSchema(Enum):
