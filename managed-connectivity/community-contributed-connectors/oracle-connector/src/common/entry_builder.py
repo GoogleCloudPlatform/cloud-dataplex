@@ -79,6 +79,7 @@ def create_entry_source(column,entryType : EntryType,comment):
 
     ## Add comments to the description field for tables and views only 
     if entryType in [EntryType.TABLE, EntryType.VIEW]:
+        print("Adding comments to object {entryType}")
         return F.named_struct(F.lit(JSONKeys.DISPLAY_NAME.value),
                           column,
                           F.lit(JSONKeys.SYSTEM.value),
