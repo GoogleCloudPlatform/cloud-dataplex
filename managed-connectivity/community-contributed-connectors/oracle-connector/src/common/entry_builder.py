@@ -157,8 +157,6 @@ def build_schemas(config, df_raw_schemas):
       .withColumn(JSONKeys.ASPECTS.value, create_entry_aspect(entry_aspect_name)) \
     .drop(column)
 
-    print (f"{df.show()}")
-
     df = convert_to_import_items(df, [entry_aspect_name])
     return df
 
@@ -179,6 +177,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     # 5. Renames COMMENT to DESCRIPTION
+    print (f"DF RAW: {df.show()}")
+
     df = df_raw \
         .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
         .drop(Columns.IS_NULLABLE.value) \
