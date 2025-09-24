@@ -186,9 +186,9 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumn(JSONKeys.METADATA_TYPE.value, choose_metadata_type_udf(JSONKeys.DATA_TYPE.value)) \
         .withColumnRenamed(Columns.COLUMN_NAME.value, JSONKeys.NAME.value) \
         .withColumnRenamed(Columns.COLUMN_COMMENT.value, JSONKeys.DESCRIPTION.value) \
+        .withColumnRenamed(Columns.COLUMN_DEFAULT_VALUE.value, JSONKeys.DEFAULT_VALUE.value) \
         .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
         .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
-
 
     # transformation below aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, the rest are put into array type "fields"
