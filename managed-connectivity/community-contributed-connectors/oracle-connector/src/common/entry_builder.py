@@ -77,9 +77,8 @@ def choose_metadata_type_udf(data_type: str):
 def create_entry_source(column,entryType : EntryType,comment):
     """Create Entry Source segment."""
 
-    ## Add comments to the description field for tables and views only 
+    ## Add comments to description field for tables and views 
     if entryType in [EntryType.TABLE, EntryType.VIEW]:
-        print(f"Adding comments to object {entryType}")
         return F.named_struct(F.lit(JSONKeys.DISPLAY_NAME.value),
                           column,
                           F.lit(JSONKeys.SYSTEM.value),
