@@ -141,6 +141,8 @@ def build_schemas(config, df_raw_schemas):
     full_entry_type = entry_type.value.format(
         project=config["target_project_id"],
         location=config["target_location_id"])
+    
+    print(f"1. entryType = {entry_type}, full_entry_trpe = {full_entry_type}")
 
     # Convert list of schema names to Dataplex-compatible form
 
@@ -228,6 +230,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     full_entry_type = entry_type.value.format(
         project=config["target_project_id"],
         location=config["target_location_id"])
+    
+    print(f"2. entryType = {entry_type}, full_entry_trpe = {full_entry_type}")
 
     # Fill the top-level fields
     column = F.col(Columns.TABLE_NAME.value)
