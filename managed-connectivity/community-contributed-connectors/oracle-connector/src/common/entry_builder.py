@@ -177,7 +177,6 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     # 5. Renames COMMENT to DESCRIPTION
-    # 6. Renames DATA_DEFAULT to DEFAULT_VALUE
 
     df = df_raw \
         .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
@@ -186,7 +185,6 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumn(JSONKeys.METADATA_TYPE.value, choose_metadata_type_udf(JSONKeys.DATA_TYPE.value)) \
         .withColumnRenamed(Columns.COLUMN_NAME.value, JSONKeys.NAME.value) \
         .withColumnRenamed(Columns.COLUMN_COMMENT.value, JSONKeys.DESCRIPTION.value) \
-        .withColumnRenamed(Columns.COLUMN_DEFAULT_VALUE.value, JSONKeys.DEFAULT_VALUE.value) \
         .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
         .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
 
@@ -219,7 +217,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     print(f"1. df = {df.show()}")
 
     # Merge separate aspect columns into 'aspects' map
-    df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),F.col(JSONKeys.DEFAULT_VALUE.value),
+    df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),
                    F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
     
     print(f"2. df = {df.show()}")
