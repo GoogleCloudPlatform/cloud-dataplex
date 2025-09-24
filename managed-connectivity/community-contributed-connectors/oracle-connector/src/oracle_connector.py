@@ -20,7 +20,7 @@ from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
-from src.common.entry_builder import COLUMN_IS_NULLABLE
+from src.common.entry_builder import Columns
 from src.constants import JDBC_JAR
 
 class OracleConnector(IExternalSourceConnector):
@@ -98,7 +98,7 @@ class OracleConnector(IExternalSourceConnector):
             col.TABLE_NAME,
             col.COLUMN_NAME,
             col.DATA_TYPE,
-            col.NULLABLE AS {COLUMN_IS_NULLABLE},
+            col.NULLABLE AS {Columns.IS_NULLABLE.value},
             cmt.COMMENTS AS TABLE_COMMENT,
             ccmt.COMMENTS AS COLUMN_COMMENT
         FROM

@@ -19,48 +19,50 @@ from src.datatype_mapper import get_catalog_metadata_type
 from src.constants import SOURCE_TYPE
 from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
+from enum import Enum
 
 # DB-specific value which indicates true
 from src.constants import IS_NULLABLE_TRUE
 
-# Property names from Dataplex_v1.Entry object in Camel Case
-KEY_NAME = 'name'
-KEY_MODE = 'mode'
-KEY_ENTRY = 'entry'
-KEY_ENTRY_TYPE = 'entryType'
-KEY_ENTRY_SOURCE = 'entrySource'
-KEY_ASPECT_KEYS = 'aspectKeys'
-KEY_ASPECT_TYPE = 'aspectType'
-KEY_DISPLAY_NAME = 'displayName'
-KEY_UPDATE_MASK = 'updateMask'
-KEY_FQN = 'fullyQualifiedName'
-KEY_PARENT_ENTRY = 'parentEntry'
-KEY_ASPECTS = 'aspects'
-KEY_DATA = 'data'
-KEY_DATA_TYPE = 'dataType'
-KEY_METADATA_TYPE = 'metadataType'
-KEY_DESCRIPTION = 'description'
+# Property names from google.cloud.dataplex_v1.types.Entry in camel Case
+class JSONKeys(Enum):
+    NAME = 'name'
+    MODE = 'mode'
+    ENTRY = 'entry'
+    ENTRY_TYPE = 'entryType'
+    ENTRY_SOURCE = 'entrySource'
+    ASPECT_KEYS = 'aspectKeys'
+    ASPECT_TYPE = 'aspectType'
+    DISPLAY_NAME = 'displayName'
+    UPDATE_MASK = 'updateMask'
+    FQN = 'fullyQualifiedName'
+    PARENT_ENTRY = 'parentEntry'
+    ASPECTS = 'aspects'
+    DATA = 'data'
+    DATA_TYPE = 'dataType'
+    METADATA_TYPE = 'metadataType'
+    DESCRIPTION = 'description'
+    ENTRY_ASPECT = 'entry_aspect'
+    FIELDS = 'fields'
+    SYSTEM = 'system'
+    PLATFORM = 'platform'
+    SCHEMA = 'schema'
+    COLUMNS = 'columns'
 
-KEY_ENTRY_ASPECT = 'entry_aspect'
-
-KEY_FIELDS = 'fields'
-KEY_SYSTEM = 'system'
-KEY_PLATFORM = 'platform'
-KEY_SCHEMA = 'schema'
-
-KEY_COLUMNS = 'columns'
-
-COLUMN_TABLE_NAME = 'TABLE_NAME'
-COLUMN_DATA_TYPE = 'DATA_TYPE'
-COLUMN_COLUMN_NAME = 'COLUMN_NAME'
-COLUMN_IS_NULLABLE = 'IS_NULLABLE'
-COLUMN_SCHEMA_NAME = 'SCHEMA_NAME'
-COLUMN_COLUMN_COMMENT = 'COLUMN_COMMENT'
-COLUMN_TABLE_COMMENT = 'TABLE_COMMENT'
+"""Enum representing the Spark dataframe columns"""
+class Columns(Enum):
+    TABLE_NAME = 'TABLE_NAME'
+    DATA_TYPE = 'DATA_TYPE'
+    COLUMN_NAME = 'COLUMN_NAME'
+    IS_NULLABLE = 'IS_NULLABLE'
+    SCHEMA_NAME = 'SCHEMA_NAME'
+    COLUMN_COMMENT = 'COLUMN_COMMENT'
+    TABLE_COMMENT = 'TABLE_COMMENT'
 
 # Dataplex constants
-VALUE_NULLABLE = 'NULLABLE'
-VALUE_REQUIRED = 'REQUIRED'
+class DataplexTypesSchema(Enum):
+    NULLABLE = 'NULLABLE'
+    REQUIRED = 'REQUIRED'
 
 # universal catalog system AspectType for database tables and schemas
 SCHEMA_KEY = "dataplex-types.global.schema"
@@ -75,17 +77,17 @@ def create_entry_source(column,entryType,comment):
     """Create Entry Source segment."""
     ## Add comments to the description field for tables and views only 
     if entryType.endswith("-table") or entryType.endswith("-view"):
-        return F.named_struct(F.lit(KEY_DISPLAY_NAME),
+        return F.named_struct(F.lit(JSONKeys.DISPLAY_NAME.value),
                           column,
-                          F.lit(KEY_SYSTEM),
+                          F.lit(JSONKeys.SYSTEM.value),
                           F.lit(SOURCE_TYPE),
-                          F.lit(KEY_DESCRIPTION),
+                          F.lit(JSONKeys.DESCRIPTION.value),
                           F.lit(comment)
                           )
     else:
-        return F.named_struct(F.lit(KEY_DISPLAY_NAME),
+        return F.named_struct(F.lit(JSONKeys.DISPLAY_NAME.value),
                           column,
-                          F.lit(KEY_SYSTEM),
+                          F.lit(JSONKeys.SYSTEM.value),
                           F.lit(SOURCE_TYPE)
                           )
 
@@ -95,9 +97,9 @@ def create_entry_aspect(entry_aspect_name):
     return F.create_map(
         F.lit(entry_aspect_name),
         F.named_struct(
-            F.lit(KEY_ASPECT_TYPE),
+            F.lit(JSONKeys.ASPECT_TYPE.value),
             F.lit(entry_aspect_name),
-            F.lit(KEY_DATA),
+            F.lit(JSONKeys.DATA.value),
             F.create_map()
             )
         )
@@ -105,14 +107,14 @@ def create_entry_aspect(entry_aspect_name):
 
 def convert_to_import_items(df, aspect_keys):
     """Convert entries to import items."""
-    entry_columns = [KEY_NAME, KEY_FQN, KEY_PARENT_ENTRY,
-                     KEY_ENTRY_SOURCE, KEY_ASPECTS, KEY_ENTRY_TYPE]
+    entry_columns = [JSONKeys.NAME.value, JSONKeys.FQN.value, JSONKeys.PARENT_ENTRY.value,
+                     JSONKeys.ENTRY_SOURCE.value, JSONKeys.ASPECTS.value, JSONKeys.ENTRY_TYPE.value]
 
     # Puts entry to "entry" key, a list of keys from aspects in "aspects_keys"
     # and "aspects" string in "update_mask"
-    return df.withColumn(KEY_ENTRY, F.struct(entry_columns)) \
-      .withColumn(KEY_ASPECT_KEYS, F.array([F.lit(key) for key in aspect_keys])) \
-      .withColumn(KEY_UPDATE_MASK, F.array(F.lit(KEY_ASPECTS))) \
+    return df.withColumn(JSONKeys.ENTRY.value, F.struct(entry_columns)) \
+      .withColumn(JSONKeys.ASPECT_KEYS.value, F.array([F.lit(key) for key in aspect_keys])) \
+      .withColumn(JSONKeys.UPDATE_MASK.value, F.array(F.lit(JSONKeys.ASPECTS.value))) \
       .drop(*entry_columns)
 
 
@@ -142,13 +144,13 @@ def build_schemas(config, df_raw_schemas):
 
     # Convert list of schema names to Dataplex-compatible form
 
-    column = F.col(COLUMN_SCHEMA_NAME)
-    df = df_raw_schemas.withColumn(KEY_NAME, create_name_udf(column)) \
-      .withColumn(KEY_FQN, create_fqn_udf(column)) \
-      .withColumn(KEY_PARENT_ENTRY, F.lit(parent_name)) \
-      .withColumn(KEY_ENTRY_TYPE, F.lit(full_entry_type)) \
-      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column,full_entry_type,F.col(KEY_DESCRIPTION))) \
-      .withColumn(KEY_ASPECTS, create_entry_aspect(entry_aspect_name)) \
+    column = F.col(Columns.SCHEMA_NAME.value)
+    df = df_raw_schemas.withColumn(JSONKeys.NAME.value, create_name_udf(column)) \
+      .withColumn(JSONKeys.FQN.value, create_fqn_udf(column)) \
+      .withColumn(JSONKeys.PARENT_ENTRY.value, F.lit(parent_name)) \
+      .withColumn(JSONKeys.ENTRY_TYPE.value, F.lit(full_entry_type)) \
+      .withColumn(JSONKeys.ENTRY_SOURCE.value, create_entry_source(column,full_entry_type,F.col(JSONKeys.DESCRIPTION.value))) \
+      .withColumn(JSONKeys.ASPECTS.value, create_entry_aspect(entry_aspect_name)) \
     .drop(column)
 
     df = convert_to_import_items(df, [entry_aspect_name])
@@ -172,45 +174,45 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 4. Renames COLUMN_NAME to name
     # 5. Renames COMMENT to DESCRIPTION
     df = df_raw \
-        .withColumn(KEY_MODE, F.when(F.col(COLUMN_IS_NULLABLE) == IS_NULLABLE_TRUE, VALUE_NULLABLE).otherwise(VALUE_REQUIRED)) \
-        .drop(COLUMN_IS_NULLABLE) \
-        .withColumnRenamed(COLUMN_DATA_TYPE, KEY_DATA_TYPE) \
-        .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
-        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME) \
-        .withColumnRenamed(COLUMN_COLUMN_COMMENT, KEY_DESCRIPTION) \
-        .na.fill(value='',subset=[KEY_DESCRIPTION]) \
-        .na.fill(value='',subset=[COLUMN_TABLE_COMMENT])
+        .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
+        .drop(Columns.IS_NULLABLE.value) \
+        .withColumnRenamed(Columns.DATA_TYPE.value, JSONKeys.DATA_TYPE.value) \
+        .withColumn(JSONKeys.METADATA_TYPE.value, choose_metadata_type_udf(JSONKeys.DATA_TYPE.value)) \
+        .withColumnRenamed(Columns.COLUMN_NAME.value, JSONKeys.NAME.value) \
+        .withColumnRenamed(Columns.COLUMN_COMMENT, JSONKeys.DESCRIPTION.value) \
+        .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
+        .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
 
 
     # transformation below aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, the rest are put into array type "fields"
-    aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE, KEY_DESCRIPTION]
-    df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
-      .groupby(COLUMN_TABLE_NAME, COLUMN_TABLE_COMMENT) \
-      .agg(F.collect_list(KEY_COLUMNS).alias(KEY_FIELDS))
+    aspect_columns = [JSONKeys.NAME.value, JSONKeys.MODE.value, JSONKeys.DATA_TYPE.value, JSONKeys.METADATA_TYPE.value, JSONKeys.DESCRIPTION.value]
+    df = df.withColumn(JSONKeys.COLUMNS.value, F.struct(aspect_columns)) \
+      .groupby(Columns.TABLE_NAME.value, Columns.TABLE_COMMENT.value) \
+      .agg(F.collect_list(JSONKeys.COLUMNS.value).alias(JSONKeys.FIELDS.value))
 
-    df = df.withColumnRenamed(COLUMN_TABLE_COMMENT, KEY_DESCRIPTION) 
+    df = df.withColumnRenamed(Columns.TABLE_COMMENT.value, JSONKeys.DESCRIPTION.value) 
 
     # Create nested structured called aspects.
     # Fields becoming part of the 'schema' struct
     # Entry_aspect repeats each entry_type for the aspect_type
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
-    df = df.withColumn(KEY_SCHEMA,
+    df = df.withColumn(JSONKeys.SCHEMA.value,
                        F.create_map(F.lit(SCHEMA_KEY),
                                     F.named_struct(
-                                        F.lit(KEY_ASPECT_TYPE),
+                                        F.lit(JSONKeys.ASPECT_TYPE.value),
                                         F.lit(SCHEMA_KEY),
-                                        F.lit(KEY_DATA),
-                                        F.create_map(F.lit(KEY_FIELDS),
-                                                     F.col(KEY_FIELDS)))\
+                                        F.lit(JSONKeys.DATA.value),
+                                        F.create_map(F.lit(JSONKeys.FIELDS.value),
+                                                     F.col(JSONKeys.FIELDS.value)))\
                                     )\
                        )\
-      .withColumn(KEY_ENTRY_ASPECT, create_entry_aspect(entry_aspect_name)) \
-      .drop(KEY_FIELDS)
+      .withColumn(JSONKeys.ENTRY_ASPECT.value, create_entry_aspect(entry_aspect_name)) \
+      .drop(JSONKeys.FIELDS.value)
 
     # Merge separate aspect columns into 'aspects' map
-    df = df.select(F.col(COLUMN_TABLE_NAME),F.col(KEY_DESCRIPTION),
-                   F.map_concat(KEY_SCHEMA, KEY_ENTRY_ASPECT).alias(KEY_ASPECTS))
+    df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),
+                   F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
 
     # Define user-defined functions to fill the general information
     # and hierarchy names
@@ -228,15 +230,15 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         location=config["target_location_id"])
 
     # Fill the top-level fields
-    column = F.col(COLUMN_TABLE_NAME)
+    column = F.col(Columns.TABLE_NAME.value)
 
-    df = df.withColumn(KEY_NAME, create_name_udf(column)) \
-      .withColumn(KEY_FQN, create_fqn_udf(column)) \
-      .withColumn(KEY_ENTRY_TYPE, F.lit(full_entry_type)) \
-      .withColumn(KEY_PARENT_ENTRY, F.lit(parent_name)) \
-      .withColumn(KEY_ENTRY_SOURCE, create_entry_source(column,full_entry_type,F.col(KEY_DESCRIPTION))) \
+    df = df.withColumn(JSONKeys.NAME.value, create_name_udf(column)) \
+      .withColumn(JSONKeys.FQN.value, create_fqn_udf(column)) \
+      .withColumn(JSONKeys.ENTRY_TYPE.value, F.lit(full_entry_type)) \
+      .withColumn(JSONKeys.PARENT_ENTRY.value, F.lit(parent_name)) \
+      .withColumn(JSONKeys.ENTRY_SOURCE.value, create_entry_source(column,full_entry_type,F.col(JSONKeys.DESCRIPTION.value))) \
     .drop(column) \
-    .drop(KEY_DESCRIPTION)
+    .drop(JSONKeys.DESCRIPTION.value)
 
     df = convert_to_import_items(df, [SCHEMA_KEY, entry_aspect_name])
 
