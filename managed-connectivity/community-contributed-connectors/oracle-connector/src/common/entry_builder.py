@@ -18,6 +18,7 @@ from pyspark.sql.types import StringType
 from src.datatype_mapper import get_catalog_metadata_type
 from src.constants import SOURCE_TYPE
 from src.constants import COLLECTION_ENTRY
+from src.constants import EntryType
 from src import name_builder as nb
 from enum import Enum
 
@@ -73,10 +74,11 @@ def choose_metadata_type_udf(data_type: str):
     return get_catalog_metadata_type(data_type)
 
 
-def create_entry_source(column,entryType,comment):
+def create_entry_source(column,entryType : EntryType,comment):
     """Create Entry Source segment."""
+
     ## Add comments to the description field for tables and views only 
-    if entryType.endswith("-table") or entryType.endswith("-view"):
+    if entryType in [EntryType.TABLE, EntryType.VIEW]:
         return F.named_struct(F.lit(JSONKeys.DISPLAY_NAME.value),
                           column,
                           F.lit(JSONKeys.SYSTEM.value),
