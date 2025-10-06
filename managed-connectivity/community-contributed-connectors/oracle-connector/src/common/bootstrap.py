@@ -116,7 +116,7 @@ def run():
 
     print(f"{entries_count} rows written to file {FILENAME}") 
 
-    # If 'min_expected_entries set, file must meet minimum number of expected entries
+    # If min_expected_entries set, file must meet minimum number of expected entries
     if entries_count < config['min_expected_entries']:
         print(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to Cloud Storage bucket.")
     elif not config['local_output_only']:
