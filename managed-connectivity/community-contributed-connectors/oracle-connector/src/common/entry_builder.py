@@ -223,11 +223,14 @@ def build_dataset(config, df_raw, db_schema, entry_type):
                        )\
       .withColumn(JSONKeys.ENTRY_ASPECT.value, create_entry_aspect(entry_aspect_name)) \
       .drop(JSONKeys.FIELDS.value)
-      
+
+    print(f"BUILD_DATASET 5: {df.show(n=5)}")     
 
     # Merge separate aspect columns into 'aspects' map
     df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),F.col(JSONKeys.DEFAULT_VALUE.value),
                    F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
+    
+    print(f"BUILD_DATASET 6: {df.show(n=5)}")  
 
     # Define user-defined functions to fill the general information
     # and hierarchy names
