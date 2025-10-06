@@ -200,8 +200,12 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     df = df.withColumn(JSONKeys.COLUMNS.value, F.struct(aspect_columns)) \
       .groupby(Columns.TABLE_NAME.value, Columns.TABLE_COMMENT.value) \
       .agg(F.collect_list(JSONKeys.COLUMNS.value).alias(JSONKeys.FIELDS.value))
+    
+    print(f"BUILD_DATASET 3: {df.show(n=5)}")  
 
     df = df.withColumnRenamed(Columns.TABLE_COMMENT.value, JSONKeys.DESCRIPTION.value) 
+
+    print(f"BUILD_DATASET 4: {df.show(n=5)}")  
 
     # Create nested structured called aspects.
     # Fields becoming part of the 'schema' struct
