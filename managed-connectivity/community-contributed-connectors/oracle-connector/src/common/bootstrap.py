@@ -112,8 +112,8 @@ def run():
                 if (len(objects_json)) > 0:
                     write_jsonl(file, objects_json)
                 else:
-                    print("Removing schema {schema} from the output file")
-                    schemas.remove(schema)
+                    print(f"Removing schema {schema} from the output file: Schemas list is {schemas}")
+                    #schemas.remove(schema)
                     
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
 
