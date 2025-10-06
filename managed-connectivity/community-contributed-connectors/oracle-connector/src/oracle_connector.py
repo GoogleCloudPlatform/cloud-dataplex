@@ -127,5 +127,4 @@ class OracleConnector(IExternalSourceConnector):
         """Gets data for a table or a view."""
         short_type = entry_type.name  # table or view, or the title of enum value
         query = self._get_columns(schema_name, short_type)
-        print(f"SCHEMA: {query.printSchema()}")
         return self._execute(query)
