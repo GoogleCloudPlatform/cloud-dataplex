@@ -230,7 +230,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),
                    F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
     
-    print(f"BUILD_DATASET 6: {df.show(n=5,trauncate=False)}")  
+    print(f"BUILD_DATASET 6: {df.show(n=5,truncate=False)}")  
 
     # Define user-defined functions to fill the general information
     # and hierarchy names
