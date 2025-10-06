@@ -177,9 +177,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     # 5. Renames COMMENT to DESCRIPTION
-    # 6. Renames DATA_DEFAULT to DEFAULT_VALUE
-
-    print(f"BUILD_DATASET 1: {df_raw.show(n=5)}")    
+    # 6. Renames DATA_DEFAULT to DEFAULT_VALUE   
 
     df = df_raw \
         .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
@@ -190,22 +188,16 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumnRenamed(Columns.COLUMN_COMMENT.value, JSONKeys.DESCRIPTION.value) \
         .withColumnRenamed(Columns.COLUMN_DEFAULT_VALUE.value, JSONKeys.DEFAULT_VALUE.value) \
         .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
-        .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
-    
-    print(f"BUILD_DATASET 2: {df.show(n=5)}")  
+        .na.fill(value='',subset=[Columns.TABLE_COMMENT.value]) 
 
     # Transformation to aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, rest are put into array type "fields"
     aspect_columns = [JSONKeys.NAME.value, JSONKeys.MODE.value, JSONKeys.DATA_TYPE.value, JSONKeys.METADATA_TYPE.value, JSONKeys.DESCRIPTION.value, JSONKeys.DEFAULT_VALUE.value]
     df = df.withColumn(JSONKeys.COLUMNS.value, F.struct(aspect_columns)) \
       .groupby(Columns.TABLE_NAME.value, Columns.TABLE_COMMENT.value) \
-      .agg(F.collect_list(JSONKeys.COLUMNS.value).alias(JSONKeys.FIELDS.value))
-    
-    print(f"BUILD_DATASET 3: {df.show(n=5)}")  
+      .agg(F.collect_list(JSONKeys.COLUMNS.value).alias(JSONKeys.FIELDS.value)) 
 
     df = df.withColumnRenamed(Columns.TABLE_COMMENT.value, JSONKeys.DESCRIPTION.value) 
-
-    print(f"BUILD_DATASET 4: {df.show(n=5)}")  
 
     # Create nested structured called aspects.
     # Fields becoming part of the 'schema' struct
@@ -222,15 +214,11 @@ def build_dataset(config, df_raw, db_schema, entry_type):
                                     )\
                        )\
       .withColumn(JSONKeys.ENTRY_ASPECT.value, create_entry_aspect(entry_aspect_name)) \
-      .drop(JSONKeys.FIELDS.value)
-
-    print(f"BUILD_DATASET 5: {df.show(n=5)}")     
+      .drop(JSONKeys.FIELDS.value)   
 
     # Merge separate aspect columns into 'aspects' map
     df = df.select(F.col(Columns.TABLE_NAME.value),F.col(JSONKeys.DESCRIPTION.value),
-                   F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value))
-    
-    print(f"BUILD_DATASET 6: {df.show(n=5,truncate=False)}")  
+                   F.map_concat(JSONKeys.SCHEMA.value, JSONKeys.ENTRY_ASPECT.value).alias(JSONKeys.ASPECTS.value)) 
 
     # Define user-defined functions to fill the general information
     # and hierarchy names
