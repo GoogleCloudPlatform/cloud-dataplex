@@ -196,7 +196,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
 
     # Transformation to aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, rest are put into array type "fields"
-    aspect_columns = [JSONKeys.NAME.value, JSONKeys.MODE.value, JSONKeys.DATA_TYPE.value, JSONKeys.METADATA_TYPE.value, JSONKeys.DESCRIPTION.value]
+    aspect_columns = [JSONKeys.NAME.value, JSONKeys.MODE.value, JSONKeys.DATA_TYPE.value, JSONKeys.METADATA_TYPE.value, JSONKeys.DESCRIPTION.value, JSONKeys.DEFAULT_VALUE.value]
     df = df.withColumn(JSONKeys.COLUMNS.value, F.struct(aspect_columns)) \
       .groupby(Columns.TABLE_NAME.value, Columns.TABLE_COMMENT.value) \
       .agg(F.collect_list(JSONKeys.COLUMNS.value).alias(JSONKeys.FIELDS.value))
