@@ -179,6 +179,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 5. Renames COMMENT to DESCRIPTION
     # 6. Renames DATA_DEFAULT to DEFAULT_VALUE
 
+    print(f"BUILD_DATASET 1: {df_raw.show(n=5)}")    
+
     df = df_raw \
         .withColumn(JSONKeys.MODE.value, F.when(F.col(Columns.IS_NULLABLE.value) == IS_NULLABLE_TRUE, DataplexTypesSchema.NULLABLE.value).otherwise(DataplexTypesSchema.REQUIRED.value)) \
         .drop(Columns.IS_NULLABLE.value) \
@@ -189,6 +191,8 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumnRenamed(Columns.COLUMN_DEFAULT_VALUE.value, JSONKeys.DEFAULT_VALUE.value) \
         .na.fill(value='',subset=[JSONKeys.DESCRIPTION.value]) \
         .na.fill(value='',subset=[Columns.TABLE_COMMENT.value])
+    
+    print(f"BUILD_DATASET 2: {df.show(n=5)}")  
 
     # Transformation to aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level field, rest are put into array type "fields"
