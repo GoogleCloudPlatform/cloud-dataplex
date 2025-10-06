@@ -98,11 +98,8 @@ def run():
         except Exception as ex:
             print(f"Error during metadata extraction from db: {ex}")
             sys.exit(1)
-
+        
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
-        schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
-
-        write_jsonl(file, schemas_json)
 
         print("Processing schemas..")
 
@@ -112,7 +109,15 @@ def run():
                 objects_json = process_dataset(connector, config, schema, object_type)
                 print(f"Processed {len(objects_json)} {object_type.name}S in {schema}")
                 entries_count += len(objects_json)
-                write_jsonl(file, objects_json)
+                if (len(objects_json)) > 0:
+                    write_jsonl(file, objects_json)
+                else:
+                    print("Removing schema {schema} from the output file")
+                    schemas.remove(schema)
+                    
+        schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
+
+        write_jsonl(file, schemas_json)
 
     print(f"{entries_count} rows written to file {FILENAME}") 
 
