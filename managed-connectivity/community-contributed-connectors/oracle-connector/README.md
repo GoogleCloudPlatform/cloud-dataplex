@@ -50,11 +50,9 @@ Best practice is to create a dedicated database user for the connector with the 
 
 1. Create an Oracle user with the following privileges and roles:
     ```sql
-    CREATE USER dataplex_connector IDENTIFIED BY qwerty;
-    CREATE ROLE dataplex_role;
-    GRANT dataplex_role TO dataplex_connector;
-    GRANT CREATE SESSION TO dataplex_role;
-    GRANT SELECT_CATALOG_ROLE TO dataplex_role;
+    CREATE USER dataplex_connector IDENTIFIED BY {password};
+    GRANT CREATE SESSION TO dataplex_connector;
+    GRANT SELECT_CATALOG_ROLE TO dataplex_connector;
     ```
 
 2. Add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
