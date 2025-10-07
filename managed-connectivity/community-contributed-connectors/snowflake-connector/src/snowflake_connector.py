@@ -106,8 +106,7 @@ class SnowflakeConnector:
 
     def get_db_schemas(self) -> DataFrame:
         query = f"""
-        SELECT schema_name FROM information_schema.schemata 
-        WHERE schema_name NOT IN ('INFORMATION_SCHEMA')
+        SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('INFORMATION_SCHEMA')
         """
         return self._execute(query)
     
