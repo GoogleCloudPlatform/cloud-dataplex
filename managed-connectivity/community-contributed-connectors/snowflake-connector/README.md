@@ -12,8 +12,8 @@ Program](https://bughunters.google.com/open-source-security).
 Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, table comments, column names, column data types, column comments, column NULL/NOT NULL|
-|Views|View name, view comments, column names, column data types, column comments, column NULL/NOT NULL|
+|Tables|Table name, table comments, column names, column data types, column comments, column NULL/NOT NULL, column default value|
+|Views|View name, view comments, column names, column data types, column comments, column NULL/NOT NULL, column default value|
 
 Metadata is not extracted for objects in INFORMATION_SCHEMA
 
