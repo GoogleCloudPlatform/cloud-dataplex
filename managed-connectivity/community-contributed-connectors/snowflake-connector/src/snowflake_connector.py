@@ -105,22 +105,23 @@ class SnowflakeConnector:
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        query = f"""
-        SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('INFORMATION_SCHEMA')
-        """
+        query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('INFORMATION_SCHEMA')"
         return self._execute(query)
     
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Returns list of columns a tables or view"""
-        return (f"SELECT c.table_name, left(t.comment,1024) as TABLE_COMMENT,c.column_name,  "
-                f"c.data_type, c.is_nullable, c.comment as COLUMN_COMMENT, c.COLUMN_DEFAULT as DATA_DEFAULT"
-                f"FROM information_schema.columns c "
-                f"JOIN information_schema.tables t ON  "
-                f"c.table_catalog = t.table_catalog "
-                f"AND c.table_schema = t.table_schema "
-                f"AND c.table_name = t.table_name "
-                f"WHERE c.table_schema = '{schema_name}' "
-                f"AND t.table_type = '{object_type}'")
+        sql = f"""
+        SELECT c.table_name, left(t.comment,1024) as TABLE_COMMENT,c.column_name, 
+        c.data_type, c.is_nullable, c.comment as COLUMN_COMMENT, c.COLUMN_DEFAULT as DATA_DEFAULT 
+        FROM information_schema.columns c 
+        JOIN information_schema.tables t ON 
+        c.table_catalog = t.table_catalog 
+        AND c.table_schema = t.table_schema 
+        AND c.table_name = t.table_name 
+        WHERE c.table_schema = '{schema_name}' 
+        AND t.table_type = '{object_type}'
+        """
+        return sql
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or a view."""
