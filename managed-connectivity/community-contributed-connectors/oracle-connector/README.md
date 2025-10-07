@@ -12,8 +12,8 @@ This is not an officially supported Google product and is provided on an as-is b
 Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default value|
-|Views|View name, column names, column data types, column NULL/NOT NULL, column default value|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default value, column and table comments|
+|Views|View name, column names, column data types, column NULL/NOT NULL, column default value, column and view comments|
 
 Metadata is not collected for objects in oracle system schemas. See the **get_db_schemas** function in [oracle_connector.py](src/oracle_connector.py) for a complete list.
 
