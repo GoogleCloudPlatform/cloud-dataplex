@@ -79,17 +79,16 @@ class SQLServerConnector(IExternalSourceConnector):
         """Gets a list of columns in tables or views."""
         return (f"SELECT t.name AS TABLE_NAME, "
                 f"c.name AS COLUMN_NAME, "
-                f"ty.name AS DATA_TYPE, "
+                f"c.data_type AS DATA_TYPE, "
                 f"c.is_nullable AS IS_NULLABLE, "
                 f"c.column_default as DATA_DEFAULT, "
                 f"'' as COLUMN_COMMENT, "
                 f"'' as TABLE_COMMENT "
-                f"FROM sys.columns c "
-                f"JOIN sys.tables t ON t.object_id = c.object_id "
-                f"JOIN sys.types ty ON ty.user_type_id = c.system_type_id "
-                f"JOIN sys.schemas s ON s.schema_id = t.schema_id "
-                f"WHERE s.name = '{schema_name}' "
-                f"AND t.type = '{object_type}'")
+                f"FROM information_schema.columns c,
+                f"information_schema.tables t "
+                f"WHERE c.table_schema = '{schema_name}' AND "
+                f"t.table_type = '{object_type}' AND "
+                f"t.table_name = c.table_name")
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or view."""
