@@ -69,9 +69,9 @@ class SQLServerConnector(IExternalSourceConnector):
     def get_db_schemas(self) -> DataFrame:
         """Gets a list of schemas in the database"""
         query = """
-        SELECT s.name AS SCHEMA_NAME
-        FROM sys.schemas s
-        WHERE s.name NOT in ('db_accessadmin','db_backupoperator','db_datareader','db_datawriter','db_ddladmin','db_denydatareader','db_denydatawriter','db_owner','db_securityadmin','guest','sys','INFORMATION_SCHEMA')
+        SELECT SCHEMA_NAME
+        FROM INFORMATION_SCHEMA.schemata
+        WHERE SCHEMA_NAME NOT in ('db_accessadmin','db_backupoperator','db_datareader','db_datawriter','db_ddladmin','db_denydatareader','db_denydatawriter','db_owner','db_securityadmin','guest','sys','INFORMATION_SCHEMA')
         """
         return self._execute(query)
 
