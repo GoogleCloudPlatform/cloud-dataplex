@@ -63,8 +63,9 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-If using password authenticstion for the user to the Secret Manager to the Google Cloud project where you will run the connector and note the ID.
-If using keypair or oauth authentication, add the credentials either to the Secret Manager, or secure them in files or Cloud Storage with access permission only for the connector user. See the parameters above for options.
+If using password authentication, add the password for the user to the Secret Manager in your Google Cloud project where you will run the connector and note the ID (format is: projects/{project-number}/secrets/{secret-name}).
+
+If using key-pair or oauth authentication, add the credentials either to the Secret Manager, or secure them in files on Cloud Storage with access permission only for the connector user. See the parameters above for options.
 
 ## Install the connector
 
