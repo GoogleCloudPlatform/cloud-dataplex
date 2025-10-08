@@ -9,16 +9,21 @@ This is not an officially supported Google product and is provided on an as-is b
 
 ### Target objects and schemas:
 
-Metadata for the following database objects is extracted by the connector:
+Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL|
-|Views|View name, column names, column data types, column NULL/NOT NULL|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default value, column and table comments|
+|Views|View name, column names, column data types, column NULL/NOT NULL, column default value, column and view comments|
 
-Metadata is not collected for objects in system schemas. See the **get_db_schemas** function in [oracle_connector.py](src/oracle_connector.py) for a complete list.
+Metadata is not collected for objects in oracle system schemas. See the **get_db_schemas** function in [oracle_connector.py](src/oracle_connector.py) for a complete list.
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to Oracle 
+* Password
 
 ### Parameters
-The connector takes the following parameters:
+The connector takes the following parameters
 
 |Parameter|Description|Default Value|Required/Optional|
 |---------|------------|----|-------------|
@@ -43,10 +48,12 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-1. Create an Oracle user with the following privileges and roles: 
-    * CONNECT and CREATE SESSION to <monitoring_user>
-    * GRANT SELECT on DBA_OBJECTS to <monitoring_user>
-    * SELECT on all schemas for which metadata needs to be extracted
+1. Create an Oracle user with the following privileges and roles:
+    ```sql
+    CREATE USER dataplex_connector IDENTIFIED BY {password};
+    GRANT CREATE SESSION TO dataplex_connector;
+    GRANT SELECT_CATALOG_ROLE TO dataplex_connector;
+    ```
 
 2. Add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
 

@@ -19,6 +19,11 @@ from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
 from src.constants import JDBC_JAR
 from src.constants import SNOWFLAKE_SPARK_JAR
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+import re
+import os
+import io
 
 class SnowflakeConnector:
     """Reads data from Snowflake and returns Spark Dataframes."""
@@ -45,13 +50,40 @@ class SnowflakeConnector:
             }
         
         # Build connection parameters
-        if config.get('authenticaton') is not None:
-            match config['authenticaton']:
+        if not config.get('authentication') is None:
+            match config['authentication']:
                 case 'oauth':
-                    self._sfOptions['sfAuthenticator'] = config['authenticaton']
+                    self._sfOptions['sfAuthenticator'] = config['authentication']
                     self._sfOptions['sfToken'] = config['token']
                 case 'password':
                     self._sfOptions['sfPassword'] = config['password']
+                case 'key-pair':
+                    # Option to provide passphrase via environment variable
+                    passphrase = os.environ.get('PRIVATE_KEY_PASSPHRASE')
+                    if passphrase is not None:
+                        passphrase = config['passphrase_file']
+                        if passphrase is not None:
+                            passphrase = config['passphrase_secret']
+
+                    if passphrase is not None:
+                        passphrase = passphrase.encode()
+ 
+                    p_key = serialization.load_pem_private_key(
+                    data=bytes(config['key_secret'], 'utf-8'),
+                    password = passphrase,
+                    backend = default_backend()
+                    )
+
+                    pkb = p_key.private_bytes(
+                    encoding = serialization.Encoding.PEM,
+                    format = serialization.PrivateFormat.PKCS8,
+                    encryption_algorithm = serialization.NoEncryption()
+                    )
+
+                    pkb = pkb.decode("UTF-8")
+                    pkb = re.sub("-*(BEGIN|END) PRIVATE KEY-*\n","",pkb).replace("\n","")
+
+                    self._sfOptions['pem_private_key'] = pkb
         else:
                 self._sfOptions['sfPassword'] = config['password']
         
@@ -65,7 +97,6 @@ class SnowflakeConnector:
             self._sfOptions['sfRole'] = config['role']
 
     def _execute(self, query: str) -> DataFrame:
-        sfOptions = self._sfOptions
         SNOWFLAKE_SOURCE_NAME = "net.snowflake.spark.snowflake"
 
         return self._spark.read.format(SNOWFLAKE_SOURCE_NAME) \
@@ -74,23 +105,23 @@ class SnowflakeConnector:
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        query = f"""
-        SELECT schema_name FROM information_schema.schemata 
-        WHERE schema_name != 'INFORMATION_SCHEMA'
-        """
+        query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('INFORMATION_SCHEMA')"
         return self._execute(query)
-
+    
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Returns list of columns a tables or view"""
-        return (f"SELECT c.table_name, c.column_name,  "
-                f"c.data_type, c.is_nullable "
-                f"FROM information_schema.columns c "
-                f"JOIN information_schema.tables t ON  "
-                f"c.table_catalog = t.table_catalog "
-                f"AND c.table_schema = t.table_schema "
-                f"AND c.table_name = t.table_name "
-                f"WHERE c.table_schema = '{schema_name}' "
-                f"AND t.table_type = '{object_type}'")
+        sql = f"""
+        SELECT c.table_name, left(t.comment,1024) as TABLE_COMMENT,c.column_name, 
+        c.data_type, c.is_nullable, c.comment as COLUMN_COMMENT, c.COLUMN_DEFAULT as DATA_DEFAULT 
+        FROM information_schema.columns c 
+        JOIN information_schema.tables t ON 
+        c.table_catalog = t.table_catalog 
+        AND c.table_schema = t.table_schema 
+        AND c.table_name = t.table_name 
+        WHERE c.table_schema = '{schema_name}' 
+        AND t.table_type = '{object_type}'
+        """
+        return sql
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or a view."""

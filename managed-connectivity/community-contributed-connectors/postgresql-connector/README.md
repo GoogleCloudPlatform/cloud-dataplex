@@ -13,10 +13,15 @@ This is not an officially supported Google product and is provided on an as-is b
 Metadata for the following database objects is extracted by the connector:
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL|
-|Views|View name, column names, column data types, column NULL/NOT NULL|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default values|
+|Views|View name, column names, column data types, column NULL/NOT NULL, column default values|
 
 Metadata is not extracted for objects in INFORMATION_SCHEMA.
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to PostgreSQL: 
+* Password
 
 ### Parameters
 The connector takes the following parameters
@@ -90,8 +95,11 @@ The following components must be installed to run the connector:
     ```bash
     cd cloud-dataplex/managed-connectivity/community-contributed-connectors/postgresql-connector
     ```
-* Download [postgresql-42.7.5.jar](https://jdbc.postgresql.org/download/postgresql-42.7.5.jar) from [postgresql.org](https://jdbc.postgresql.org/download/) and save it in the local directory.
-    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the command. eg.  --jar postgresql-42.7.6.jar
+* Download postgresql-42.7.5.jar from [postgresql.org](https://jdbc.postgresql.org/download/) and save it in the local directory.
+    ```bash
+    wget https://jdbc.postgresql.org/download/postgresql-42.7.5.jar
+    ```
+    * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the commands. eg.  --jar postgresql-42.8.0.jar
 
 * Install all python dependencies 
     ```bash

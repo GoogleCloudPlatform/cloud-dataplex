@@ -17,7 +17,7 @@ In metadata_import_request.json:
         
     Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
-Run import via the Metadata Import REST API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
+Run import via the Metadata Import REST API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate
 
 ```bash
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \

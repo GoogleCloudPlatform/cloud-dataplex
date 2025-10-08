@@ -10,11 +10,16 @@ This is not an officially supported Google product and is provided on an as-is b
 
 ### Target objects and schemas:
 
-Metadata for the following database objects is extracted by the connector:
+Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL|
-|Views|View name, column names, column data types, column NULL/NOT NULL|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default value, table and column comments|
+|Views|View name, column names, column data types, column NULL/NOT NULL, column default value, view and column comments|
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to MySQL 
+* Password
 
 ### Parameters
 The connector takes the following parameters:

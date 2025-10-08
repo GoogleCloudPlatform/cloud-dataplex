@@ -47,6 +47,7 @@ def process_dataset(
     """Builds dataset and converts it to jsonl."""
     df_raw = connector.get_dataset(schema_name, entry_type)
     df = entry_builder.build_dataset(config, df_raw, schema_name, entry_type)
+
     return df.toJSON().collect()
 
 def run():
@@ -80,9 +81,6 @@ def run():
             raise Exception(ex)
 
     entries_count = 0
-
-    # Build the output file name from connection details
-    FILENAME = generateFileName(config) 
 
     output_path = './output'
     if not os.path.exists(output_path):

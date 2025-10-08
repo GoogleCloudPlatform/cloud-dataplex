@@ -64,7 +64,8 @@ class MysqlConnector(IExternalSourceConnector):
         """Gets a list of columns in tables or views in a batch."""
         # Every line here is a column that belongs to the table or to the view.
         # This SQL gets data from ALL the tables in a given schema.
-        return(f"select tab.table_name,col.column_name,col.data_type,col.is_nullable "
+        return(f"select tab.table_name,col.column_name,col.data_type,col.is_nullable, "
+                f"tab.table_comment as TABLE_COMMENT,col.column_comment as COLUMN_COMMENT, col.column_default as DATA_DEFAULT "
                 f"from information_schema.tables as tab "
                 f"inner join information_schema.columns as col "
                 f"on col.table_schema = tab.table_schema "

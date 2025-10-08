@@ -7,35 +7,46 @@ Custom connectors are part of the [Managed Connectivity framework](https://cloud
 This is not an officially supported Google product and is provided on an as-is basis, without warranty. This project is not eligible for the [Google Open Source Software Vulnerability Rewards
 Program](https://bughunters.google.com/open-source-security).
 
-### Target objects and schemas:
+### Target objects and schemas
 
-Metadata for the following database objects is extracted by the connector:
+Metadata for the following database objects is extracted by the connector
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL|
-|Views|View name, column names, column data types, column NULL/NOT NULL|
+|Tables|Table name, table comments, column names, column data types, column comments, column NULL/NOT NULL, column default value|
+|Views|View name, view comments, column names, column data types, column comments, column NULL/NOT NULL, column default value|
 
-Metadata is not extracted for objects in INFORMATION_SCHEMA.
+Metadata is not extracted for objects in INFORMATION_SCHEMA
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to Snowflake: 
+* Password
+* Key pair
+* OAuth
 
 ### Parameters
-The connector takes the following parameters:
+The connector takes the following parameters
 
 |Parameter|Description|Default|Required/Optional|
 |---------|------------|---|-------------|
-|target_project_id|Google Cloud Project ID. Used in the generated metadata and defines the scope metadata will be imported into||REQUIRED|
-|target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates the region Entries will be associated with||REQUIRED|
+|target_project_id|Google Cloud Project ID. Used in generated metadata and defines the scope metadata will be imported into||REQUIRED|
+|target_location_id|Google Cloud Region ID, or 'global'. Used in generated metadata, indicates the region Entries will be associated with||REQUIRED|
 |target_entry_group_id|Entry Group ID which the Entries will be associated with||REQUIRED|
 |account|Snowflake account to connect to||REQUIRED|
 |user|Snowflake username to connect with||REQUIRED|
-|authentication|Authentication method to use: password, oauth|password|OPTIONAL|
-|password_secret|Google Secret Manager ID holding the password for the Snowflake user. Format: projects/{project-number}/secrets/{secret-name}||REQUIRED if using password auth|
-|token|OAUTH Token||REQUIRED if using **--authentication oauth**|
 |database|Snowflake database to connect to||REQUIRED|
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
+|authentication|Authentication method to use for Snowflake: password, oauth, key-pair|password|OPTIONAL|
+|password_secret|Google Secret Manager ID holding the password for the Snowflake user. Format: projects/{project-number}/secrets/{secret-name}||REQUIRED if using password auth|
+|token_file|File containing the OAUTH Token. Can be file system path or gs:// path to Cloud Storage||REQUIRED if using **--authentication oauth**|
+|key_secret|Google Secret Manager ID holding the private key for the Snowflake user||REQUIRED if using **--authentication key-pair**|
+|key_file|Path to file containing the private key. Can be file system path or gs:// path to Cloud Storage||key_file or key_secret REQUIRED if using **--authentication key-pair**|
+|passphrase_file|Path to file containing the passphrase for the private key. Can be file system path or gs:// path to Cloud Storage. Passphrase can also be provided by setting environment variable PRIVATE_KEY_PASSPHRASE||OPTIONAL|
 |local_output_only|Generate metadata import file in local directory only, do not push to Cloud Storage|False|OPTIONAL|
-|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only False**||REQUIRED|
-|output_folder|Folder in Cloud Storage bucket where the output metadata import file will be stored. Required if **--local_output_only False**||
-|min_expected_entries|Minimum number of entries expected in generated metadata import file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|output_bucket|Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||REQUIRED|
+|output_folder|Folder in Cloud Storage bucket where the metadata import file will be stored. Required if **--local_output_only False**||OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata import file. If less than this number, the file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|empty_comments_overwrite|If included, even when Snowflake object comments are empty they will overwrite table, view and column descriptions in Dataplex Universal Catalog|False|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 
@@ -43,7 +54,7 @@ Note: **target_project_id**, **target_location_id** and **target_entry_group_id*
 
 Best practice is to create a dedicated database user for the connector with the minimum privileges required to extract metadata.
 
-The Snowflake user should be granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata will be extracted
+The Snowflake user should be a [service user](https://docs.snowflake.com/en/user-guide/admin-user-management) who has been granted a [role](https://docs.snowflake.com/en/user-guide/security-access-control-overview#roles) with usage and reference privileges for the database, schemas, tables, and views for which metadata needs to be extracted
 ```sql
 grant usage on warehouse <warehouse_name> to role <role_name>;
 grant usage on database <database_name> to role <role_name>;
@@ -52,7 +63,9 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-2. Add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
+If using password authentication, add the password for the user to the Secret Manager in your Google Cloud project where you will run the connector and note the ID (format is: projects/{project-number}/secrets/{secret-name}).
+
+If using key-pair or oauth authentication, add the credentials either to the Secret Manager, or secure them in files on Cloud Storage with access permission only for the connector user. See the parameters above for options.
 
 ## Install the connector
 
@@ -81,13 +94,13 @@ The following tools and libraries are required to run the connector:
     ```
 * Install PySpark
     ```shell
-    pip3 install pyspark
+    pip3 install pyspark==3.5.6
     ```
 
 Note: If you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
 
 #### Set-up
-* Clone repository to local machine
+* Clone repository to your local machine
     ```bash
     git clone https://github.com/GoogleCloudPlatform/cloud-dataplex.git
     ```
@@ -96,11 +109,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     cd cloud-dataplex/managed-connectivity/community-contributed-connectors/snowflake-connector
     ```
 
-* Download the following Snowflake jar files [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
-
-    * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
-    * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
-    
+* Download the Snowflake jar files
     ```bash
     wget https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/snowflake-jdbc-3.19.0.jar
     wget https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/spark-snowflake_2.12-3.1.1.jar
@@ -112,7 +121,7 @@ Note: If you are not running the connector in a Google Cloud managed environment
     ```
 
 ### Authentication and Authorization for the connector in Google Cloud
-Before running the connector from the command line, ensure your session user is authenticated as a Google Cloud identity that has been granted read access to Secret Manager and read/write to Cloud Storage in the current project.  The user requires the following IAM roles in the project where the connector runs:
+If you are running the connector with authentication parameters that read from the Google Cloud Secret Manager, or read/write to Cloud Storage then ensure your session user is authenticated as a Google Cloud identity that has the following IAM roles in the project where the connector runs:
 
 * roles/secretmanager.secretAccessor
 * roles/storage.objectUser
@@ -123,7 +132,7 @@ You can use [Application Default Credentials](https://cloud.google.com/sdk/gclou
 gcloud auth application-default login
 ```
 
-Note: If you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
+Note: If the above applies but you are not running the connector in a Google Cloud managed environment then you need to first install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk)
 
 ## Run the connector from the command line
 
@@ -144,13 +153,13 @@ python3 main.py \
 ```
 
 ## Connector Output:
-The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only True** is used.
+The connector generates a metadata import file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector will also upload the file to the Cloud Storage bucket and folder specified in **--output_bucket** and **--output_folder** unless **--local-output_only True** is used.
 
 A sample output from the Snowflake connector can be found in the [sample](sample/) directory.
 
 ## Import metadata into Dataplex Universal Catalog
 
-To manually import a metadata import file generated by this connector into universal catalog see [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. 
+To manually import a metadata import file generated by this connector into Dataplex Universal Catalog see [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for instructions on calling the API and considerations when importing custom metadata. 
 
 Before importing metadata, the Entry Group and all Entry Types and Aspect Types found in the metadata file must exist in Dataplex for the target project and location (either a Google Cloud region, or 'global'). This connector requires the following Entry Group, Entry Types and Aspect Types:
 
@@ -224,7 +233,7 @@ gcloud dataproc batches submit pyspark \
     --output_bucket my-gcs-bucket
     --output_folder snowflake_metadata
 ```
-Note: Due to the use of the Snowflake Spark JAR in the connector, runtime version 1.2 of Dataproc serverless must be specified for this connector.
+Note: Due to the use of the Snowflake Spark JAR, runtime version 1.2 of Dataproc serverless must be specified for this connector.
 
 See the [documentation](https://cloud.google.com/sdk/gcloud/reference/dataproc/batches/submit/pyspark) for more information about Dataproc Serverless pyspark jobs.
 

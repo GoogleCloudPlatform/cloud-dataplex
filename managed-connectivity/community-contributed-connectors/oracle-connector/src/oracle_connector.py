@@ -20,7 +20,7 @@ from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
 from src.common.util import fileExists
-from src.common.entry_builder import COLUMN_IS_NULLABLE
+from src.common.entry_builder import Columns
 from src.constants import JDBC_JAR
 
 class OracleConnector(IExternalSourceConnector):
@@ -51,6 +51,10 @@ class OracleConnector(IExternalSourceConnector):
             "user": config['user'],
             "password": config['password']
             }
+        
+       #cdb_pdb_resultset = self.get_cdb_or_pdb()
+       #cdb_pdb = [cdbpdb.CDB_OR_PDB for cdbpdb in cdb_pdb_resultset.select("CDB_OR_PDB").collect()]
+       #print(f"Connected to database type: {cdb_pdb}")
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
@@ -58,6 +62,16 @@ class OracleConnector(IExternalSourceConnector):
             .options(**self._connectOptions) \
             .option("query", query) \
             .load()
+    
+    def get_cdb_or_pdb(self) -> DataFrame:
+        """Select db schemas to process. Exclude system schemas"""
+        query = """
+        select case sys_context('USERENV', 'CON_ID') 
+        when '1' then 'CDB' else 'PDB' end
+        as cdb_or_pdb
+        from dual
+        """
+        return self._execute(query)
 
     def get_db_schemas(self) -> DataFrame:
         """Select db schemas to process. Exclude system schemas"""
@@ -79,13 +93,35 @@ class OracleConnector(IExternalSourceConnector):
         return self._execute(query)
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
-        return (f"SELECT col.TABLE_NAME, col.COLUMN_NAME, "
-                f"col.DATA_TYPE, col.NULLABLE as {COLUMN_IS_NULLABLE} "
-                f"FROM all_tab_columns col "
-                f"INNER JOIN DBA_OBJECTS tab "
-                f"ON tab.OBJECT_NAME = col.TABLE_NAME "
-                f"WHERE tab.OWNER = '{schema_name}' "
-                f"AND tab.OBJECT_TYPE = '{object_type}'")
+        query = f"""
+        SELECT
+            col.TABLE_NAME,
+            col.COLUMN_NAME,
+            col.DATA_TYPE,
+            col.NULLABLE AS {Columns.IS_NULLABLE.value},
+            cmt.COMMENTS AS TABLE_COMMENT,
+            ccmt.COMMENTS AS COLUMN_COMMENT,
+            col.DATA_DEFAULT AS DATA_DEFAULT
+        FROM
+            dba_tab_columns col
+        INNER JOIN
+            DBA_OBJECTS tab
+            ON tab.OBJECT_NAME = col.TABLE_NAME
+            AND tab.OWNER = col.OWNER
+        LEFT JOIN
+            dba_tab_comments cmt
+            ON cmt.TABLE_NAME = col.TABLE_NAME
+            AND cmt.OWNER = col.OWNER
+        LEFT JOIN
+            dba_col_comments ccmt
+            ON ccmt.TABLE_NAME = col.TABLE_NAME
+            AND ccmt.COLUMN_NAME = col.COLUMN_NAME
+            AND ccmt.OWNER = col.OWNER
+        WHERE
+            tab.OWNER = '{schema_name}'
+            AND tab.OBJECT_TYPE = '{object_type}'
+        """
+        return query
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or a view."""

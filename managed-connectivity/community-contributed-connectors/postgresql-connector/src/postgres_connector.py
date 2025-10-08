@@ -70,7 +70,7 @@ class PostgresConnector(IExternalSourceConnector):
         # Every line here is a column that belongs to the table or to the view.
         # This SQL gets data from ALL the tables in a given schema.
         return (f"SELECT c.table_name, c.column_name,  "
-                f"c.data_type, c.is_nullable "
+                f"c.data_type, c.is_nullable, c.column_default as DATA_DEFAULT, '' as TABLE_COMMENT, '' as COLUMN_COMMENT "
                 f"FROM information_schema.columns c, "
                 f"information_schema.tables t "
                 f"WHERE c.table_schema = '{schema_name}' "

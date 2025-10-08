@@ -13,10 +13,15 @@ This is not an officially supported Google product and is provided on an as-is b
 Metadata for the following database objects is extracted by the connector:
 |Object|Metadata Extracted|
 |---------|------------|
-|Tables|Table name, column names, column data types, column NULL/NOT NULL|
-|Views|View name, column names, column data types, column NULL/NOT NULL|
+|Tables|Table name, column names, column data types, column NULL/NOT NULL, column default values|
+|Views|View name, column names, column data types, column NULL/NOT NULL, column default values|
 
 Metadata is not extracted from objects in system schemas: db_accessadmin,db_backupoperator,db_datareader,db_datawriter,db_ddladmin,db_denydatareader,db_denydatawriter,db_owner,db_securityadmin,guest,sys,INFORMATION_SCHEMA
+
+### Supported Authentication Methods
+
+The following authentication methods are supported for connecting to SQL Server
+* Password
 
 ## Parameters
 The connector takes the following parameters:
@@ -88,7 +93,10 @@ The following components must be installed to run the connector:
     ```bash
     cd cloud-dataplex/managed-connectivity/community-contributed-connectors/sql-server-connector
     ```
-* Download the [mssql-jdbc-12.10.0.jre11.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) file from the [Microsoft Github repository](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the local directory.
+* Download mssql-jdbc-12.10.0.jre11.jar from the [Microsoft Github repository](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the local directory.
+    ```bash
+    wget https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar
+    ```
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter when you run the connector. ie  --jar mssql-jdbc-12.10.X.jre11.jar
 * Install python dependencies 
     ```bash

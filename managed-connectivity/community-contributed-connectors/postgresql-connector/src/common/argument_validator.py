@@ -28,6 +28,9 @@ def validateArguments(parsed_args):
     if parsed_args.local_output_only == False and (parsed_args.output_bucket is None or parsed_args.output_folder is None):
         raise Exception("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
 
+    if parsed_args.local_output_only == False and (parsed_args.output_bucket is None or parsed_args.output_folder is None):
+        raise Exception("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
+
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
         raise Exception(f"--output_bucket {parsed_args.output_bucket} is not valid")
 

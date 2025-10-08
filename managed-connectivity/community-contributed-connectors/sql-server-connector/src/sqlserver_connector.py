@@ -69,28 +69,32 @@ class SQLServerConnector(IExternalSourceConnector):
     def get_db_schemas(self) -> DataFrame:
         """Gets a list of schemas in the database"""
         query = """
-        SELECT s.name AS SCHEMA_NAME
-        FROM sys.schemas s
-        WHERE s.name NOT in ('db_accessadmin','db_backupoperator','db_datareader','db_datawriter','db_ddladmin','db_denydatareader','db_denydatawriter','db_owner','db_securityadmin','guest','sys','INFORMATION_SCHEMA')
+        SELECT SCHEMA_NAME
+        FROM INFORMATION_SCHEMA.schemata
+        WHERE SCHEMA_NAME NOT in ('db_accessadmin','db_backupoperator','db_datareader','db_datawriter','db_ddladmin','db_denydatareader','db_denydatawriter','db_owner','db_securityadmin','guest','sys','INFORMATION_SCHEMA')
         """
         return self._execute(query)
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views."""
-        return (f"SELECT t.name AS TABLE_NAME, "
-                f"c.name AS COLUMN_NAME, "
-                f"ty.name AS DATA_TYPE, "
-                f"c.is_nullable AS IS_NULLABLE "
-                f"FROM sys.columns c "
-                f"JOIN sys.tables t ON t.object_id = c.object_id "
-                f"JOIN sys.types ty ON ty.user_type_id = c.system_type_id "
-                f"JOIN sys.schemas s ON s.schema_id = t.schema_id "
-                f"WHERE s.name = '{schema_name}' "
-                f"AND t.type = '{object_type}'")
+        return (f"SELECT t.table_name AS TABLE_NAME, "
+                f"c.column_name AS COLUMN_NAME, "
+                f"c.data_type AS DATA_TYPE, "
+                f"c.is_nullable AS IS_NULLABLE, "
+                f"c.column_default as DATA_DEFAULT, "
+                f"'' as COLUMN_COMMENT, "
+                f"'' as TABLE_COMMENT "
+                f"FROM information_schema.columns c,"
+                f"information_schema.tables t "
+                f"WHERE c.table_schema = '{schema_name}' AND "
+                f"t.table_type = '{object_type}' AND "
+                f"t.table_name = c.table_name")
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or view."""
-        # Dataset means that these entities can contain end user data.
-        short_type = {"TABLE":"U", "VIEW":"V"}
-        query = self._get_columns(schema_name, short_type[entry_type.name])
+        if entry_type == EntryType.TABLE:
+            object_type = 'BASE TABLE' 
+        if entry_type == EntryType.VIEW:
+            object_type = 'VIEW'
+        query = self._get_columns(schema_name, object_type)
         return self._execute(query)
