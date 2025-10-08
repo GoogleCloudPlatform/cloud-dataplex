@@ -78,7 +78,7 @@ class SQLServerConnector(IExternalSourceConnector):
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views."""
         return (f"SELECT t.table_name AS TABLE_NAME, "
-                f"c.name AS COLUMN_NAME, "
+                f"c.column_name AS COLUMN_NAME, "
                 f"c.data_type AS DATA_TYPE, "
                 f"c.is_nullable AS IS_NULLABLE, "
                 f"c.column_default as DATA_DEFAULT, "
