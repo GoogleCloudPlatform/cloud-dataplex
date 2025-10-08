@@ -97,7 +97,7 @@ The following components must be installed to run the connector:
     ```
 * Download postgresql-42.7.5.jar from [postgresql.org](https://jdbc.postgresql.org/download/) and save it in the local directory.
     ```bash
-    wget https://jdbc.postgresql.org/download/postgresql-42.7.6.jar
+    wget https://jdbc.postgresql.org/download/postgresql-42.7.5.jar
     ```
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter to the commands. eg.  --jar postgresql-42.8.0.jar
 
