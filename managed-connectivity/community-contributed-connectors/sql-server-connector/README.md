@@ -95,7 +95,7 @@ The following components must be installed to run the connector:
     ```
 * Download mssql-jdbc-12.10.0.jre11.jar from the [Microsoft Github repository](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the local directory.
     ```bash
-    wget https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0
+    wget https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar
     ```
     * **Note** If you need to use a different version of the JDBC jar then add the **--jar** parameter when you run the connector. ie  --jar mssql-jdbc-12.10.X.jre11.jar
 * Install python dependencies 
