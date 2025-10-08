@@ -84,7 +84,7 @@ class SQLServerConnector(IExternalSourceConnector):
                 f"c.column_default as DATA_DEFAULT, "
                 f"'' as COLUMN_COMMENT, "
                 f"'' as TABLE_COMMENT "
-                f"FROM information_schema.columns c,
+                f"FROM information_schema.columns c,"
                 f"information_schema.tables t "
                 f"WHERE c.table_schema = '{schema_name}' AND "
                 f"t.table_type = '{object_type}' AND "
