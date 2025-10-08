@@ -92,7 +92,9 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or view."""
-        # Dataset means that these entities can contain end user data.
-        short_type = {"TABLE":"U", "VIEW":"V"}
-        query = self._get_columns(schema_name, short_type[entry_type.name])
+        if entry_type == EntryType.TABLE:
+            object_type = 'BASE TABLE' 
+        if entry_type == EntryType.VIEW:
+            object_type = 'VIEW'
+        query = self._get_columns(schema_name, object_type)
         return self._execute(query)
