@@ -64,15 +64,6 @@ class PostgresConnector(IExternalSourceConnector):
         AND schema_name <> 'information_schema'
         """
         return self._execute(query)
-    
-            col.TABLE_NAME,
-            col.COLUMN_NAME,
-            col.DATA_TYPE,
-            col.NULLABLE AS {Columns.IS_NULLABLE.value},
-            cmt.COMMENTS AS TABLE_COMMENT,
-            ccmt.COMMENTS AS COLUMN_COMMENT,
-            col.DATA_DEFAULT AS DATA_DEFAULT
-    
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views in a batch."""
