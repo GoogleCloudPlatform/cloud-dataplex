@@ -38,13 +38,12 @@ The connector takes the following parameters
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in the generated metadata import file only and do not need to match the project where the connector is being run. These three values define the job scope used when importing the metadata into the catalog, see [components of a metadata job](https://cloud.google.com/dataplex/docs/import-metadata#components) for details.
 
-## Create a Databricks user
+## Generate Databricks PAT Token
 
 Best practice is to create a dedicated user for the connector with the minimum privileges required to extract metadata.
 https://docs.databricks.com/aws/en/data-governance/unity-catalog/manage-privileges/#workspace-catalog-privileges
 
-
-2. Generate the PAT token, see [PAT token for workspace users](https://docs.databricks.com/aws/en/dev-tools/auth/pat#databricks-personal-access-tokens-for-workspace-users) and add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
+Generate the PAT token, see [PAT token for workspace users](https://docs.databricks.com/aws/en/dev-tools/auth/pat#databricks-personal-access-tokens-for-workspace-users) and add the password for the user to the Secret Manager in your Google Cloud project and note the ID (format is: projects/{project-number}/secrets/{secret-name})
 
 ## Install the connector
 
