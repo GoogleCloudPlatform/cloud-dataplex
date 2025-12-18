@@ -1,0 +1,35 @@
+{
+    "type": "IMPORT",
+    "import_spec": {
+        "source_storage_uri": "gs://your-metadata-file-gcs-bucket/",
+        "entry_sync_mode": "FULL",
+        "aspect_sync_mode": "INCREMENTAL",
+        "log_level": "DEBUG",
+        "scope": {
+            "entry_groups": [
+                "projects/gcp-project-id/locations/us-central1/entryGroups/databricks"
+            ],
+            "entry_types": [
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-metastore",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-catalog",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-schema",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-table",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-view",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-functions",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-models",
+                "projects/gcp-project-id/locations/us-central1/entryTypes/databricks-volumes"
+            ],
+            "aspect_types": [
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-metastore",
+                "projects/dataplex-types/locations/global/aspectTypes/schema",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-catalog",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-schema",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-table",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-view",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-functions",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-models",
+                "projects/gcp-project-id/locations/us-central1/aspectTypes/databricks-volumes"
+            ]
+        }
+    }
+}
