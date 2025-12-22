@@ -21,9 +21,9 @@ from .config import (
     PROMPT_INSTRUCTION_FILE,
     PROMPT_REMEDIATION_FILE,
 )
-from .dataplex_utils import entry_to_dict, get_project_id
-from .gcs_utils import get_content_from_gcs_for_schema, load_metadata
-from .llm_utils import get_json_schema_from_content, llm_generate_policy_code
+from .utils.dataplex import entry_to_dict, get_project_id
+from .utils.gcs import get_content_from_gcs_for_schema, load_metadata
+from .utils.llm import get_json_schema_from_content, llm_generate_policy_code
 from .mcp import _get_dataplex_mcp_toolset
 from .memory import (
     add_core_policy,

@@ -5,10 +5,10 @@ import re
 import vertexai
 from vertexai.generative_models import GenerativeModel
 
-from .config import GEMINI_MODEL_PRO, LOCATION, PROJECT_ID, PROMPT_CODE_GENERATION_FILE
-from .utils.json_utils import traverse
+from ..config import GEMINI_MODEL_PRO, LOCATION, PROJECT_ID, PROMPT_CODE_GENERATION_FILE
+from .json_tools import traverse
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def generate_sample_values_str(metadata_sample: list) -> str:

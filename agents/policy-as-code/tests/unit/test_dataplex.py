@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from policy_as_code_agent.dataplex_utils import convert_proto_to_dict, entry_to_dict
+from policy_as_code_agent.utils.dataplex import convert_proto_to_dict, entry_to_dict
 
 
 def test_convert_proto_to_dict_simple():

@@ -114,7 +114,7 @@ The agent is built using the **Google Cloud Agent Development Kit (ADK)** and le
 *   `policy_as_code_agent/`
     *   `agent.py`: Entry point and core agent definition.
     *   `memory.py`: Handles Firestore interactions (saving/retrieving policies).
-    *   `llm_utils.py`: Logic for prompting Gemini to generate code.
+    *   `utils/`: Utility modules for LLM logic, Dataplex, GCS, and common tools.
     *   `simulation.py`: Sandboxed execution engine for running policy code.
     *   `prompts/`: Markdown templates for LLM instructions.
 *   `tests/`: Unit and integration tests.

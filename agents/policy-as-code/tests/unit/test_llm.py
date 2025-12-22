@@ -1,6 +1,6 @@
 import json
 
-from policy_as_code_agent.llm_utils import generate_sample_values_str
+from policy_as_code_agent.utils.llm import generate_sample_values_str, get_json_schema_from_content
 
 
 def test_generate_sample_values_picks_representative():
@@ -43,3 +43,33 @@ def test_generate_sample_values_traversal():
     assert sample_dict.get("nested.b") == 2
     assert sample_dict.get("nested.deep.c") == 3
     assert sample_dict.get("list_of_objs[].d") == 4
+
+
+def test_get_json_schema_simple():
+    content = '[{"name": "Alice", "age": 30}]'
+    schema = get_json_schema_from_content(content)
+    expected = {"name": "str", "age": "int"}
+    assert schema == expected
+
+
+def test_get_json_schema_nested():
+    content = '[{"user": {"id": 1, "details": {"active": true}}}]'
+    schema = get_json_schema_from_content(content)
+    expected = {"user": {"id": "int", "details": {"active": "bool"}}}
+    assert schema == expected
+
+
+def test_get_json_schema_list():
+    content = '[{"tags": ["a", "b"]}]'
+    schema = get_json_schema_from_content(content)
+    # The util merges list schemas, usually taking the first item's type
+    expected = {"tags": ["str"]}
+    assert schema == expected
+
+
+def test_get_json_schema_jsonl():
+    content = '{"a": 1}\n{"b": 2}'
+    schema = get_json_schema_from_content(content)
+    # It merges keys from both lines
+    expected = {"a": "int", "b": "int"}
+    assert schema == expected
