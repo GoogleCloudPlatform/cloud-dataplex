@@ -81,7 +81,7 @@ To enhance efficiency and provide a consistent user experience, the agent includ
 
 The agent uses a sophisticated prompt engineering approach to generate accurate Python code.
 
-*   **Prompt Template:** Located at `prompts/code_generation/v4.md`.
+*   **Prompt Template:** Located at `prompts/code_generation.md`.
 *   **Dynamic Injection:**
     *   `{{USER_POLICY_QUERY}}`: The user's request.
     *   `{{INFERRED_JSON_SCHEMA}}`: A JSON schema derived from the actual metadata.

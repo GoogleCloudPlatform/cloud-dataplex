@@ -116,12 +116,13 @@ def llm_generate_policy_code(query: str, schema: dict, metadata_sample: list) ->
     # Load the prompt from the file
     try:
         prompt_path = os.path.join(
-            script_dir, "prompts", "code_generation", PROMPT_CODE_GENERATION_FILE
+            script_dir, "prompts", PROMPT_CODE_GENERATION_FILE
         )
+
         with open(prompt_path, "r") as f:
             prompt_template = f.read()
     except FileNotFoundError:
-        return f"# Error: Prompt file not found at prompts/code_generation/{PROMPT_CODE_GENERATION_FILE}"
+        return f"# Error: Prompt file not found at prompts/{PROMPT_CODE_GENERATION_FILE}"
 
     # Replace placeholders in the prompt
     prompt = prompt_template.replace("{{INFERRED_JSON_SCHEMA}}", schema_str)
