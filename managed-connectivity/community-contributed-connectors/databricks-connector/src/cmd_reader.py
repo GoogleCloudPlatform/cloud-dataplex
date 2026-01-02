@@ -30,7 +30,7 @@ def read_args():
 
     # Databricks specific arguments
     parser.add_argument("--workspace_url", type=str, required=True, help="Databricks workspace URL")
-    parser.add_argument("--http_path", type=str, required=True, help="Databricks SQL HTTP path, if applicable")
+    parser.add_argument("--http_path", type=str, required=True, help="Databricks SQL HTTP path")
     parser.add_argument("--metastore", type=str, required=True, help="Databricks metastore to connect to")
 
     # Databricks PAT token from Secret Manager
