@@ -1,0 +1,10 @@
+{
+  "aws_region": "eu-north-1",
+  "project_id": "gcve-demo-408018",
+  "location_id": "us-central1",
+  "entry_group_id": "aws-glue-assets", 
+  "gcs_bucket": "udp-test-sp",
+  "aws_account_id": "003083320909",
+  "output_folder": "aws_output",
+  "gcp_secret_id": "aws-glue-secret"
+}
