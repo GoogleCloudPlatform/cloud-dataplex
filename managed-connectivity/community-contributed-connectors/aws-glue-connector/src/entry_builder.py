@@ -24,9 +24,17 @@ def build_database_entry(config, db_name):
         project=config["project_id"],
         location=config["location_id"])
 
+    # Construct dynamic keys and paths
+    database_aspect_key = DATABASE_ASPECT_KEY_TEMPLATE.format(
+        project=config["project_id"],
+        location=config["location_id"])
+    database_aspect_path = DATABASE_ASPECT_PATH.format(
+        project=config["project_id"],
+        location=config["location_id"])
+
     aspects = {
-        DATABASE_ASPECT_KEY: {
-            "aspect_type": DATABASE_ASPECT_KEY,
+        database_aspect_key: {
+            "aspect_type": database_aspect_path,
             "data": {}
         }
     }
@@ -39,8 +47,8 @@ def build_database_entry(config, db_name):
     }
     return {
         "entry": entry,
-        "aspect_keys": [DATABASE_ASPECT_KEY],
-        "update_mask": "aspects"
+        "aspect_keys": list(aspects.keys()),
+        "update_mask": ["aspects"]
     }
 
 def build_dataset_entry(config, db_name, table_info, job_lineage):
@@ -67,15 +75,23 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
             "data": { "fields": columns }
         }
     }
-    aspect_keys = [SCHEMA_ASPECT_KEY]
 
     # --- Add Custom Marker Aspect ---
     if entry_type == EntryType.TABLE:
-        aspects[TABLE_ASPECT_KEY] = {"aspect_type": TABLE_ASPECT_KEY, "data": {}}
-        aspect_keys.append(TABLE_ASPECT_KEY)
+        table_aspect_key = TABLE_ASPECT_KEY_TEMPLATE.format(
+            project=config["project_id"], location=config["location_id"])
+        table_aspect_path = TABLE_ASPECT_PATH.format(
+            project=config["project_id"], location=config["location_id"])
+            
+        aspects[table_aspect_key] = {"aspect_type": table_aspect_path, "data": {}}
+        
     elif entry_type == EntryType.VIEW:
-        aspects[VIEW_ASPECT_KEY] = {"aspect_type": VIEW_ASPECT_KEY, "data": {}}
-        aspect_keys.append(VIEW_ASPECT_KEY)
+        view_aspect_key = VIEW_ASPECT_KEY_TEMPLATE.format(
+            project=config["project_id"], location=config["location_id"])
+        view_aspect_path = VIEW_ASPECT_PATH.format(
+            project=config["project_id"], location=config["location_id"])
+            
+        aspects[view_aspect_key] = {"aspect_type": view_aspect_path, "data": {}}
 
     # --- Build Lineage Aspect ---
     source_assets = []
@@ -88,13 +104,14 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
         source_assets.extend(job_lineage[table_name])
 
     if source_assets:
-        full_lineage_aspect_path = LINEAGE_ASPECT_PATH.format(
-            project=config["project_id"],
-            location=config["location_id"]
-        )
+        lineage_aspect_key = LINEAGE_ASPECT_KEY_TEMPLATE.format(
+            project=config["project_id"], location=config["location_id"])
+        lineage_aspect_path = LINEAGE_ASPECT_PATH.format(
+            project=config["project_id"], location=config["location_id"])
+
         lineage_aspect = {
-            LINEAGE_ASPECT_KEY: {
-                "aspect_type": full_lineage_aspect_path,
+            lineage_aspect_key: {
+                "aspect_type": lineage_aspect_path,
                 "data": {
                     "links": [{
                         "source": { "fully_qualified_name": nb.create_fqn(config, EntryType.TABLE, db_name, src) },
@@ -104,7 +121,6 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
             }
         }
         aspects.update(lineage_aspect)
-        aspect_keys.append(LINEAGE_ASPECT_KEY)
 
     # --- Build General Entry Info ---
     full_entry_type = entry_type.value.format(
@@ -123,6 +139,6 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
 
     return {
         "entry": entry,
-        "aspect_keys": list(set(aspect_keys)),
-        "update_mask": "aspects"
+        "aspect_keys": list(aspects.keys()),
+        "update_mask": ["aspects"]
     }

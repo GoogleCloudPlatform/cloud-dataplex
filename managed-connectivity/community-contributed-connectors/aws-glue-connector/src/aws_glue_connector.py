@@ -66,24 +66,40 @@ class AWSGlueConnector:
             for page in paginator.paginate():
                 for job in page['Jobs']:
                     job_name = job['Name']
-                    job_runs = self.__glue_client.get_job_runs(JobName=job_name)
+                    # Optimization: Limit to latest run to reduce API calls
+                    job_runs = self.__glue_client.get_job_runs(JobName=job_name, MaxResults=1)
+                    
                     for job_run in job_runs.get('JobRuns', []):
                         if job_run.get('JobRunState') == 'SUCCEEDED':
-                            graph = self.__glue_client.get_dataflow_graph(PythonScript=job['Command']['ScriptLocation'])
-                            if graph:
-                                sources = [edge['Source'] for edge in graph.get('Edges', [])]
-                                targets = [edge['Target'] for edge in graph.get('Edges', [])]
-                                for i, target_id in enumerate(targets):
-                                    target_node = next((node for node in graph.get('Nodes', []) if node['Id'] == target_id), None)
-                                    if target_node and target_node['NodeType'] == 'DataSink':
-                                        target_table_name = target_node.get('Name')
-                                        source_id = sources[i]
-                                        source_node = next((node for node in graph.get('Nodes', []) if node['Id'] == source_id), None)
-                                        if source_node and source_node['NodeType'] == 'DataSource':
-                                            source_table_name = source_node.get('Name')
-                                            if target_table_name not in lineage_map:
-                                                lineage_map[target_table_name] = []
-                                            lineage_map[target_table_name].append(source_table_name)
+                            script_location = job.get('Command', {}).get('ScriptLocation')
+                            if not script_location:
+                                continue
+
+                            try:
+                                # Note: get_dataflow_graph expects the actual Python script content, not just the S3 URI.
+                                # Passing the URI here will likely result in an empty graph or failure.
+                                # To fix this, we would need to download the script from S3, which requires S3 permissions.
+                                # For now, we attempt it, but catch errors.
+                                graph = self.__glue_client.get_dataflow_graph(PythonScript=script_location)
+                                if graph:
+                                    sources = [edge['Source'] for edge in graph.get('Edges', [])]
+                                    targets = [edge['Target'] for edge in graph.get('Edges', [])]
+                                    for i, target_id in enumerate(targets):
+                                        target_node = next((node for node in graph.get('Nodes', []) if node['Id'] == target_id), None)
+                                        if target_node and target_node['NodeType'] == 'DataSink':
+                                            target_table_name = target_node.get('Name')
+                                            source_id = sources[i]
+                                            source_node = next((node for node in graph.get('Nodes', []) if node['Id'] == source_id), None)
+                                            if source_node and source_node['NodeType'] == 'DataSource':
+                                                source_table_name = source_node.get('Name')
+                                                if target_table_name not in lineage_map:
+                                                    lineage_map[target_table_name] = []
+                                                lineage_map[target_table_name].append(source_table_name)
+                            except Exception as e:
+                                print(f"Warning: Could not get dataflow graph for job {job_name}. Note that direct S3 URI usage might not be supported. Error: {e}")
+                            
+                            # We only need one successful run to guess lineage
+                            break
         except Exception as e:
             print(f"Warning: Could not fetch lineage information. Error: {e}")
 

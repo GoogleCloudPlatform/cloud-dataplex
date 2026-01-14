@@ -14,7 +14,9 @@ def create_name(config, entry_type, db_name, asset_name=None):
         # The entry name for a table should be unique. Combining db and table is robust.
         return f"projects/{project}/locations/{location}/entryGroups/{entry_group}/entries/{db_name_sanitized}_{asset_name_sanitized}"
     
-    # Return None for database to signify it should not have a standalone entry
+    if entry_type == EntryType.DATABASE:
+        return f"projects/{project}/locations/{location}/entryGroups/{entry_group}/entries/{db_name_sanitized}"
+    
     return None
 
 def create_fqn(config, entry_type, db_name, asset_name=None):
@@ -27,16 +29,19 @@ def create_fqn(config, entry_type, db_name, asset_name=None):
     if not aws_account_id or not aws_region:
         raise ValueError("AWS Account ID and Region are missing from the configuration.")
 
-    # --- THIS IS THE CRITICAL FIX ---
     # Sanitize both region and database names by replacing hyphens.
-    # region_sanitized = aws_region.replace('-', '_')
-    # db_name_sanitized = db_name.replace('-', '_')
+    region_sanitized = aws_region.replace('-', '_')
+    db_name_sanitized = db_name.replace('-', '_')
 
     # FQN is only defined for Tables and Views
     if entry_type in [EntryType.TABLE, EntryType.VIEW]:
         asset_name_sanitized = asset_name.replace('-', '_')
-        path = (f"table:{aws_region}.{aws_account_id}."
-                f"{db_name}.{asset_name_sanitized}")
+        path = (f"table:{region_sanitized}.{aws_account_id}."
+                f"{db_name_sanitized}.{asset_name_sanitized}")
+        return f"{system}:{path}"
+
+    if entry_type == EntryType.DATABASE:
+        path = f"database:{region_sanitized}.{aws_account_id}.{db_name_sanitized}"
         return f"{system}:{path}"
 
     # Return None for other types as they don't have a supported FQN
@@ -44,4 +49,6 @@ def create_fqn(config, entry_type, db_name, asset_name=None):
 
 def create_parent_name(config, entry_type, db_name):
     """Parent Entry is not used in this model as there is no DB entry."""
+    # If we are now creating DB entries, we might want to link them.
+    # But for now, returning None is safe if we don't want hierarchy.
     return None

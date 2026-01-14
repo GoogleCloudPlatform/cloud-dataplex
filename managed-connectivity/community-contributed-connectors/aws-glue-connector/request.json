@@ -1,18 +1,23 @@
 {
   "type": "IMPORT",
   "import_spec": {
-    "source_storage_uri": "gs://udp-test-sp/aws_output/",
+    "source_storage_uri": "gs://<YOUR_GCS_BUCKET>/<YOUR_OUTPUT_FOLDER>/",
     "entry_sync_mode": "FULL",
     "aspect_sync_mode": "INCREMENTAL",
     "log_level": "DEBUG",
     "scope": {
-      "entry_groups": ["projects/gcve-demo-408018/locations/us-central1/entryGroups/aws-glue-assets"],
+      "entry_groups": ["projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/entryGroups/<YOUR_ENTRY_GROUP_ID>"],
       "entry_types": [
-        "projects/gcve-demo-408018/locations/us-central1/entryTypes/aws-glue-table"
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/entryTypes/aws-glue-database",
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/entryTypes/aws-glue-table",
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/entryTypes/aws-glue-view"
       ],
       "aspect_types": [
         "projects/dataplex-types/locations/global/aspectTypes/schema",
-        "projects/gcve-demo-408018/locations/us-central1/aspectTypes/aws-glue-table"
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/aspectTypes/aws-glue-database",
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/aspectTypes/aws-glue-table",
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/aspectTypes/aws-glue-view",
+        "projects/<YOUR_PROJECT_ID>/locations/<YOUR_LOCATION>/aspectTypes/aws-lineage-aspect"
       ]
     }
   }

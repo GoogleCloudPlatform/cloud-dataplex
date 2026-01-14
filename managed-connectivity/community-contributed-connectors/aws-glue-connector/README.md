@@ -12,14 +12,20 @@ Before using this connector, you need to have the following set up:
 
 1.  **AWS Credentials**: You will need an AWS access key ID and a secret access key with permissions to access AWS Glue.
 2.  **Google Cloud Project**: A Google Cloud project is required to run the script and store the output.
-3.  **GCP Secret Manager**: The AWS credentials must be stored in a secret in Google Cloud Secret Manager. The secret should be a single string with the access key ID and secret access key, separated by a comma (e.g., `"your_access_key_id,your_secret_access_key"`).
+3.  **GCP Secret Manager**: The AWS credentials must be stored in a secret in Google Cloud Secret Manager. The secret payload must be a **JSON object** with the following format:
+    ```json
+    {
+      "access_key_id": "YOUR_AWS_ACCESS_KEY_ID",
+      "secret_access_key": "YOUR_AWS_SECRET_ACCESS_KEY"
+    }
+    ```
 4.  **Python 3** and **pip** installed.
 
 ***
 
 ## Configuration
 
-The connector is configured using the `config.json` file. Here is a description of the parameters:
+The connector is configured using the `config.json` file. Ensure this file is present in the same directory as `main.py`. Here is a description of the parameters:
 
 | Parameter | Description |
 | :--- | :--- |
@@ -50,9 +56,9 @@ You can run the connector from your local machine using a Python virtual environ
     pip install -r requirements.txt
     ```
 3.  **Run the connector:**
-    Execute the `main.py` script and provide the path to your configuration file.
+    Execute the `main.py` script. It will read settings from `config.json` in the current directory.
     ```bash
-    python3 main.py --config=config.json
+    python3 main.py
     ```
 
 ***
@@ -65,15 +71,23 @@ The connector generates a JSONL file in the specified GCS bucket and folder. Thi
 
 ## Importing Metadata into Dataplex
 
-Once the metadata file has been generated, you can import it into Dataplex using a metadata import job. You can use the provided `request.json` file as a template for the import request.
+Once the metadata file has been generated, you can import it into Dataplex using a metadata import job.
 
-The `request.json` file specifies the source GCS URI for the metadata, the entry group to import into, and other settings for the import job.
+1.  **Prepare the Request File:**
+    Open the `request.json` file and replace the following placeholders with your actual values:
+    *   `<YOUR_GCS_BUCKET>`: The bucket where the output file was saved.
+    *   `<YOUR_OUTPUT_FOLDER>`: The folder where the output file was saved.
+    *   `<YOUR_PROJECT_ID>`: Your Google Cloud Project ID.
+    *   `<YOUR_LOCATION>`: Your Google Cloud Location (e.g., `us-central1`).
+    *   `<YOUR_ENTRY_GROUP_ID>`: The Dataplex Entry Group ID.
 
-To initiate the import, use the following `curl` command. Make sure to replace the placeholders `{project-id}`, `{location}`, and `{job-id}` with your actual project ID, location, and a unique job ID.
+2.  **Run the Import Command:**
+    Use the following `curl` command to initiate the import. Make sure to replace `{project-id}`, `{location}`, and `{job-id}` in the URL with your actual project ID, location, and a unique job ID.
 
-```bash
-curl -X POST \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     -H "Content-Type: application/json; charset=utf-8" \
-     -d @request.json \
-     "[https://dataplex.googleapis.com/v1/projects/](https://dataplex.googleapis.com/v1/projects/){project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
+    ```bash
+    curl -X POST \
+         -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+         -H "Content-Type: application/json; charset=utf-8" \
+         -d @request.json \
+         "https://dataplex.googleapis.com/v1/projects/{project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
+    ```

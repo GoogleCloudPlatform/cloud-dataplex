@@ -56,7 +56,7 @@ IMAGE_URI="${REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
 # --- Build the Docker Image ---
 echo "Building Docker image: ${IMAGE_URI}..."
 # Use the Dockerfile for PySpark
-docker build -t "${IMAGE_URI}" -f Dockerfile.pyspark .
+docker build -t "${IMAGE_URI}" -f Dockerfile .
 
 if [ $? -ne 0 ]; then
     echo "Docker build failed."
