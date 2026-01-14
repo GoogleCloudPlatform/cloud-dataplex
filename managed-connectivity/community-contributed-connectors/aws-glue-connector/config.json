@@ -1,10 +1,10 @@
 {
-  "aws_region": "eu-north-1",
-  "project_id": "gcve-demo-408018",
-  "location_id": "us-central1",
-  "entry_group_id": "aws-glue-assets", 
-  "gcs_bucket": "udp-test-sp",
-  "aws_account_id": "003083320909",
-  "output_folder": "aws_output",
-  "gcp_secret_id": "aws-glue-secret"
+  "aws_region": "<YOUR_AWS_REGION>",
+  "project_id": "<GCP_PROJECT>",
+  "location_id": "<GCP_REGION>",
+  "entry_group_id": "<DATAPLEX_ENTRY_GROUP>", 
+  "gcs_bucket": "<GCS_BUCKET>",
+  "aws_account_id": "<AWS_ACCOUNT_ID>",
+  "output_folder": "<GCS_FOLDER_NAME>",
+  "gcp_secret_id": "<GCP_SECRET_ID>"
 }
