@@ -4,6 +4,7 @@ This repository contains code and documentation for use with
 [Google Cloud Dataplex](https://cloud.google.com/dataplex/).
 
 ## Samples in this Repository
+ * `agents` provides generative AI-powered agents for automating Dataplex tasks.
  * `datascan` provides samples around Dataplex DataScans.
  * `managed-connectivity` provides code samples and community contributed connectors for Dataplex Managed Connectivity
 
