@@ -21,7 +21,12 @@
 
 pip install snowflake-connector-python google-cloud-secret-manager
 
+#User Inputs
 PROJECT_ID = "Enter your Project Name"
+SNOWFLAKE_WAREHOUSE = "Enter your Warehouse"
+SNOWFLAKE_DATABASE = "Enter your Database"
+SNOWFLAKE_SCHEMA = "Enter your Schema"
+DATAPLEX_LOCATION = "Enter dataplex location"
 
 from google.cloud import secretmanager
 
@@ -58,17 +63,11 @@ SNOWFLAKE_ACCOUNT_URI = access_secret_version(
         PROJECT_ID=f"{PROJECT_ID}"
     )
 
-print(SNOWFLAKE_USER_NAME)
-print(SNOWFLAKE_PASSWORD)
-print(SNOWFLAKE_ACCOUNT_URI)
 
 # fetch the details from Secret Manager
 SNOWFLAKE_ACCOUNT = SNOWFLAKE_ACCOUNT_URI
 SNOWFLAKE_USER = SNOWFLAKE_USER_NAME
 SNOWFLAKE_PASSWORD = SNOWFLAKE_PASSWORD
-SNOWFLAKE_WAREHOUSE = 'Enter your Warehouse'
-SNOWFLAKE_DATABASE = 'Enter your Database'
-SNOWFLAKE_SCHEMA = 'Enter your Schema'
 
 try:
     conn = snowflake.connector.connect(
@@ -101,13 +100,6 @@ finally:
     if 'cursor_db' in locals() and cursor_db:
         cursor_db.close()
 
-# --- Configuration Variables ---
-PROJECT_ID = "Enter your project_id"
-DATAPLEX_LOCATION = "Enter dataplex location"
-DATAPLEX_LAKE_ID = "Enter snowflake lake_id"
-
-print(f"Project ID: {PROJECT_ID}")
-print(f"Dataplex Lake: {DATAPLEX_LAKE_ID} in {DATAPLEX_LOCATION}")
 
 dataplex_client = dataplex_v1.DataplexServiceClient()
 
@@ -124,8 +116,8 @@ for _, row in df_db.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizondb" #enter your entry type id for snowflake dbs
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizondb" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -189,8 +181,8 @@ for _, row in df_schema.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizonschema" #enter your entry type id for snowflake schemas
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizonschema" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -264,8 +256,8 @@ for _, row in df_table.iterrows():
           cursor_columns.close()
   entry_id = TABLE_NAME
   print(entry_id)
-  entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-  entry_type_id = "snowtesttable" #enter your entry type id for snowflake tables
+  entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+  entry_type_id = "snowtesttable" #enter your entry type id that you created in Step 3 of the README File.
   name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
   print(name)
   entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -332,8 +324,8 @@ for _, row in df_tags.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizontag" #enter your entry type id for snowflake tags
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizontag" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -399,8 +391,8 @@ for _, row in df_tagsref.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizontagref" #enter your entry type id for snowflake tag ref
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizontagref" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -461,8 +453,8 @@ for _, row in df_indexes.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizonindex" #enter your entry type id for snowflake indexes
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizonindex" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
@@ -529,8 +521,8 @@ for _, row in df_function.iterrows():
     entry_id = entry_id[:40].strip('-').strip('_')
     print(entry_id)
 
-    entry_group_id = "snowflakehorizongrp" #enter your entry group id for snowflake
-    entry_type_id = "snowhorizonfunction" #enter your entry type id for snowflake function
+    entry_group_id = "snowflakehorizongrp" #enter your entry group id that you created in Step 3 of the README File.
+    entry_type_id = "snowhorizonfunction" #enter your entry type id that you created in Step 3 of the README File.
     name = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryGroups/{entry_group_id}/entries/{entry_id}"
     print(name)
     entry_type = f"projects/{PROJECT_ID}/locations/{DATAPLEX_LOCATION}/entryTypes/{entry_type_id}"
