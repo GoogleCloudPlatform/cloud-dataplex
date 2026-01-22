@@ -38,7 +38,13 @@ You will perform the following one-time setup steps:
 3. **Create entry types** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-type) and create the following entry types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
 
 #### Step 4: Execute the Python Script to load the Horizon Data Catalog from Snowflake to Dataplex
-Now execute the Python script: `snowflake_to_dataplex_metadata_loader.py`
+Now you have to execute the Python script: `snowflake_to_dataplex_metadata_loader.py`
+
+Before executing the script, you will have to provide the following details in the first section of the script:
+* PROJECT_ID = 'Enter your Project Name'
+* SNOWFLAKE_WAREHOUSE = 'Enter your Warehouse'
+* SNOWFLAKE_DATABASE = 'Enter your Database'
+* SNOWFLAKE_SCHEMA = 'Enter your Schema'
 
 This process involves several steps: 
 * First, installing necessary libraries; 
