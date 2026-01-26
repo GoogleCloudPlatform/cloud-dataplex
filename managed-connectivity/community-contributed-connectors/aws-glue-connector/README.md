@@ -91,3 +91,10 @@ Once the metadata file has been generated, you can import it into Dataplex using
          -d @request.json \
          "https://dataplex.googleapis.com/v1/projects/{project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
     ```
+
+## Info
+
+1. Metadata extracted: example https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
+2. How to fetch AWS credentials if non-trivial
+3. What resources need to be created in the project for import: example https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
+4. Docker setup: https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
