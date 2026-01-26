@@ -18,7 +18,7 @@ def choose_metadata_type(data_type: str):
     return "OTHER"
 
 def build_database_entry(config, db_name):
-    """Builds a database entry, mimicking the successful Oracle format."""
+    """Builds a database entry"""
     entry_type = EntryType.DATABASE
     full_entry_type = entry_type.value.format(
         project=config["project_id"],
@@ -52,7 +52,7 @@ def build_database_entry(config, db_name):
     }
 
 def build_dataset_entry(config, db_name, table_info, job_lineage):
-    """Builds a table or view entry, mimicking the successful Oracle format."""
+    """Builds a table or view entry"""
     table_name = table_info['Name']
     table_type = table_info.get('TableType')
 
