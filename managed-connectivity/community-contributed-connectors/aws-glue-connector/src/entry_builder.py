@@ -5,17 +5,39 @@ import src.name_builder as nb
 def choose_metadata_type(data_type: str):
     """Choose the metadata type based on AWS Glue native type."""
     data_type = data_type.lower()
+    # Check for complex types FIRST to avoid 'array<string>' matching 'string'
+    if any(k in data_type for k in ['binary', 'array', 'struct', 'map']):
+        return "BYTES"
     if data_type in ['integer', 'int', 'smallint', 'tinyint', 'bigint', 'long', 'float', 'double', 'decimal']:
         return "NUMBER"
     if 'char' in data_type or 'string' in data_type:
         return "STRING"
-    if data_type in ['binary', 'array', 'struct', 'map']:
-        return "BYTES"
     if data_type == 'timestamp':
         return "TIMESTAMP"
     if data_type == 'date':
         return "DATE"
     return "OTHER"
+
+# ... (omitted code) ...
+
+    # --- Build Lineage Aspect ---
+    source_assets = []
+    if entry_type == EntryType.VIEW and 'ViewOriginalText' in table_info:
+        sql = table_info['ViewOriginalText']
+        # Updates: Captures broader set of characters after FROM/JOIN, then cleans quotes.
+        # This handles `db`.`table`, "db"."table", etc. by capturing the whole block and stripping quotes.
+        # Regex: (?:FROM|JOIN)\s+ -> Match FROM/JOIN
+        # ([`"\w.]+)              -> Capture anything looking like a name, dot, or quote.
+        raw_matches = re.findall(r'(?:FROM|JOIN)\s+([`"\w.]+)', sql, re.IGNORECASE)
+        
+        cleaned_matches = []
+        for match in raw_matches:
+             # Remove backticks and quotes
+             clean = match.replace('`', '').replace('"', '').replace("'", "")
+             if clean and not clean.isnumeric(): # Simple guard against edge cases
+                 cleaned_matches.append(clean)
+                 
+        source_assets.extend(set(cleaned_matches))
 
 def build_database_entry(config, db_name):
     """Builds a database entry"""
@@ -60,14 +82,22 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
 
     # --- Build Schema Aspect ---
     columns = []
+    
+    # Process both Partition Keys and normal columns
+    # AWS Glue separates them, but Dataplex expects them all in the schema.
+    all_columns = []
+    if 'PartitionKeys' in table_info:
+        all_columns.extend(table_info['PartitionKeys'])
     if 'StorageDescriptor' in table_info and 'Columns' in table_info['StorageDescriptor']:
-        for col in table_info['StorageDescriptor']['Columns']:
-            columns.append({
-                "name": col.get("Name"),
-                "dataType": col.get("Type"),
-                "mode": "NULLABLE",
-                "metadataType": choose_metadata_type(col.get("Type", ""))
-            })
+        all_columns.extend(table_info['StorageDescriptor']['Columns'])
+        
+    for col in all_columns:
+        columns.append({
+            "name": col.get("Name"),
+            "dataType": col.get("Type"),
+            "mode": "NULLABLE",
+            "metadataType": choose_metadata_type(col.get("Type", ""))
+        })
 
     aspects = {
         SCHEMA_ASPECT_KEY: {
@@ -97,8 +127,18 @@ def build_dataset_entry(config, db_name, table_info, job_lineage):
     source_assets = []
     if entry_type == EntryType.VIEW and 'ViewOriginalText' in table_info:
         sql = table_info['ViewOriginalText']
-        source_tables = re.findall(r'(?:FROM|JOIN)\s+`?(\w+)`?', sql, re.IGNORECASE)
-        source_assets.extend(set(source_tables))
+        # Updates: Captures broader set of characters after FROM/JOIN, then cleans quotes.
+        # This handles `db`.`table`, "db"."table", etc. by capturing the whole block and stripping quotes.
+        raw_matches = re.findall(r'(?:FROM|JOIN)\s+([`"\w.]+)', sql, re.IGNORECASE)
+        
+        cleaned_matches = []
+        for match in raw_matches:
+             # Remove backticks and quotes
+             clean = match.replace('`', '').replace('"', '').replace("'", "")
+             if clean and not clean.isnumeric():
+                 cleaned_matches.append(clean)
+                 
+        source_assets.extend(set(cleaned_matches))
 
     if table_name in job_lineage:
         source_assets.extend(job_lineage[table_name])

@@ -105,19 +105,11 @@ class AWSGlueConnector:
                                     graph = self.__glue_client.get_dataflow_graph(PythonScript=script_code)
                                     
                                     if graph:
-                                        sources = [edge['Source'] for edge in graph.get('Edges', [])]
-                                        targets = [edge['Target'] for edge in graph.get('Edges', [])]
-                                        for i, target_id in enumerate(targets):
-                                            target_node = next((node for node in graph.get('Nodes', []) if node['Id'] == target_id), None)
-                                            if target_node and target_node['NodeType'] == 'DataSink':
-                                                target_table_name = target_node.get('Name')
-                                                source_id = sources[i]
-                                                source_node = next((node for node in graph.get('Nodes', []) if node['Id'] == source_id), None)
-                                                if source_node and source_node['NodeType'] == 'DataSource':
-                                                    source_table_name = source_node.get('Name')
-                                                    if target_table_name not in lineage_map:
-                                                        lineage_map[target_table_name] = []
-                                                    lineage_map[target_table_name].append(source_table_name)
+                                        job_lineage = self._get_lineage_from_graph(graph)
+                                        for target, sources in job_lineage.items():
+                                            if target not in lineage_map:
+                                                lineage_map[target] = []
+                                            lineage_map[target].extend(sources)
                             except Exception as e:
                                 print(f"Warning: Could not get dataflow graph for job {job_name}. Error: {e}")
                             
@@ -128,3 +120,58 @@ class AWSGlueConnector:
 
         print(f"Found {len(lineage_map)} lineage relationships.")
         return lineage_map
+
+    def _get_lineage_from_graph(self, graph):
+        """
+        Traverses the dataflow graph backwards from DataSink to DataSource to find lineage.
+        Returns a dict of {target_table: [source_tables]}.
+        """
+        lineage = {}
+        
+        nodes = {node['Id']: node for node in graph.get('Nodes', [])}
+        edges = graph.get('Edges', [])
+        
+        # Build reverse adjacency list (Target -> Sources)
+        reverse_adj = {}
+        for edge in edges:
+            if edge['Target'] not in reverse_adj:
+                reverse_adj[edge['Target']] = []
+            reverse_adj[edge['Target']].append(edge['Source'])
+
+        # Find all DataSink nodes (Targets)
+        sinks = [node for node in nodes.values() if node['NodeType'] == 'DataSink']
+
+        for sink in sinks:
+            target_name = sink.get('Name')
+            if not target_name:
+                continue
+                
+            # BFS/DFS backwards to find DataSources
+            visited = set()
+            queue = [sink['Id']]
+            found_sources = set()
+            
+            while queue:
+                current_id = queue.pop(0)
+                if current_id in visited:
+                    continue
+                visited.add(current_id)
+                
+                current_node = nodes.get(current_id)
+                if current_node and current_node['NodeType'] == 'DataSource':
+                    source_name = current_node.get('Name')
+                    if source_name:
+                        found_sources.add(source_name)
+                    # Stop traversing this path once a source is found? 
+                    # Usually yes for direct lineage, but let's continue to be safe if there are multiple inputs.
+                
+                # Add parents to queue
+                if current_id in reverse_adj:
+                    queue.extend(reverse_adj[current_id])
+            
+            if found_sources:
+                if target_name not in lineage:
+                    lineage[target_name] = []
+                lineage[target_name].extend(list(found_sources))
+                
+        return lineage

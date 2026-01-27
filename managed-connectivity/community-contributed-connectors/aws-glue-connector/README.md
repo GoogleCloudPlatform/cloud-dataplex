@@ -92,9 +92,69 @@ Once the metadata file has been generated, you can import it into Dataplex using
          "https://dataplex.googleapis.com/v1/projects/{project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
     ```
 
-## Info
+## Metadata Extracted
 
-1. Metadata extracted: example https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
-2. How to fetch AWS credentials if non-trivial
-3. What resources need to be created in the project for import: example https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
-4. Docker setup: https://github.com/GoogleCloudPlatform/cloud-dataplex/tree/main/managed-connectivity/community-contributed-connectors/oracle-connector#target-objects-and-schemas
+The connector maps AWS Glue objects to Dataplex entries as follows:
+
+| AWS Glue Object | Dataplex Entry Type | Schema Mapping |
+| :--- | :--- | :--- |
+| **Database** | `aws-glue-database` | N/A |
+| **Table** | `aws-glue-table` | `int/bigint` -> `NUMBER`, `string` -> `STRING`, `array/struct` -> `BYTES` |
+| **View** | `aws-glue-view` | Parsed SQL used to generate Lineage from source tables |
+| **Partition Keys** | N/A | Included as columns in the `schema` aspect |
+
+### Lineage
+The connector also parses AWS Glue Job scripts (Python/Scala) to extract lineage:
+-   **Source**: `DataSource` nodes in Glue Job graph.
+-   **Target**: `DataSink` nodes in Glue Job graph.
+-   **Result**: Lineage is visualized in Dataplex from Source Table -> Target Table.
+
+***
+
+## Resources Required
+
+To run this connector and import metadata, you need the following resources:
+
+1.  **GCP Project**: To host the execution and Dataplex Metastore.
+2.  **Secret Manager Secret**: To store AWS Credentials securely.
+3.  **GCS Bucket**: To store the intermediate JSONL output file.
+4.  **Dataplex Entry Group**: The destination for the imported metadata.
+5.  **Dataplex Aspect Types & Entry Types**: (Optional) Custom types if you want rich UI rendering, though standard types are used for schema.
+
+***
+
+## AWS Credentials
+
+This connector requires an IAM User with `GlueConsoleFullAccess` (or read-only equivalent) and `S3ReadOnly` (to download job scripts for lineage).
+
+1.  Create an IAM User in AWS Console.
+2.  Attach policies: `AWSGlueConsoleFullAccess`, `AmazonS3ReadOnlyAccess`.
+3.  Generate an **Access Key ID** and **Secret Access Key**.
+4.  Store these in GCP Secret Manager as a JSON object:
+    ```json
+    {"access_key_id": "...", "secret_access_key": "..."}
+    ```
+
+***
+
+## Docker Setup
+
+You can containerize this connector to run on Cloud Run, Dataproc, or Kubernetes.
+
+1.  **Build the Image**:
+    ```bash
+    docker build -t aws-glue-connector:latest .
+    ```
+
+2.  **Run Locally** (passing config):
+    Ensure `config.json` is in the current directory or mounted.
+    ```bash
+    docker run -v $(pwd)/config.json:/app/config.json -v $(pwd)/src:/app/src aws-glue-connector:latest
+    ```
+
+3.  **Push to GCR/Artifact Registry**:
+    ```bash
+    gcloud auth configure-docker
+    docker tag aws-glue-connector:latest gcr.io/YOUR_PROJECT/aws-glue-connector:latest
+    docker push gcr.io/YOUR_PROJECT/aws-glue-connector:latest
+    ```
