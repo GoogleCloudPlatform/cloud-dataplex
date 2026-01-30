@@ -19,17 +19,20 @@ This document will show an end to end POC of how to use Snowflake to Dataplex Un
 #### Step 1: Setting up Snowflake Environment from where you have to load the metadata. 
 To access the Horizon catalog in Snowflake, you will need to use the **ACCOUNT_USAGE** views located under the **SNOWFLAKE** database.
 
-#### Step 2: Storing the connecting details in Secret Manager.
 
-So, In **Google Cloud Console** -> Navigate to **Secret Manager** -> **Create Secret** ->
+#### Step 2: Storing the connection details in Secret Manager.
+
+In **Google Cloud Console** -> Navigate to **Secret Manager** -> **Create Secret** ->
 Then you create the following 3 secrets:
 * `snowflake-user-name`
 * `snowflake-user-password`
 * `snowflake-account-uri`
 
+Please note that you have to create these secrets in your GCP Project.
+
 #### Step 3: Setting up the Dataplex Universal Catalog Environment.
 
-You will perform the following one-time setup steps:
+You will perform the following one-time setup steps in your GCP Project:
 
 1. **Create an entry group** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-group) and create an entry group named **"snowflakehorizongrp"**
 
@@ -46,9 +49,15 @@ Before executing the script, you will have to provide the following details in t
 * SNOWFLAKE_DATABASE = 'Enter your Database'
 * SNOWFLAKE_SCHEMA = 'Enter your Schema'
 
-This process involves several steps: 
-* First, installing necessary libraries; 
-* Then, retrieving Snowflake connection details from the secret manager. 
-* Following this, a connection to Snowflake is established to extract Horizon catalog data, which is subsequently loaded directly into Dataplex.
+Also, you will need to provide the following access to the service account:-
+* To read the Snowflake login credentials - Secret Manager Secret Accessor
+* To create and manage the Snowflake metadata entries - Dataplex Catalog Editor
 
 #### Step 5: Validate everything in Dataplex.
+For example, you can validate Snowflake Databases as below:-
+
+* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> Entry Types -> select "snowhorizondb"
+* Next, click on "Sample Entries" and you will see all the Databases from Snowflake here.
+* Click on any of them and validate your entries between Snowflake and Dataplex.
+
+Similarly, you can validate all other metadata as well.
