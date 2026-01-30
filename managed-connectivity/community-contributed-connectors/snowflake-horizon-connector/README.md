@@ -19,6 +19,7 @@ This document will show an end to end POC of how to use Snowflake to Dataplex Un
 #### Step 1: Setting up Snowflake Environment from where you have to load the metadata. 
 To access the Horizon catalog in Snowflake, you will need to use the **ACCOUNT_USAGE** views located under the **SNOWFLAKE** database.
 
+![Snowflake Environment Setup](images/SnowflakeSetup.png)
 
 #### Step 2: Storing the connection details in Secret Manager.
 
@@ -36,9 +37,17 @@ You will perform the following one-time setup steps in your GCP Project:
 
 1. **Create an entry group** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-group) and create an entry group named **"snowflakehorizongrp"**
 
+![Snowflake Group Creation](images/SnowGroupCreation.png)
+
 2. **Create aspect types** for the aspects that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/enrich-entries-metadata#create-aspect-type) and create the following aspects types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
 
+![Aspect Type Creation](images/AspectTypeCreation.png)
+
+![Aspect Type Templates Sample](images/AspectTypeSampleTemplate.png)
+
 3. **Create entry types** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-type) and create the following entry types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
+
+![Entry Type Creation](images/EntryTypeCreation.png)
 
 #### Step 4: Execute the Python Script to load the Horizon Data Catalog from Snowflake to Dataplex
 Now you have to execute the Python script: `snowflake_to_dataplex_metadata_loader.py`
