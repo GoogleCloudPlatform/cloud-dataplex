@@ -6,7 +6,7 @@ In today's complex data landscape, organizations increasingly recognize data as 
 
 This connector addresses a key need for many enterprises: bridging the gap between their data warehousing capabilities and the comprehensive data governance and discovery features offered by Google Cloud's Dataplex. Dataplex provides a unified data fabric to manage, monitor, and govern data across diverse environments within Google Cloud.
 
-The **Snowflake to Dataplex Data Catalog Connector**, detailed here, is a testament to the power of seamless integration. It's designed to automate metadata synchronization, bringing the rich context of your data into dataplex. This not only enhances data visibility and accessibility for all stakeholders but also strengthens your data governance by centralizing metadata management, lineage tracking, and data quality initiatives.
+The **Snowflake Horizon to Dataplex Universal Catalog Connector**, detailed here, is a testament to the power of seamless integration. It's designed to automate metadata synchronization, bringing the rich context of your data into dataplex. This not only enhances data visibility and accessibility for all stakeholders but also strengthens your data governance by centralizing metadata management, lineage tracking, and data quality initiatives.
 
 We believe that by leveraging this connector, you'll unlock new levels of efficiency and empower your teams to truly become data-driven. This guide is your indispensable companion, providing clear, step-by-step instructions and practical insights for a successful implementation.
 
@@ -36,20 +36,36 @@ Please note that you have to create these secrets in your GCP Project.
 You will perform the following one-time setup steps in your GCP Project:
 
 1. **Create an entry group** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-group) and create an entry group named **"snowflakehorizongrp"**
-
 ![Snowflake Group Creation](images/SnowGroupCreation.png)
 
 2. **Create aspect types** for the aspects that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/enrich-entries-metadata#create-aspect-type) and create the following aspects types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
-
+* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> "Aspect types & Tag Templates "
+![Create Aspect Type Screen 1](images/CreateAspectTypeScreen1.png)
+* You will see two options there as shown above:- "Custom" & "System". Under "Custom", click on "+Create Aspect Type". You will see the following screen:-
+![Create Aspect Type](images/CreateAspectTypeSubstep.png)
+* Fill the details as below(e.g for snowhorizondb)
+![Fill in Details](images/FillinDetailsAspect.png)
+* Next, Under "Template", click on "Add Field":- 
+![Add Field](images/AddField.png)
+* Fill all the details related to that field(e.g DatabaseName):-
+![New Field](images/NewFieldScreen.png)
+* Similarly, add all the fields(metadata that you are trying to bring from Snowflake Horizon) and click on "Save":-
+![FinalAspectType](images/FinalAspectType.png)
+Similarly, create all the aspect types mentioned above one by one. Required Fields are mentioned in the python script for each aspect type(if you plan to execute the script as it is).
 ![Aspect Type Creation](images/AspectTypeCreation.png)
 
-![Aspect Type Templates Sample](images/AspectTypeSampleTemplate.png)
-
 3. **Create entry types** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-type) and create the following entry types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
-
+* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> "Aspect types & Tag Templates "
+![Entry Type Creation 1](images/EntryTypeScreen1.png)
+* You will see two options there as shown above:- "Custom" & "System". Under "Custom", click on "+ Create". You will see the following screen, Fill in the details as below(e.g for snowhorizondb):-
+![Entry Type Creation 2](images/EntryTypeScreen2.png)
+* Under, "Required Aspect Type", click on "Choose aspect type" and select the relevant aspect type as created in Step 2 and click on "Save":-
+![Entry Type Creation 3](images/EntryTypeScreen3.png)
+![Entry Type Creation 4](images/EntryTypeScreen4.png)
+Similarly, create all the above mentioned Entry Types and attach the relevant Aspect Type (created in step 2) to it.
 ![Entry Type Creation](images/EntryTypeCreation.png)
 
-#### Step 4: Execute the Python Script to load the Horizon Data Catalog from Snowflake to Dataplex
+#### Step 4: Execute the Python Script to load the Horizon Metadata from Snowflake to Dataplex
 Now you have to execute the Python script: `snowflake_to_dataplex_metadata_loader.py`
 
 Before executing the script, you will have to provide the following details in the first section of the script:
