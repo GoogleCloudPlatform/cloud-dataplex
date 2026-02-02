@@ -92,6 +92,18 @@ Once the metadata file has been generated, you can import it into Dataplex using
          "https://dataplex.googleapis.com/v1/projects/{project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
     ```
 
+### Required Catalog Objects
+
+Note before importing metadata, the Entry Group and all Entry Types and Aspect Types found in the metadata import file must exist in the target project and location. This connector requires the following Entry Group, Entry Types and Aspect Types:
+
+| Catalog Object | IDs required by connector |
+| :--- | :--- |
+| **Entry Group** | Defined in `config.json` as `entry_group_id` |
+| **Entry Types** | `aws-glue-database`&nbsp;&nbsp;`aws-glue-table`&nbsp;&nbsp;`aws-glue-view` |
+| **Aspect Types** | `aws-glue-database`&nbsp;&nbsp;`aws-glue-table`&nbsp;&nbsp;`aws-glue-view`&nbsp;&nbsp;`aws-lineage-aspect` |
+
+See [manage entries and create custom sources](https://cloud.google.com/dataplex/docs/ingest-custom-sources) for instructions on creating Entry Groups, Entry Types, and Aspect Types.
+
 ## Metadata Extracted
 
 The connector maps AWS Glue objects to Dataplex entries as follows:
