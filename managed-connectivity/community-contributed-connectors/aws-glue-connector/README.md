@@ -92,6 +92,8 @@ Once the metadata file has been generated, you can import it into Dataplex using
          "https://dataplex.googleapis.com/v1/projects/{project-id}/locations/{location}/metadataJobs?metadataJobId={job-id}"
     ```
 
+## Setup Resources
+
 ### Required Catalog Objects
 
 Note before importing metadata, the Entry Group and all Entry Types and Aspect Types found in the metadata import file must exist in the target project and location. This connector requires the following Entry Group, Entry Types and Aspect Types:
@@ -103,6 +105,91 @@ Note before importing metadata, the Entry Group and all Entry Types and Aspect T
 | **Aspect Types** | `aws-glue-database`&nbsp;&nbsp;`aws-glue-table`&nbsp;&nbsp;`aws-glue-view`&nbsp;&nbsp;`aws-lineage-aspect` |
 
 See [manage entries and create custom sources](https://cloud.google.com/dataplex/docs/ingest-custom-sources) for instructions on creating Entry Groups, Entry Types, and Aspect Types.
+
+### Automated Setup
+To run this connector, you must first create the required Dataplex resources. Run the provided script to create all resources automatically:
+ 
+ ```bash
+ # Set your project and location
+ export PROJECT_ID=your-project-id
+ export LOCATION=us-central1
+ export ENTRY_GROUP_ID=aws-glue-entries
+ 
+ # Run the setup script
+ chmod +x scripts/setup_dataplex_resources.sh
+ ./scripts/setup_dataplex_resources.sh
+ ```
+ 
+ ### Manual Setup & Schema Definitions
+ 
+ If you prefer to create them manually, ensure you define the following:
+ 
+ #### Entry Types
+ *   `aws-glue-database`
+ *   `aws-glue-table`
+ *   `aws-glue-view`
+ 
+ #### Aspect Types
+ 
+ **1. `aws-lineage-aspect`**
+ Used to store lineage relationships.
+ 
+ *   **JSON Schema**:
+     ```json
+     {
+       "type": "record",
+       "recordFields": [
+         {
+           "name": "links",
+           "type": "array",
+           "index": 1,
+           "arrayItems": {
+             "type": "record",
+             "recordFields": [
+               {
+                 "name": "source",
+                 "type": "record",
+                 "index": 1,
+                 "recordFields": [
+                   { "name": "fully_qualified_name", "type": "string", "index": 1 }
+                 ]
+               },
+               {
+                 "name": "target",
+                 "type": "record",
+                 "index": 2,
+                 "recordFields": [
+                   { "name": "fully_qualified_name", "type": "string", "index": 1 }
+                 ]
+               }
+             ]
+           }
+         }
+       ]
+     }
+     ```
+ 
+ **2. Marker Aspects**
+ *   `aws-glue-database`
+ *   `aws-glue-table`
+ *   `aws-glue-view`
+ 
+ These aspects are used primarily for tagging. You can use a minimal schema:
+ ```json
+ {
+   "type": "record",
+   "recordFields": [
+     {
+       "name": "description",
+       "type": "string",
+       "index": 1,
+       "constraints": { "required": false }
+     }
+   ]
+ }
+ ```
+ 
+ See [manage entries and create custom sources](https://cloud.google.com/dataplex/docs/ingest-custom-sources) for more details.
 
 ## Metadata Extracted
 
@@ -123,17 +210,7 @@ The connector also parses AWS Glue Job scripts (Python/Scala) to extract lineage
 
 ***
 
-## Resources Required
 
-To run this connector and import metadata, you need the following resources:
-
-1.  **GCP Project**: To host the execution and Dataplex Metastore.
-2.  **Secret Manager Secret**: To store AWS Credentials securely.
-3.  **GCS Bucket**: To store the intermediate JSONL output file.
-4.  **Dataplex Entry Group**: The destination for the imported metadata.
-5.  **Dataplex Aspect Types & Entry Types**: (Optional) Custom types if you want rich UI rendering, though standard types are used for schema.
-
-***
 
 ## AWS Credentials
 
