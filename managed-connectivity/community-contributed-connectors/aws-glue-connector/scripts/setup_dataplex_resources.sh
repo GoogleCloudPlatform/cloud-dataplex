@@ -19,26 +19,11 @@ gcloud dataplex entry-groups create "$ENTRY_GROUP_ID" \
     --location="$LOCATION" \
     --description="Entry group for AWS Glue metadata" || echo "Entry Group might already exist."
 
-# 2. Create Entry Types
-ENTRY_TYPES=("aws-glue-database" "aws-glue-table" "aws-glue-view")
-
-for TYPE in "${ENTRY_TYPES[@]}"; do
-    echo "----------------------------------------------------------------"
-    echo "Creating Entry Type: $TYPE..."
-    gcloud dataplex entry-types create "$TYPE" \
-        --project="$PROJECT_ID" \
-        --location="$LOCATION" \
-        --description="Entry type for $TYPE" || echo "Entry Type $TYPE might already exist."
-done
-
-# 3. Create Aspect Types
+# 2. Create Aspect Types
 echo "----------------------------------------------------------------"
 echo "Creating Aspect Types..."
 
-# 3a. Marker Aspect Types (Database, Table, View)
-# We define a minimal schema for these markers since they are primarily used for identification.
-# Marker schema definition moved into loop below
-
+# 2a. Marker Aspect Types (Database, Table, View)
 MARKER_ASPECTS=("aws-glue-database" "aws-glue-table" "aws-glue-view")
 
 for ASPECT in "${MARKER_ASPECTS[@]}"; do
@@ -62,7 +47,7 @@ EOF
     rm "${ASPECT}.yaml"
 done
 
-# 3b. Lineage Aspect Type
+# 2b. Lineage Aspect Type
 # Defines the schema for lineage links (source -> target)
 cat > lineage_aspect.yaml <<EOF
 name: "aws-lineage-aspect"
@@ -109,6 +94,34 @@ gcloud dataplex aspect-types create "aws-lineage-aspect" \
 
 # Clean up temporary files
 rm lineage_aspect.yaml
+
+# 3. Create Entry Types
+# Note: We enforce that each Entry Type requires its corresponding Aspect Type.
+echo "----------------------------------------------------------------"
+
+# aws-glue-database
+echo "Creating Entry Type: aws-glue-database..."
+gcloud dataplex entry-types create "aws-glue-database" \
+    --project="$PROJECT_ID" \
+    --location="$LOCATION" \
+    --required-aspects="type=projects/$PROJECT_ID/locations/$LOCATION/aspectTypes/aws-glue-database" \
+    --description="Entry type for aws-glue-database" || echo "Entry Type aws-glue-database might already exist."
+
+# aws-glue-table
+echo "Creating Entry Type: aws-glue-table..."
+gcloud dataplex entry-types create "aws-glue-table" \
+    --project="$PROJECT_ID" \
+    --location="$LOCATION" \
+    --required-aspects="type=projects/$PROJECT_ID/locations/$LOCATION/aspectTypes/aws-glue-table" \
+    --description="Entry type for aws-glue-table" || echo "Entry Type aws-glue-table might already exist."
+
+# aws-glue-view
+echo "Creating Entry Type: aws-glue-view..."
+gcloud dataplex entry-types create "aws-glue-view" \
+    --project="$PROJECT_ID" \
+    --location="$LOCATION" \
+    --required-aspects="type=projects/$PROJECT_ID/locations/$LOCATION/aspectTypes/aws-glue-view" \
+    --description="Entry type for aws-glue-view" || echo "Entry Type aws-glue-view might already exist."
 
 echo "----------------------------------------------------------------"
 echo "Setup complete. Please verify resources in the Google Cloud Console."
