@@ -1,0 +1,4 @@
+google-cloud-dataplex>=2.4.0
+boto3
+google-cloud-secret-manager
+google-cloud-storage
