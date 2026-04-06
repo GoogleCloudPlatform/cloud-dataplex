@@ -1,0 +1,29 @@
+{
+  "type": "IMPORT",
+  "import_spec": {
+    "source_storage_uri": "gs://your-metadata-file-gcs-bucket/teradata/",
+    "scope": {
+      "entry_groups": [
+        "projects/your-gcp-project/locations/us-central1/entryGroups/teradata"
+      ],
+      "entry_types": [
+        "projects/your-gcp-project/locations/us-central1/entryTypes/teradata-instance",
+        "projects/your-gcp-project/locations/us-central1/entryTypes/teradata-database",
+        "projects/your-gcp-project/locations/us-central1/entryTypes/teradata-schema",
+        "projects/your-gcp-project/locations/us-central1/entryTypes/teradata-table",
+        "projects/your-gcp-project/locations/us-central1/entryTypes/teradata-view"
+      ],
+      "aspect_types": [
+        "projects/your-gcp-project/locations/us-central1/aspectTypes/teradata-instance",
+        "projects/your-gcp-project/locations/us-central1/aspectTypes/teradata-database",
+        "projects/your-gcp-project/locations/us-central1/aspectTypes/teradata-schema",
+        "projects/your-gcp-project/locations/us-central1/aspectTypes/teradata-table",
+        "projects/your-gcp-project/locations/us-central1/aspectTypes/teradata-view",
+        "projects/dataplex-types/locations/global/aspectTypes/schema"
+      ]
+    },
+    "entry_sync_mode": "FULL",
+    "aspect_sync_mode": "INCREMENTAL",
+    "log_level": "DEBUG"
+  }
+}
