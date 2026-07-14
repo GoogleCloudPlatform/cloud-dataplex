@@ -1,6 +1,6 @@
-# AWS Glue to Google Cloud Dataplex Connector
+# AWS Glue to Knowledge Catalog Connector
 
-This connector extracts metadata from AWS Glue and transforms it into a format that can be imported into Google Cloud Dataplex. It captures database, table, and lineage information from AWS Glue and prepares it for ingestion into Dataplex, allowing you to catalog your AWS data assets within Google Cloud.
+This connector extracts metadata from AWS Glue and transforms it into a format that can be imported into Knowledge Catalog. It captures database, table, and lineage information from AWS Glue and prepares it for ingestion into Knowledge Catalog, allowing you to catalog your AWS data assets within Google Cloud.
 
 This connector is designed to be run from a Python virtual environment.
 
@@ -36,7 +36,7 @@ This connector requires an IAM User with `GlueConsoleFullAccess` (or read-only e
 
 ## Setup Resources
 
-To run this connector, you must first create the required Dataplex resources.
+To run this connector, you must first create the required Knowledge Catalog resources.
 
 ### Required Catalog Objects
 
@@ -127,7 +127,7 @@ The connector is configured using the `config.json` file. Ensure this file is pr
 | **`aws_region`** | The AWS region where your Glue Data Catalog is located (e.g., "eu-north-1"). |
 | **`project_id`** | Your Google Cloud Project ID. |
 | **`location_id`** | The Google Cloud region where you want to run the script (e.g., "us-central1"). |
-| **`entry_group_id`** | The Dataplex entry group ID where the metadata will be imported. |
+| **`entry_group_id`** | The Knowledge Catalog entry group ID where the metadata will be imported. |
 | **`gcs_bucket`** | The Google Cloud Storage bucket where the output metadata file will be stored. |
 | **`aws_account_id`** | Your AWS account ID. |
 | **`output_folder`** | The folder within the GCS bucket where the output file will be stored. |
@@ -160,13 +160,13 @@ You can run the connector from your local machine using a Python virtual environ
 
 ## Output
 
-The connector generates a JSONL file in the specified GCS bucket and folder. This file contains the extracted metadata in a format that can be imported into Dataplex.
+The connector generates a JSONL file in the specified GCS bucket and folder. This file contains the extracted metadata in a format that can be imported into Knowledge Catalog.
 
 ***
 
-## Importing Metadata into Dataplex
+## Importing Metadata into Knowledge Catalog
 
-Once the metadata file has been generated, you can import it into Dataplex using a metadata import job.
+Once the metadata file has been generated, you can import it into Knowledge Catalog using a metadata import job.
 
 1.  **Prepare the Request File:**
     Open the `request.json` file and replace the following placeholders with your actual values:
@@ -174,7 +174,7 @@ Once the metadata file has been generated, you can import it into Dataplex using
     *   `<YOUR_OUTPUT_FOLDER>`: The folder where the output file was saved.
     *   `<YOUR_PROJECT_ID>`: Your Google Cloud Project ID.
     *   `<YOUR_LOCATION>`: Your Google Cloud Location (e.g., `us-central1`).
-    *   `<YOUR_ENTRY_GROUP_ID>`: The Dataplex Entry Group ID.
+    *   `<YOUR_ENTRY_GROUP_ID>`: The Knowledge Catalog Entry Group ID.
 
 2.  **Run the Import Command:**
     Use `curl` to initiate the import. Replace `{project-id}`, `{location}`, and `{job-id}` in the URL.
@@ -191,9 +191,9 @@ Once the metadata file has been generated, you can import it into Dataplex using
 
 ## Metadata Extracted
 
-The connector maps AWS Glue objects to Dataplex entries as follows:
+The connector maps AWS Glue objects to Knowledge Catalog entries as follows:
 
-| AWS Glue Object | Dataplex Entry Type |
+| AWS Glue Object | Knowledge Catalog Entry Type |
 | :--- | :--- |
 | **Database** | `aws-glue-database` |
 | **Table** | `aws-glue-table` |
@@ -203,7 +203,7 @@ The connector maps AWS Glue objects to Dataplex entries as follows:
 The connector parses AWS Glue Job scripts (Python/Scala) to extract lineage:
 -   **Source**: `DataSource` nodes in Glue Job graph.
 -   **Target**: `DataSink` nodes in Glue Job graph.
--   **Result**: Lineage is visualized in Dataplex from Source Table -> Target Table.
+-   **Result**: Lineage is visualized in Knowledge Catalog from Source Table -> Target Table.
 
 ***
 

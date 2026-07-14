@@ -1,6 +1,6 @@
 # Policy-as-Code Agent
 
-A generative AI-powered agent designed to automate data governance on Google Cloud. It allows users to define, validate, and enforce data policies using natural language queries, translating them into executable code that runs against **Google Cloud Dataplex** and **BigQuery** metadata.
+A generative AI-powered agent designed to automate data governance on Google Cloud. It allows users to define, validate, and enforce data policies using natural language queries, translating them into executable code that runs against **Knowledge Catalog (f.k.a Dataplex)** and **BigQuery** metadata.
 
 ## 🚀 Quick Start
 
@@ -94,7 +94,7 @@ This will start a local web server (usually at `http://localhost:3000` or `http:
 *   **Hybrid Execution**: Generates Python code on-the-fly for flexibility, but executes it in a sandboxed environment for safety.
 *   **Memory & Learning**: Uses **Firestore** and **Vector Search** to remember valid policies. If you ask a similar question later, it reuses the proven code instead of regenerating it.
 *   **Dual-Mode Operation**:
-    *   **Live Mode**: Queries the **Dataplex Universal Catalog** in real-time.
+    *   **Live Mode**: Queries the **Knowledge Catalog** in real-time.
     *   **Offline Mode**: Analyzes metadata exports stored in **Google Cloud Storage (GCS)**.
 *   **Compliance Scorecards**: Run a full health check on your data assets with a single command.
 *   **Remediation**: Can suggest specific fixes for identified violations.
@@ -107,7 +107,7 @@ The agent is built using the **Google Cloud Agent Development Kit (ADK)** and le
 *   **Gemini 2.5 Flash**: For conversational logic, tool selection, and remediation suggestions.
 *   **Vertex AI Vector Search**: For semantic retrieval of past policies.
 *   **Firestore**: Stores policy definitions, versions, and execution history.
-*   **Dataplex API**: For fetching live metadata.
+*   **Knowledge Catalog(Dataplex) API**: For fetching live metadata.
 
 ### Project Structure
 

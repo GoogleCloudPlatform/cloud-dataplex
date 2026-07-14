@@ -1,12 +1,12 @@
-# Snowflake to Dataplex Metadata Loader
+# Snowflake to Knowledge Catalog Metadata Loader
 
 ### Introduction:
 
 In today's complex data landscape, organizations increasingly recognize data as a critical asset. The ability to effectively discover, understand, and govern this data is paramount for informed decision-making, regulatory compliance, and innovation. As data ecosystems grow, spanning various platforms and technologies, maintaining a holistic view of data assets becomes challenging.
 
-This connector addresses a key need for many enterprises: bridging the gap between their data warehousing capabilities and the comprehensive data governance and discovery features offered by Google Cloud's Dataplex. Dataplex provides a unified data fabric to manage, monitor, and govern data across diverse environments within Google Cloud.
+This connector addresses a key need for many enterprises: bridging the gap between their data warehousing capabilities and the comprehensive data governance and discovery features offered by Knowledge Catalog. Knowledge Catalog provides a unified data fabric to manage, monitor, and govern data across diverse environments within Google Cloud.
 
-The **Snowflake Horizon to Dataplex Universal Catalog Connector**, detailed here, is a testament to the power of seamless integration. It's designed to automate metadata synchronization, bringing the rich context of your data into dataplex. This not only enhances data visibility and accessibility for all stakeholders but also strengthens your data governance by centralizing metadata management, lineage tracking, and data quality initiatives.
+The **Snowflake Horizon to Knowledge Catalog Connector**, detailed here, is a testament to the power of seamless integration. It's designed to automate metadata synchronization, bringing the rich context of your data into Knowledge Catalog. This not only enhances data visibility and accessibility for all stakeholders but also strengthens your data governance by centralizing metadata management, lineage tracking, and data quality initiatives.
 
 We believe that by leveraging this connector, you'll unlock new levels of efficiency and empower your teams to truly become data-driven. This guide is your indispensable companion, providing clear, step-by-step instructions and practical insights for a successful implementation.
 
@@ -14,7 +14,7 @@ We believe that by leveraging this connector, you'll unlock new levels of effici
 
 ### Step by Step Guide:
 
-This document will show an end to end POC of how to use Snowflake to Dataplex Universal Catalog Loader.
+This document will show an end to end POC of how to use Snowflake to Knowledge Catalog Loader.
 
 #### Step 1: Setting up Snowflake Environment from where you have to load the metadata. 
 To access the Horizon catalog in Snowflake, you will need to use the **ACCOUNT_USAGE** views located under the **SNOWFLAKE** database.
@@ -31,7 +31,7 @@ Then you create the following 3 secrets:
 
 Please note that you have to create these secrets in your GCP Project.
 
-#### Step 3: Setting up the Dataplex Universal Catalog Environment.
+#### Step 3: Setting up the Knowledge Catalog Environment.
 
 You will perform the following one-time setup steps in your GCP Project:
 
@@ -39,7 +39,7 @@ You will perform the following one-time setup steps in your GCP Project:
 <img alt="Snowflake Group Creation" src="images/SnowGroupCreation.png" width="600">
 
 2. **Create aspect types** for the aspects that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/enrich-entries-metadata#create-aspect-type) and create the following aspects types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
-* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> "Aspect types & Tag Templates "
+* Navigate to Knowledge Catalog -> "Aspect types"
 <img alt="Create Aspect Type Screen 1" src="images/CreateAspectTypeScreen1.png" width="600">
 
 * You will see two options there as shown above:- "Custom" & "System". Under "Custom", click on "+Create Aspect Type". You will see the following screen:-
@@ -81,7 +81,7 @@ You will perform the following one-time setup steps in your GCP Project:
 <img alt="Aspect Type Creation" src="images/AspectTypeCreation.png" width="600">
 
 3. **Create entry types** for the entries that you want to import. Follow the steps from [here](https://docs.cloud.google.com/dataplex/docs/ingest-custom-sources#create-entry-type) and create the following entry types: **"snowhorizondb"**, **"snowhorizonschema"**, **"snowhorizontable"**, **"snowhorizontag"**, **"snowhorizontagref"**, **"snowhorizonindex"**, **"snowhorizonfunction"**. Please note that these names are not mandatory and can be changed as per your requirements as well just that you will have to change these in the script also. If you want to use the script as it is then please use the names as mentioned above.
-* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> "Aspect types & Tag Templates "
+* Navigate to Knowledge Catalog -> Metadata Types -> "Entry types"
 <img alt="Entry Type Creation 1" src="images/EntryTypeScreen1.png" width="600">
 
 * You will see two options there as shown above:- "Custom" & "System". Under "Custom", click on "+ Create". You will see the following screen, Fill in the details as below(e.g for snowhorizondb):-
@@ -114,7 +114,7 @@ You will perform the following one-time setup steps in your GCP Project:
 * Finally, you will have all the Entry Types created as below:-
 <img alt="Entry Type Creation" src="images/EntryTypeCreation.png" width="600">
 
-#### Step 4: Execute the Python Script to load the Horizon Metadata from Snowflake to Dataplex
+#### Step 4: Execute the Python Script to load the Horizon Metadata from Snowflake to Knowledge Catalog
 Now you have to execute the Python script: `snowflake_to_dataplex_metadata_loader.py`
 
 Before executing the script, you will have to provide the following details in the first section of the script:
@@ -125,13 +125,13 @@ Before executing the script, you will have to provide the following details in t
 
 Also, you will need to provide the following access to the service account:-
 * To read the Snowflake login credentials - Secret Manager Secret Accessor
-* To create and manage the Snowflake metadata entries - Dataplex Catalog Editor
+* To create and manage the Snowflake metadata entries - Knowledge Catalog Editor
 
-#### Step 5: Validate everything in Dataplex.
+#### Step 5: Validate everything in Knowledge Catalog.
 For example, you can validate Snowflake Databases as below:-
 
-* Navigate to Dataplex -> Dataplex Universal Catalog -> Catalog -> Entry Types -> select "snowhorizondb"
+* Navigate to Knowledge Catalog -> Metadata Types -> Entry Types -> select "snowhorizondb"
 * Next, click on "Sample Entries" and you will see all the Databases from Snowflake here.
-* Click on any of them and validate your entries between Snowflake and Dataplex.
+* Click on any of them and validate your entries between Snowflake and Knowledge Catalog.
 
 Similarly, you can validate all other metadata as well.

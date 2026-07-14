@@ -1,32 +1,31 @@
-# Google Cloud Dataplex
+# Knowledge Catalog
 
-This repository contains code and documentation for use with
-[Google Cloud Dataplex](https://cloud.google.com/dataplex/).
+This repository contains code and documentation for use with [Knowledge Catalog(f.k.a Dataplex)](https://cloud.google.com/dataplex/).
 
 ## Samples in this Repository
- * `agents` provides generative AI-powered agents for automating Dataplex tasks.
- * `datascan` provides samples around Dataplex DataScans.
- * `managed-connectivity` provides code samples and community contributed connectors for Dataplex Managed Connectivity
+ * `agents` provides generative AI-powered agents for automating Knowledge Catalog tasks.
+ * `datascan` provides samples around Knowledge Catalog DataScans.
+ * `managed-connectivity` provides code samples and community contributed connectors for Knowledge Catalog Managed Connectivity
 
 See each directory's README for more information.
 
-## Additional Dataplex Resources
+## Additional Knowledge Catalog Resources
 
-You can find more Dataplex resources in these repositories:
+You can find more Knowledge Catalog resources in these repositories:
 
 ### Examples
-* [Dataplex Python examples](https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-dataplex/samples/generated_samples)
-* [Dataplex Java examples](https://github.com/googleapis/google-cloud-java/tree/main/java-dataplex/samples/snippets/generated/com/google/cloud/dataplex/v1)
+* [Knowledge Catalog Python examples](https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-dataplex/samples/generated_samples)
+* [Knowledge Catalog Java examples](https://github.com/googleapis/google-cloud-java/tree/main/java-dataplex/samples/snippets/generated/com/google/cloud/dataplex/v1)
 
 ### Terraform
 * [DataScan Resource](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataplex_datascan)
 * [DataScan Module](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/tree/master/modules/dataplex-datascan)
 
 ### Airflow
-* [Dataplex Operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/dataplex.html)
+* [Knowledge Catalog Operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/dataplex.html)
 
 ## For more information
-For more information, review the [Dataplex
+For more information, review the [Knowledge Catalog
 documentation](https://cloud.google.com/dataplex/docs/). You can also
 pose questions to the [Stack
 Overflow](http://stackoverflow.com/questions/tagged/google-cloud-dataplex) community

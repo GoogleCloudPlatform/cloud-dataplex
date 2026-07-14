@@ -1,6 +1,6 @@
 # Develop a custom connector for metadata import
 
-This code sample provides a reference for you to build a custom connector that extracts metadata from a third-party source. You use the connector when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) that imports metadata into Dataplex.
+This code sample provides a reference for you to build a custom connector that extracts metadata from a third-party source. You use the connector when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) that imports metadata into Knowledge Catalog.
 
 You can build connectors to extract metadata from third-party sources. For example, you can build a connector to extract data from sources like MySQL, SQL Server, Oracle, Snowflake, Databricks, and others.
 

@@ -1,6 +1,6 @@
 # Dataplex GenAI Agents
 
-This directory hosts a collection of AI-powered agents designed to supercharge **Google Cloud Dataplex** workflows. By leveraging **Google's Agent Development Kit (ADK)** and **Gemini models**, these agents automate complex data management tasks, from governance and quality checks to metadata discovery and lineage analysis.
+This directory hosts a collection of AI-powered agents designed to supercharge **Google Cloud Knwoedleg Catalog** workflows. By leveraging **Google's Agent Development Kit (ADK)** and **Gemini models**, these agents automate complex data management tasks, from governance and quality checks to metadata discovery and lineage analysis.
 
 ## 🤖 Available Agents
 
@@ -33,7 +33,7 @@ Each agent is self-contained in its own directory with specific instructions. Ho
 *   **Google Cloud Project** with billing enabled.
 *   **Python 3.11+**.
 *   **Google Cloud SDK** (`gcloud`) installed and authenticated.
-*   **Vertex AI** and **Dataplex** APIs enabled.
+*   **Vertex AI** and **Knowledge Catalog** APIs enabled.
 
 To get started, navigate to the specific agent's directory:
 

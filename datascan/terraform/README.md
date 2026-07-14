@@ -4,7 +4,7 @@
 This project provides a system to define, execute, and monitor data quality (DQ) rules for datasets managed within Google Dataplex. The core components allow for:
 * **Flexible Rule Definition**: DQ rules are expressed in YAML template (`templates.yaml`) and binding (`bindings.yaml`) files. Templates define the reusable structure of a rule (e.g., nullness check, uniqueness check), while bindings map templates to specific columns for rule application.
 * **Automated Rule Parsing**: The Python script (`rules_parsing.py`) reads the YAML files, combines their structure and generates a unified, ready-to-use rules file (`parsed_rules_combined.yaml`).
-* **Dataplex Integration**: The Terraform modules (`dataplex_data_quality.tf`, `dataplex_profile.tf`, `rules_file_parsing.tf`, `main.tf`) provision Google Dataplex Profile and Data Quality DataScans, parse the combined Data Quality rules and inject them into the Data Quality scan configuration for automated data quality assessments during execution.
+* **Dataplex Integration**: The Terraform modules (`dataplex_data_quality.tf`, `dataplex_profile.tf`, `rules_file_parsing.tf`, `main.tf`) provision Knowledge Catalog Profile and Data Quality DataScans, parse the combined Data Quality rules and inject them into the Data Quality scan configuration for automated data quality assessments during execution.
 
 ### Setup
 #### Defining Rules:
@@ -18,24 +18,24 @@ This project provides a system to define, execute, and monitor data quality (DQ)
 * `rules_parsing.py`: This Python script parses the `templates.yaml` and `bindings.yaml` files and generates a combined `parsed_rules_combined.yaml` file with a list of rules for the Data Quality spec.
 
 #### Deployment:
-* `dataplex_data_quality.tf`: This Terraform module defines a Dataplex Data Quality scan resource and uses the `parsed_rules_combined.yaml` file to configure the scan's rules.
-* `rules_file_parsing.tf`: This Terraform module is responsible for parsing the `parsed_rules_combined.yaml` file and extracting individual rules. It converts the YAML structure into a format suitable for use in the data_quality_spec block of the Dataplex data scan resource.
-* `dataplex_profile.tf`: This Terraform module defines a Dataplex Data Profile scan for each of the datasets/tables defined in the `bq_datasets_tables` variable.
+* `dataplex_data_quality.tf`: This Terraform module defines a Knowledge Catalog Data Quality scan resource and uses the `parsed_rules_combined.yaml` file to configure the scan's rules.
+* `rules_file_parsing.tf`: This Terraform module is responsible for parsing the `parsed_rules_combined.yaml` file and extracting individual rules. It converts the YAML structure into a format suitable for use in the data_quality_spec block of the Knowledge Catalog data scan resource.
+* `dataplex_profile.tf`: This Terraform module defines a Knowledge Catalog Data Profile scan for each of the datasets/tables defined in the `bq_datasets_tables` variable.
 
 
 ### Project Structure
 * `rules_parsing.py`: Python script responsible for parsing rule templates and bindings YAML files, and generating the consolidated parsed_rules_combined.yaml file.
 * `bindings.yaml`: YAML file specifying bindings between rule templates and target data columns.
 * `templates.yaml`: YAML file containing reusable rule templates for data quality checks.
-* `dataplex_data_quality.tf`: Terraform module defining the configuration of a Dataplex Data Quality Scan job, including the integration with the parsed data quality rules.
+* `dataplex_data_quality.tf`: Terraform module defining the configuration of a Knowledge Catalog Data Quality Scan job, including the integration with the parsed data quality rules.
 * `rules_file_parsing.tf`: Terraform module responsible for parsing the parsed_rules_combined.yaml file and dynamically creating Dataplex's Data Quality Spec within the DataScan configuration.
-* `dataplex_profile.tf`: Terraform module defining the configuration of a Dataplex Data Profile Scan job, including the automatic profile generation of multiple BigQuery tables/datasets.
+* `dataplex_profile.tf`: Terraform module defining the configuration of a Knowledge Catalog Data Profile Scan job, including the automatic profile generation of multiple BigQuery tables/datasets.
 * `main.tf`: Main Terraform file for infrastructure provisioning.
 * `variables.tf`: File containing project-wide variables for customization.
 
 ### Usage Instructions
 1) Prerequisites:
-    * A Google Cloud Project with Dataplex API enabled.
+    * A Google Cloud Project with Knowledge Catalog API enabled.
     * Python 3.x installed
     * Terraform installed
 
@@ -62,8 +62,8 @@ This project provides a system to define, execute, and monitor data quality (DQ)
 
 
 ### Monitoring
-Once the infrastructure is deployed, the configured Dataplex DataScan will initiate based on its schedule (default: on-demand). Data quality results can be monitored and reviewed within the Dataplex console. Additionally, logs are sent to Cloud Logging for further analysis.
+Once the infrastructure is deployed, the configured Knowledge Catalog DataScan will initiate based on its schedule (default: on-demand). Data quality results can be monitored and reviewed within the Knowledge Catalog console. Additionally, logs are sent to Cloud Logging for further analysis.
 
 ### Important Notes
 The provided rule templates are examples. You'll likely extend and customize these to suit your specific data quality requirements.
-This project assumes a basic understanding of Terraform and Google Dataplex concepts.
+This project assumes a basic understanding of Terraform and Google Knowledge Catalog concepts.

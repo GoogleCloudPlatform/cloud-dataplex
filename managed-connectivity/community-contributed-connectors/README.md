@@ -1,6 +1,6 @@
 # Custom metadata connectors 
 
-These custom connectors extract metadata from third-party systems and can be used when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) to import metadata into [Dataplex Universal Catalog](https://cloud.google.com/dataplex/docs/introduction).
+These custom connectors extract metadata from third-party systems and can be used when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) to import metadata into [Knowledge Catalog](https://cloud.google.com/dataplex/docs/introduction).
 
 * [MySQL](./mysql-connector)
 * [Oracle](./oracle-connector)
