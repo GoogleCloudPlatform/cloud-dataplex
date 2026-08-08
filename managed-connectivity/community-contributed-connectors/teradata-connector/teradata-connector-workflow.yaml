@@ -1,0 +1,112 @@
+# Copyright 2026 Teradata
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Cloud Workflow for end-to-end Teradata metadata extraction and import.
+# Submits a Dataproc Serverless PySpark job to extract metadata from
+# Teradata, then triggers a Dataplex metadata import job.
+#
+# Deploy:
+#   gcloud workflows deploy teradata-metadata-import \
+#     --location=us-central1 \
+#     --source=teradata-connector-workflow.yaml
+#
+# Execute:
+#   gcloud workflows execute teradata-metadata-import \
+#     --location=us-central1 \
+#     --data='{ ... }'
+
+main:
+  params: [args]
+  steps:
+    - init:
+        assign:
+          - project: ${args.PROJECT_ID}
+          - region: ${args.CLOUD_REGION}
+          - entryGroupId: "teradata"
+          - teradataHost: ${args.TERADATA_HOST}
+          - teradataPort: ${args.TERADATA_PORT}
+          - teradataUser: ${args.TERADATA_USER}
+          - passwordSecret: ${args.PASSWORD_SECRET}
+          - outputBucket: ${args.OUTPUT_BUCKET}
+          - outputFolder: "teradata"
+          - serviceAccount: ${args.SERVICE_ACCOUNT}
+          - containerImage: ${args.CONTAINER_IMAGE}
+          - depsBucket: ${args.DEPS_BUCKET}
+
+    - submit_pyspark_extract_job:
+        call: http.post
+        args:
+          url: ${"https://dataproc.googleapis.com/v1/projects/" + project + "/locations/" + region + "/batches"}
+          auth:
+            type: OAuth2
+          body:
+            pysparkBatch:
+              mainPythonFileUri: "file:///main.py"
+              jars:
+                - "file:///opt/spark/jars/terajdbc4.jar"
+              args:
+                - ${"--target_project_id=" + project}
+                - ${"--target_location_id=" + region}
+                - ${"--target_entry_group_id=" + entryGroupId}
+                - ${"--host=" + teradataHost}
+                - ${"--port=" + teradataPort}
+                - ${"--user=" + teradataUser}
+                - ${"--password_secret=" + passwordSecret}
+                - ${"--output_bucket=" + outputBucket}
+                - ${"--output_folder=" + outputFolder}
+            runtimeConfig:
+              containerImage: ${containerImage}
+            environmentConfig:
+              executionConfig:
+                serviceAccount: ${serviceAccount}
+        result: batch_result
+
+    - wait_for_batch:
+        call: googleapis.dataproc.v1.projects.locations.batches.get
+        args:
+          name: ${batch_result.body.name}
+        result: batch_status
+
+    - submit_import_job:
+        call: http.post
+        args:
+          url: ${"https://dataplex.googleapis.com/v1/projects/" + project + "/locations/" + region + "/metadataJobs"}
+          auth:
+            type: OAuth2
+          body:
+            type: "IMPORT"
+            import_spec:
+              source_storage_uri: ${"gs://" + outputBucket + "/" + outputFolder + "/"}
+              entry_sync_mode: "FULL"
+              aspect_sync_mode: "INCREMENTAL"
+              scope:
+                entry_groups:
+                  - ${"projects/" + project + "/locations/" + region + "/entryGroups/" + entryGroupId}
+                entry_types:
+                  - ${"projects/" + project + "/locations/" + region + "/entryTypes/teradata-instance"}
+                  - ${"projects/" + project + "/locations/" + region + "/entryTypes/teradata-database"}
+                  - ${"projects/" + project + "/locations/" + region + "/entryTypes/teradata-schema"}
+                  - ${"projects/" + project + "/locations/" + region + "/entryTypes/teradata-table"}
+                  - ${"projects/" + project + "/locations/" + region + "/entryTypes/teradata-view"}
+                aspect_types:
+                  - ${"projects/" + project + "/locations/" + region + "/aspectTypes/teradata-instance"}
+                  - ${"projects/" + project + "/locations/" + region + "/aspectTypes/teradata-database"}
+                  - ${"projects/" + project + "/locations/" + region + "/aspectTypes/teradata-schema"}
+                  - ${"projects/" + project + "/locations/" + region + "/aspectTypes/teradata-table"}
+                  - ${"projects/" + project + "/locations/" + region + "/aspectTypes/teradata-view"}
+                  - "projects/dataplex-types/locations/global/aspectTypes/schema"
+        result: import_result
+
+    - return_result:
+        return: ${import_result}
