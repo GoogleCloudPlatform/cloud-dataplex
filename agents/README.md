@@ -6,7 +6,7 @@ This directory hosts a collection of AI-powered agents designed to supercharge *
 
 | Agent | Description | Key Tech |
 | :--- | :--- | :--- |
-| **[Policy-as-Code Agent](./policy-as-code/README.md)** | Defines, validates, and enforces data governance policies using natural language. It translates your instructions (e.g., "All finance tables need descriptions") into executable Python code that runs against Dataplex and BigQuery metadata. | Gemini 2.5, Vector Search, Firestore |
+| **[Policy-as-Code Agent](https://github.com/GoogleCloudPlatform/knowledge-catalog-labs/tree/main/policy-as-code-agent)** | Defines, validates, and enforces data governance policies using natural language. It translates your instructions (e.g., "All finance tables need descriptions") into executable Python code that runs against Dataplex and BigQuery metadata. *Now maintained in [Knowledge Catalog Labs](https://github.com/GoogleCloudPlatform/knowledge-catalog-labs).* | Gemini 2.5, Vector Search, Firestore |
 
 ## 🌟 Why use Dataplex Agents?
 
@@ -35,12 +35,7 @@ Each agent is self-contained in its own directory with specific instructions. Ho
 *   **Google Cloud SDK** (`gcloud`) installed and authenticated.
 *   **Vertex AI** and **Knowledge Catalog** APIs enabled.
 
-To get started, navigate to the specific agent's directory:
-
-```bash
-cd policy-as-code
-# Follow the README.md inside
-```
+To get started, open the agent's link in the table above and follow its `README.md`.
 
 ## 🤝 Contributing
 
