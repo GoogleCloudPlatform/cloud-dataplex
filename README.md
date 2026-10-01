@@ -3,7 +3,6 @@
 This repository contains code and documentation for use with [Knowledge Catalog(f.k.a Dataplex)](https://cloud.google.com/dataplex/).
 
 ## Samples in this Repository
- * `agents` provides generative AI-powered agents for automating Knowledge Catalog tasks.
  * `datascan` provides samples around Knowledge Catalog DataScans.
  * `managed-connectivity` provides code samples and community contributed connectors for Knowledge Catalog Managed Connectivity
 
